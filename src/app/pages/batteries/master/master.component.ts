@@ -73,15 +73,32 @@ export class BatteriesMasterComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
       await this.getItems();
+
+      this.putItems();
+
     } catch (err) {
       console.error('Error during initialization:', err);
     }
   }
 
+  putItems(){
+    const item: BatteryStatusInterface =
+    
+      { 
+        deleted: true,
+        idBattery: 1,
+        action: 1,
+        date: new Date(Date.now()),
+      }
+     
+    
+    this.db.putItem('batteries-status', item)
+  }
+
   async getItems() {
     try {
       const items: BatteryStatusInterface[] = (await this.db.getItems('batteries-status')) as BatteryStatusInterface[];
-      items.sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
+      items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {
       });
       this.items = items;

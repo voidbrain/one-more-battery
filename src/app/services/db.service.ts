@@ -12,14 +12,12 @@ export class DbService {
 
   private db: IDBDatabase | undefined;
   private debug = false;
-  private tables: string[] = [];
 
   constructor(
     private appSettings: SettingsService,
     private loadingController: LoadingController,
     private toastService: ToastService
   ) { 
-    this.tables = this.appSettings.datatables;
   }
 
   async load(): Promise<void> {
@@ -29,7 +27,9 @@ export class DbService {
   
       // Initialize the database and services
       await this.initDb(resetDb);
+      console.log('[DB]: initDb done');
       await this.initService(resetDb || forceLoading);
+      console.log('[DB]: initService done');
   
     } catch (error) {
       console.error('[DB]: Error loading data:', error);
@@ -41,21 +41,12 @@ export class DbService {
     const date = new Date();
     const now = Date.now();
 
-    const promise = this.createDb();
-
-    const lastGlobalUpdate =
-      localStorage.getItem(this.appSettings.appName + '_lastglobalupdate') ||
-      date.getDate() - 1;
-    const hoursWithoutUpdates =
-      (Number(now) - Number(lastGlobalUpdate)) / (1000 * 60 * 60);
+    const promise = await this.createDb();
 
     if (this.debug) {
       console.info('[DB]: Force data sync');
     }
-    localStorage.setItem(
-      this.appSettings.appName + '_lastglobalupdate',
-      String(now),
-    );
+    
     const loading = await this.loadingController.create({ message: 'Loading' });
     loading.present();
     
@@ -64,7 +55,6 @@ export class DbService {
       loading.dismiss();
     } catch (error) {
       console.error('An error occurred:', error);
-      // Handle error appropriately, for example, by showing an error message
     }
   }
 
@@ -87,63 +77,44 @@ export class DbService {
     });
   }
 
-  private createDb(): Promise<void> {
+  private async createDb(): Promise<void> {
     if (this.db) {
-      (this.db as IDBDatabase).close();
+      this.db.close();
     }
-    return new Promise((resolve) => {
-      const openRequest = indexedDB.open(this.appSettings.appName);
-      openRequest.onupgradeneeded = (event) => {
-        const request = event.target as IDBRequest;
-        const db = request.result;
-        const storeObjects: Record<string, IDBObjectStore> = {};
-        if (this.debug) {
-          console.log('[DB]: ', this.tables);
-        }
-        this.tables.map((table) => {
-          console.log('[DB]: createObjectStore', table);
-
-          storeObjects[('store' + table)] = db.createObjectStore(table, {
-            keyPath: 'id',
-            autoIncrement: true,
-          });
-          storeObjects[('store' + table)].createIndex('id', ['id']);
-          storeObjects[('store' + table)].createIndex(
-            'enabled, deleted',
-            ['enabled', 'deleted'],
-          );
-          storeObjects[('store' + table)].createIndex(
-            'synced',
-            ['synced'],
-            { unique: false },
-          );
-          storeObjects[('store' + table)].createIndex(
-            'deleted',
-            ['deleted'],
-            { unique: false },
-          );
-         
+  
+    return new Promise((resolve, reject) => {
+      const openRequest = indexedDB.open(this.appSettings.appName, this.appSettings.dbVersion); // Use a version number higher than the current
+  
+      openRequest.onupgradeneeded = async (event) => {
+        const db = (event.target as IDBRequest<IDBDatabase>).result;
+        const currentVersion = event.oldVersion;
+  
+        try {
+          console.info('[DB]: Migrations', db, currentVersion)
+          await this.addMigration(db, currentVersion); // Apply migrations based on currentVersion
           if (this.debug) {
-            console.info('[DB]: Table created:' + table);
+            console.info('[DB]: Migrations applied');
           }
-        });
-        if (this.debug) {
-          console.info('[DB]: Db forged');
+        } catch (error) {
+          console.error('[DB]: Error applying migrations', error);
         }
       };
-      openRequest.onsuccess = (event: Event) => {
-        const request = event.target as IDBRequest;
-        this.db = request.result;
-        (this.db as IDBDatabase).onerror = (error) => {
-          console.error('[DB]: error createDb: ' + error);
-        };
+  
+      openRequest.onsuccess = (event) => {
+        this.db = (event.target as IDBRequest<IDBDatabase>).result;
         if (this.debug) {
-          console.info('[DB]: Db Ready');
+          console.info('[DB]: Database ready');
         }
         resolve();
       };
+  
+      openRequest.onerror = (event) => {
+        console.error('[DB]: Error opening database', (event.target as IDBRequest).error);
+        reject((event.target as IDBRequest).error);
+      };
     });
   }
+  
 
   async initDb(resetDb = false): Promise<void> {
     if (resetDb) {
@@ -286,5 +257,51 @@ export class DbService {
       };
     });
   }
+
+  /**
+   * 
+   * MIGRATIONS
+   * 
+   */
+
+  private migration1(db: IDBDatabase) {
+    this.createBatteriesAnag(db);
+    this.createBatteriesStatus(db);
+  }
+
+  private createBatteriesAnag(db: IDBDatabase) {
+    if (!db.objectStoreNames.contains('batteries-anag')) {
+      const store = db.createObjectStore('batteries-anag', { keyPath: 'id', autoIncrement: true });
+      store.createIndex('id',['id'],{ unique: false },);
+      store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+      store.createIndex('deleted',['deleted'],{ unique: false },);
+    }
+  }
+  
+  private createBatteriesStatus(db: IDBDatabase) {
+    if (!db.objectStoreNames.contains('batteries-status')) {
+      const store = db.createObjectStore('batteries-status', { keyPath: 'id', autoIncrement: true });
+      store.createIndex('id',['id'],{ unique: false },);
+      store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+      store.createIndex('deleted',['deleted'],{ unique: false },);
+    }
+  }
+
+  private async addMigration(db: IDBDatabase, currentVersion: number): Promise<void> {
+    // Define migrations
+    const migrations = [
+      { version: 1, method: this.migration1 },
+    ];
+  
+    // Apply migrations
+    for (const migration of migrations) {
+      if (migration.version >= currentVersion) {
+        migration.method.call(this, db); // Apply migration
+        currentVersion = migration.version;
+      }
+    }
+  }
+
+  
 
 }

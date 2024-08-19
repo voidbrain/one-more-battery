@@ -5,11 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SettingsService {
   public appName = 'OneMoreBattery';
-
-  public datatables = [
-    'batteries-anag',
-    'batteries-status',
-  ];
+  public dbVersion = 2;
 
   constructor() { }
 }

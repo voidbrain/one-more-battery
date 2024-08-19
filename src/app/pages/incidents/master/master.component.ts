@@ -81,7 +81,7 @@ export class IncidentsMasterComponent {
   async getItems() {
     try {
       const items: BatteryStatusInterface[] = (await this.db.getItems('batteries-status')) as BatteryStatusInterface[];
-      items.sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
+      items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {
       });
       this.items = items;
