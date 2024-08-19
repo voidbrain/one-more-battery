@@ -1,6 +1,6 @@
 export interface BrandsAnagraphInterface {
     id?: number
-    enabled: boolean,
-    deleted: boolean,
+    enabled: number,
+    deleted: number,
     name: string
 }

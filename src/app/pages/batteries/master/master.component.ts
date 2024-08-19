@@ -74,8 +74,6 @@ export class BatteriesMasterComponent {
       await this.db.initService(forceLoading);
       await this.getItems();
 
-      this.db.demoDb();
-
     } catch (err) {
       console.error('Error during initialization:', err);
     }
@@ -86,8 +84,10 @@ export class BatteriesMasterComponent {
       const items: BatteryStatusInterface[] = (await this.db.getItems('batteries-status')) as BatteryStatusInterface[];
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {
+
       });
       this.items = items;
+      console.log(this.items)
       console.info('[PAGE]: Ready');
     } catch (error) {
       console.error('Error fetching items:', error);

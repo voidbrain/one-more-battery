@@ -6,8 +6,8 @@ export enum batteryStatusActionEnum {
 
 export interface BatteryStatusInterface {
     id?: number,
-    enabled: boolean,
-    deleted: boolean,
+    enabled: number,
+    deleted: number,
     idBattery: number,
     action: number,
     date: Date,

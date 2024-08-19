@@ -228,7 +228,7 @@ export class DbService {
   
   async deleteItem(objectStore: string, item: BatteryAnagraphInterface | BatteryStatusInterface): Promise<void> {
     try {       
-        item.deleted = true;
+        item.deleted = +true;
         await this.performStoreOperation(objectStore as unknown as IDBObjectStore, 'put', item as unknown as IDBValidKey, objectStore);
     } catch (e) {
       console.error(`[DB]: Error processing item: ${e}`);
@@ -334,24 +334,24 @@ export class DbService {
     console.log("Demo db")
     const itemBatteryType: BatteryTypeInterface =
         {
-          enabled: true,
-          deleted: false,
+          enabled: +true,
+          deleted: +false,
           name: "LiPo"
         }
       this.putItem('batteries-types', itemBatteryType);
 
     const itemBrand: BrandsAnagraphInterface =
         {
-          enabled: true,
-          deleted: false,
+          enabled: +true,
+          deleted: +false,
           name: "Tattu"
         }
       this.putItem('brands-anag', itemBrand);
 
       const itemAnag: BatteryAnagraphInterface =
         {
-          enabled: true,
-          deleted: false,
+          enabled: +true,
+          deleted: +false,
           cellsNumber: 6,
           typeId: 1,
           model: "R-line",
@@ -361,8 +361,8 @@ export class DbService {
 
       const itemStatus: BatteryStatusInterface =
         {
-          enabled: true,
-          deleted: false,
+          enabled: +true,
+          deleted: +false,
           idBattery: 1,
           action: 1,
           date: new Date(Date.now()),
