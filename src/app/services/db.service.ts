@@ -3,7 +3,9 @@ import { SettingsService } from './settings.service';
 import { LoadingController } from '@ionic/angular';
 import { ToastService } from './toast.service';
 import { BatteryAnagraphInterface } from '../interfaces/battery-anagraph';
+import { BatteryTypeInterface } from '../interfaces/battery-type';
 import { BatteryStatusInterface } from '../interfaces/battery-status';
+import { BrandsAnagraphInterface } from '../interfaces/brands-anagraph';
 
 @Injectable({
   providedIn: 'root'
@@ -265,8 +267,19 @@ export class DbService {
    */
 
   private migration1(db: IDBDatabase) {
+    this.createBrandsAnag(db)
     this.createBatteriesAnag(db);
     this.createBatteriesStatus(db);
+    this.createBatteriesTypes(db);
+  }
+
+  private createBrandsAnag(db: IDBDatabase) {
+    if (!db.objectStoreNames.contains('brands-anag')) {
+      const store = db.createObjectStore('brands-anag', { keyPath: 'id', autoIncrement: true });
+      store.createIndex('id',['id'],{ unique: false },);
+      store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+      store.createIndex('deleted',['deleted'],{ unique: false },);
+    }
   }
 
   private createBatteriesAnag(db: IDBDatabase) {
@@ -287,6 +300,15 @@ export class DbService {
     }
   }
 
+  private createBatteriesTypes(db: IDBDatabase) {
+    if (!db.objectStoreNames.contains('batteries-types')) {
+      const store = db.createObjectStore('batteries-types', { keyPath: 'id', autoIncrement: true });
+      store.createIndex('id',['id'],{ unique: false },);
+      store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+      store.createIndex('deleted',['deleted'],{ unique: false },);
+    }
+  }
+
   private async addMigration(db: IDBDatabase, currentVersion: number): Promise<void> {
     // Define migrations
     const migrations = [
@@ -295,12 +317,61 @@ export class DbService {
   
     // Apply migrations
     for (const migration of migrations) {
-      if (migration.version >= currentVersion) {
+      if (migration.version > currentVersion) {
         migration.method.call(this, db); // Apply migration
         currentVersion = migration.version;
       }
     }
   }
+
+  /**
+   * 
+   * DemoDB
+   * 
+   */
+
+  public demoDb (){
+    console.log("Demo db")
+    const itemBatteryType: BatteryTypeInterface =
+        {
+          enabled: true,
+          deleted: false,
+          name: "LiPo"
+        }
+      this.putItem('batteries-types', itemBatteryType);
+
+    const itemBrand: BrandsAnagraphInterface =
+        {
+          enabled: true,
+          deleted: false,
+          name: "Tattu"
+        }
+      this.putItem('brands-anag', itemBrand);
+
+      const itemAnag: BatteryAnagraphInterface =
+        {
+          enabled: true,
+          deleted: false,
+          cellsNumber: 6,
+          typeId: 1,
+          model: "R-line",
+          brandId: 1,
+        }
+      this.putItem('batteries-anag', itemAnag);
+
+      const itemStatus: BatteryStatusInterface =
+        {
+          enabled: true,
+          deleted: false,
+          idBattery: 1,
+          action: 1,
+          date: new Date(Date.now()),
+        }
+      this.putItem('batteries-status', itemStatus)
+      console.log("Demo db finish")
+    }
+
+
 
   
 

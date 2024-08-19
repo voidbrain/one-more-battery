@@ -74,25 +74,11 @@ export class BatteriesMasterComponent {
       await this.db.initService(forceLoading);
       await this.getItems();
 
-      this.putItems();
+      this.db.demoDb();
 
     } catch (err) {
       console.error('Error during initialization:', err);
     }
-  }
-
-  putItems(){
-    const item: BatteryStatusInterface =
-    
-      { 
-        deleted: true,
-        idBattery: 1,
-        action: 1,
-        date: new Date(Date.now()),
-      }
-     
-    
-    this.db.putItem('batteries-status', item)
   }
 
   async getItems() {

@@ -73,6 +73,8 @@ export class IncidentsMasterComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
       await this.getItems();
+
+      this.db.demoDb();
     } catch (err) {
       console.error('Error during initialization:', err);
     }

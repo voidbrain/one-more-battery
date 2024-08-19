@@ -1,8 +1,9 @@
 export interface BatteryAnagraphInterface {
-    id?: number
+    id?: number,
+    enabled: boolean,
     deleted: boolean,
     cellsNumber?: number,
-    typeId?: string,
+    typeId?: number,
     model?: string,
     brandId?: number,
 }
