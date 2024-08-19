@@ -1,0 +1,8 @@
+{
+  "name": "One More Battery",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "b5ddf2b5"
+}
