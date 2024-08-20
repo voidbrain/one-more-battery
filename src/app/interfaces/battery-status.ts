@@ -1,3 +1,8 @@
+export enum batteryStatusDaysAlertEnum {
+    'Warning' = 3,
+    'Danger' = 5,
+}
+
 export enum batteryStatusActionEnum {
     'Charge' = 1,
     'Discharge' = 2,

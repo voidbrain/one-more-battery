@@ -25,7 +25,7 @@ import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import { SettingsService } from '../../../services/settings.service'
 import * as ionIcons from 'ionicons/icons';
-import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import { batteryStatusActionEnum, batteryStatusDaysAlertEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays } from 'date-fns';
@@ -64,6 +64,7 @@ export class BatteriesMasterComponent {
   items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
   debug = true;
+  batteryStatusActionEnum = batteryStatusActionEnum;
 
   constructor(
     private db: DbService,
@@ -74,8 +75,11 @@ export class BatteriesMasterComponent {
     addIcons(ionIcons);
   }
 
-  getBatteryStatus(status: number){
-    return batteryStatusActionEnum[status]; 
+  getBatteryStatus(status: number | undefined){
+    if(status) {
+      return batteryStatusActionEnum[status]; 
+    }
+    return;
   }
 
   // Using Ionic lifecycle hook to initialize data when the view is about to be presented
@@ -119,9 +123,13 @@ export class BatteriesMasterComponent {
           const totalCycles: number = await this.db.getTotalCycles(objectStoreStatus, item.id!);
           
           // Calculate timerange as the difference between the last status date and the current date
-          const timeRange = differenceInDays(lastStatus.date.getTime(), Date.now());
+          const timeRange = differenceInDays( Date.now(), lastStatus.date.getTime());
+          const alertLevel = 
+            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Warning ? 'warning' : 
+            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Danger ? 'danger' :
+            lastStatus.status !== batteryStatusActionEnum.Store && timeRange > batteryStatusDaysAlertEnum.Danger ? 'danger' : 'success'; 
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = { ...item, lastStatus, series, totalCycles, timeRange };
+          const expandedItem: ExtendedBatteryAnagraphInterface = { ...item, lastStatus, series, totalCycles, timeRange, alertLevel };
           
           // Add the expanded item to the array
           expandedItems.push(expandedItem);

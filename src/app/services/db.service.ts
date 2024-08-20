@@ -182,16 +182,11 @@ export class DbService {
       const enabled = +true;
       const deleted = +false;
 
-      console.log('Querying with:', { idBattery, status, enabled, deleted });
-  
       const query = IDBKeyRange.only([idBattery, status, enabled, deleted]);
-      console.log('IDBKeyRange:', query);
-  
       const request = index.count(query);
   
       return new Promise<number>((resolve, reject) => {
         request.onsuccess = (event) => {
-          console.log('Count result:', request.result);
           resolve(request.result); // Return the count of records matching the criteria
         };
   

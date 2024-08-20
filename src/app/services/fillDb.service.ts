@@ -134,18 +134,18 @@ export class FillDbService {
       itemStatus3 = { idBattery: 3, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus3)
 
-      itemStatus1 = { idBattery: 3, date: new Date("2024-08-17"), status: batteryStatusActionEnum.Charge, enabled: +true, deleted: +false };
+      itemStatus1 = { idBattery: 1, date: new Date("2024-08-17"), status: batteryStatusActionEnum.Charge, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus1)
-      itemStatus1 = { idBattery: 3, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Discharge, enabled: +true, deleted: +false };
+      itemStatus1 = { idBattery: 1, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Discharge, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus1)
-      itemStatus1 = { idBattery: 3, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
+      itemStatus1 = { idBattery: 1, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus1)
 
-      itemStatus4 = { idBattery: 3, date: new Date("2024-08-17"), status: batteryStatusActionEnum.Charge, enabled: +true, deleted: +false };
+      itemStatus4 = { idBattery: 4, date: new Date("2024-08-17"), status: batteryStatusActionEnum.Charge, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus4)
-      itemStatus4 = { idBattery: 3, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Discharge, enabled: +true, deleted: +false };
+      itemStatus4 = { idBattery: 4, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Discharge, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus4)
-      itemStatus4 = { idBattery: 3, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
+      itemStatus4 = { idBattery: 4, date: new Date("2024-08-18"), status: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus4)
 
       console.log('[DB]: fill Db finish');

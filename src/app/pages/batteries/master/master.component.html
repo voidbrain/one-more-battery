@@ -28,11 +28,28 @@
           <ion-label>
             <ion-item lines="none" (click)="showDetail(item)">
               <ion-icon name="leaf" slot="start"> </ion-icon>
-              <div [innerHtml]="item.label"></div>
-              <div [innerHtml]="getBatteryStatus(item.lastStatus.status)"></div>
-              <div [innerHtml]="item.lastStatus.date"></div>
-              - <div [innerHtml]="item.totalCycles"></div> - 
-              - <div [innerHtml]="item.timeRange"></div> - 
+              <div [innerHtml]="'Battery' + item?.label"></div>
+              @if(item?.series?.label && item?.series?.label !== '') {
+                <div [innerHtml]="'Series' + item?.series?.label"></div>
+              }
+              <div [innerHtml]="getBatteryStatus(item?.lastStatus?.status) + 'd' "></div>
+
+              @if(item.alertLevel !== '' && item?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
+                <ion-icon
+                  [color]=" item.alertLevel "
+                  aria-hidden="true" name="warning">
+                </ion-icon>
+              } @else {
+                <ion-icon
+                  [color]=" item.alertLevel "
+                  aria-hidden="true" name="battery-full">
+                </ion-icon>
+              }
+                
+
+              <div [innerHtml]="item.timeRange + ' days ago'"></div>
+              
+              <div [innerHtml]="'Total cycles: ' + item.totalCycles"></div>
               
             </ion-item>
           </ion-label>

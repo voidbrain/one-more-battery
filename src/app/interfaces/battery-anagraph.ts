@@ -24,4 +24,5 @@ export interface ExtendedBatteryAnagraphInterface extends BatteryAnagraphInterfa
   lastStatus: BatteryStatusInterface,
   totalCycles: number,
   timeRange: number,
+  alertLevel: string,
 }
