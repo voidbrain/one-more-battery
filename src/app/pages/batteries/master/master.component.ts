@@ -18,8 +18,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  RefresherCustomEvent,
-} from '@ionic/angular/standalone';
+  RefresherCustomEvent, IonActionSheet } from '@ionic/angular/standalone';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
@@ -29,11 +28,12 @@ import { batteryStatusActionEnum, batteryStatusDaysAlertEnum, BatteryStatusInter
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays } from 'date-fns';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-batteries-master',
   standalone: true,
-  imports: [
+  imports: [IonActionSheet, 
     RouterLink,
     RouterOutlet,
 
@@ -70,7 +70,8 @@ export class BatteriesMasterComponent {
     private db: DbService,
     private router: Router,
     private fillDb: FillDbService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private actionSheetCtrl: ActionSheetController
   ) {
     addIcons(ionIcons);
   }
@@ -80,6 +81,47 @@ export class BatteriesMasterComponent {
       return batteryStatusActionEnum[status]; 
     }
     return;
+  }
+
+  async presentActionSheet(status: number) {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Actions',
+      buttons: [
+        {
+          disabled: status === batteryStatusActionEnum.Charge,
+          icon: 'battery-full',
+          text: 'Charge',
+          data: {
+            action: 'charge',
+          },
+        },
+        {
+          disabled: status === batteryStatusActionEnum.Store,
+          text: 'Store',
+          icon: 'battery-half-outline',
+          data: {
+            action: 'store',
+          },
+        },
+        {
+          disabled: status === batteryStatusActionEnum.Discharge,
+          text: 'Discharge',
+          icon: 'battery-dead-outline',
+          data: {
+            action: 'discharge',
+          },
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          data: {
+            action: 'cancel',
+          },
+        },
+      ],
+    });
+
+    await actionSheet.present();
   }
 
   // Using Ionic lifecycle hook to initialize data when the view is about to be presented
