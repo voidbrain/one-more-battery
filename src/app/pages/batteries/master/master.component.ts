@@ -3,6 +3,8 @@ import {
   IonButton,
   IonButtons,
   IonCard,
+  IonCardTitle,
+  IonCardSubtitle,
   IonCardContent,
   IonCardHeader,
   IonContent,
@@ -33,7 +35,7 @@ import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum, batteryStatusDaysAlertEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, differenceInMonths, formatDuration } from 'date-fns';
 import { ActionSheetController } from '@ionic/angular';
 
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -53,6 +55,8 @@ import { ModalExampleComponent } from './internal-resistance-logs.component';
     IonButton,
     IonButtons,
     IonCard,
+    IonCardTitle,
+    IonCardSubtitle,
     IonCardContent,
     IonCardHeader,
     IonContent,
@@ -213,6 +217,12 @@ export class BatteriesMasterComponent {
     } catch (err) {
       console.error('Error during initialization:', err);
     }
+  }
+
+  getAge(age: Date){
+    const differenceDays: number = differenceInDays( Date.now(), age?.getTime() as number);
+    const format = formatDuration({days: differenceDays}, { format: ['years', 'months', 'weeks', 'days'] })
+    return format;
   }
 
   async getItems() {

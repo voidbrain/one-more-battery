@@ -28,12 +28,26 @@
 <ion-content padding>
   <ion-grid>
     <ion-row>
+      <ion-col>
+        <ion-card padding color="primary">
+          <ion-card-header>
+            <ion-card-title color="primary-text-contrast">ji
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>he</ion-card-content>
+      </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
 
     @for (battery of items; track battery) {
       <ion-col size-lg="3" size-md="4" size-xs="6">
         <ion-card>
           <ion-card-header>
-                <h1>
+                <ion-card-title>
                 @if(battery.alertStatus !== '' && battery?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
                   <ion-icon size="medium"
                     [color]=" battery.alertStatus "
@@ -60,7 +74,7 @@
                     </span>
                   }
 
-                </h1>
+                </ion-card-title>
 
                 {{ battery?.brand?.label }} {{ battery?.anag?.model }} {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + 'S' }} {{ battery?.anag?.mA + 'mA' }}
 
@@ -70,6 +84,7 @@
             <ion-card-content>
               <p>{{ getBatteryStatus(battery?.lastStatus?.status) + 'd' }} {{ battery.timeRange + ' days ago' }}</p>
               <p>{{ 'Total cycles: ' + battery.totalCycles }}</p>
+              <p>{{ 'Age: ' + getAge(battery?.anag?.date!) }}</p>
 
               <p class="align-right">
                 <ion-button color="light" shape="round" (click)="showLogs(battery?.anag?.id!)">
