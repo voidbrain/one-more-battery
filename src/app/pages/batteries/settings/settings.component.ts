@@ -22,10 +22,8 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
-import { SettingsService } from '../../../services/settings.service'
 import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum  } from 'src/app/interfaces/battery-status';
-import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, BatterySeriesAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 
@@ -68,8 +66,6 @@ export class BatteriesSettingComponent {
   constructor(
     private db: DbService,
     private router: Router,
-    private fillDb: FillDbService,
-    private settings: SettingsService,
   ) {
     addIcons(ionIcons);
   }
@@ -82,7 +78,7 @@ export class BatteriesSettingComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
 
-      await this.getItems();      
+      await this.getItems();   
 
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -105,8 +101,8 @@ export class BatteriesSettingComponent {
         try {
           // Fetching related data for each item
          
-          const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId);
-          const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!);
+          const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
+          const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
           console.log(anag.seriesId, series, objectStoreSeries); 
           console.log(anag.brandId, brand, objectStoreBrands);
           console.log("-----")
@@ -141,19 +137,9 @@ export class BatteriesSettingComponent {
 
       const { anag } = item;
 
-      const deleteItem: BatteryAnagraphInterface = {
-        id: anag?.id,
-        enabled: anag?.enabled!,
-        deleted: anag?.deleted!,
-        cellsNumber: anag?.cellsNumber,
-        typeId: anag?.typeId,
-        model: anag?.model,
-        brandId: anag?.brandId,
-        label: anag?.label!,
-        seriesId: anag?.seriesId!,
-      }
+      const deleteItem: BatteryAnagraphInterface | undefined = anag;
 
-      await this.db.deleteItem(this.page, deleteItem);
+      await this.db.deleteItem(this.page, deleteItem!);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);

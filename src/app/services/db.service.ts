@@ -153,7 +153,7 @@ export class DbService {
       }
   
       // Create a request to get the item by ID
-      const request = dataIndex.get(id) as IDBRequest<T>;
+      const request = dataIndex.get([id]) as IDBRequest<T>;
 
       // Return a promise that resolves with the result or rejects on error
       return new Promise<T | undefined>((resolve, reject) => {
@@ -252,7 +252,7 @@ export class DbService {
       const tx = (this.db as IDBDatabase).transaction(objectStore, 'readonly');
       const store = tx.objectStore(objectStore);
       const dataIndex = store.index(column);
-
+console.log(query)
       const request = query.length > 0
         ? dataIndex.getAll(query)
         : dataIndex.getAll();
