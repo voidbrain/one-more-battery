@@ -168,11 +168,50 @@ export class DbService {
     return promise;
   }
 
-  async getLastOrderByDate(objectStore: string, dateColumn = 'date'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | null> {
+  async getTotalCycles(objectStore: string = 'batteries-status', idBattery: number): Promise<number> {
     try {
       const tx = this.db?.transaction(objectStore, 'readonly');
       const store = tx?.objectStore(objectStore);
-      const index = store?.index(dateColumn);
+      const index = store?.index('idBattery, status, enabled, deleted');
+  
+      if (!index) {
+        throw new Error(`[DB]: Compound index not found for idBattery, status, enabled, and deleted columns in ${objectStore}`);
+      }
+  
+      const status = 1;
+      const enabled = +true;
+      const deleted = +false;
+
+      console.log('Querying with:', { idBattery, status, enabled, deleted });
+  
+      const query = IDBKeyRange.only([idBattery, status, enabled, deleted]);
+      console.log('IDBKeyRange:', query);
+  
+      const request = index.count(query);
+  
+      return new Promise<number>((resolve, reject) => {
+        request.onsuccess = (event) => {
+          console.log('Count result:', request.result);
+          resolve(request.result); // Return the count of records matching the criteria
+        };
+  
+        request.onerror = (event) => {
+          console.error(`[DB]: Error counting total cycles in ${objectStore}:`, event);
+          reject(event);
+        };
+      });
+    } catch (error) {
+      console.error(`[DB]: Failed to get total cycles in ${objectStore}:`, error);
+      return Promise.reject(error);
+    }
+}
+
+  
+  async getLastStatusByDate(objectStore: string = 'batteries-status', dateColumn = 'date'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | null> {
+    try {
+      const tx = this.db?.transaction(objectStore, 'readonly');
+      const store = tx?.objectStore(objectStore);
+      const index = store?.index(`${dateColumn}, enabled, deleted`);
 
       if (!index) {
         throw new Error(`[DB]: Index not found for column: ${dateColumn}`);

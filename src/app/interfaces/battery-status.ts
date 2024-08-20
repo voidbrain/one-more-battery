@@ -9,6 +9,6 @@ export interface BatteryStatusInterface {
     enabled: number,
     deleted: number,
     idBattery: number,
-    action: number,
+    status: number,
     date: Date,
 }

@@ -28,6 +28,7 @@ import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
+import { differenceInDays } from 'date-fns';
 
 @Component({
   selector: 'app-batteries-master',
@@ -84,12 +85,15 @@ export class BatteriesMasterComponent {
       await this.db.load();
       const forceLoading = true;
       await this.db.initService(forceLoading);
+
+      if(this.settings.fillDb) {
+        await this.fillDb.fillDb();
+      }
+
       await this.getItems();
 
 
-      if(this.settings.fillDb) {
-        this.fillDb.fillDb();
-      }
+      
 
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -99,21 +103,42 @@ export class BatteriesMasterComponent {
   async getItems() {
     try {
       const items: BatteryAnagraphInterface[] = (await this.db.getItems('batteries-anag')) as BatteryAnagraphInterface[];
+      
+      // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
+      
+      const objectStoreStatus = "batteries-status";
+      const objectStoreSeries = "batteries-series";
+      const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
+  
+      for (const item of items) {
+        try {
+          // Fetching related data for each item
+          const lastStatus: BatteryStatusInterface = await this.db.getLastStatusByDate(objectStoreStatus, 'date') as BatteryStatusInterface;
+          const series: BatteryAnagraphInterface = await this.db.getItem(objectStoreSeries, item.seriesId) as BatteryAnagraphInterface;
+          const totalCycles: number = await this.db.getTotalCycles(objectStoreStatus, item.id!);
+          
+          // Calculate timerange as the difference between the last status date and the current date
+          const timeRange = differenceInDays(lastStatus.date.getTime(), Date.now());
 
-      items.forEach(async (item) => {
-        const lastStatus: BatteryStatusInterface = await this.db.getLastOrderByDate("batteries-status") as BatteryStatusInterface;
-        const series: BatteryAnagraphInterface = await this.db.getItem("batteries-series", item.seriesId) as BatteryAnagraphInterface;
-        const newObj: ExtendedBatteryAnagraphInterface = {...item, lastStatus, series };
-        this.items.push(newObj)
-      });
-
-      console.log(this.items)
+          const expandedItem: ExtendedBatteryAnagraphInterface = { ...item, lastStatus, series, totalCycles, timeRange };
+          
+          // Add the expanded item to the array
+          expandedItems.push(expandedItem);
+        } catch (error) {
+          console.error(`Error processing item with id ${item.id}:`, error);
+        }
+      }
+  
+      this.items = expandedItems; // Assign the array after it is fully populated
+  
+      console.log(this.items);
       console.info('[PAGE]: Ready');
     } catch (error) {
       console.error('Error fetching items:', error);
     }
   }
+  
 
   async deleteItem(item: BatteryAnagraphInterface) {
     try {

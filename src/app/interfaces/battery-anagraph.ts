@@ -22,4 +22,6 @@ export interface BatteryAnagraphInterface {
 export interface ExtendedBatteryAnagraphInterface extends BatteryAnagraphInterface {
   series: BatterySeriesAnagraphInterface;
   lastStatus: BatteryStatusInterface,
+  totalCycles: number,
+  timeRange: number,
 }
