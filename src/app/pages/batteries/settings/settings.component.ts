@@ -26,7 +26,7 @@ import { SettingsService } from '../../../services/settings.service'
 import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum  } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
-import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
+import { BatteryAnagraphInterface, BatterySeriesAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 
 @Component({
@@ -91,7 +91,7 @@ export class BatteriesSettingComponent {
 
   async getItems() {
     try {
-      const items: BatteryAnagraphInterface[] = (await this.db.getItems('batteries-anag')) as BatteryAnagraphInterface[];
+      const items: BatteryAnagraphInterface[] = (await this.db.getItems<BatteryAnagraphInterface>('batteries-anag'));
       
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
@@ -100,22 +100,23 @@ export class BatteriesSettingComponent {
       const objectStoreSeries = "batteries-series";
       const expandedItems: Partial<ExtendedBatteryAnagraphInterface>[] = [];
   
-      for (const item of items) {
+      for (const anag of items) {
         try {
           // Fetching related data for each item
          
-          const series: BatteryAnagraphInterface = await this.db.getItem(objectStoreSeries, item.seriesId) as BatteryAnagraphInterface;
-          const brand: BrandsAnagraphInterface = await this.db.getItem(objectStoreBrands, item.brandId!) as BrandsAnagraphInterface;
+          const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId);
+          const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!);
+          console.log(objectStoreBrands, anag.brandId, anag, brand)
          
           
           // Calculate timerange as the difference between the last status date and the current date
          
-          const expandedItem: Partial<ExtendedBatteryAnagraphInterface> = { ...item, series, brand};
+          const expandedItem: Partial<ExtendedBatteryAnagraphInterface> = { anag, series, brand};
           
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
         } catch (error) {
-          console.error(`Error processing item with id ${item.id}:`, error);
+          console.error(`Error processing item with id ${anag.id}:`, error);
         }
       }
   
@@ -135,16 +136,18 @@ export class BatteriesSettingComponent {
         el.closeOpened();
       });
 
+      const { anag } = item;
+
       const deleteItem: BatteryAnagraphInterface = {
-        id: item.id,
-        enabled: item.enabled!,
-        deleted: item.deleted!,
-        cellsNumber: item.cellsNumber,
-        typeId: item.typeId,
-        model: item.model,
-        brandId: item.brandId,
-        label: item.label!,
-        seriesId: item.seriesId!,
+        id: anag?.id,
+        enabled: anag?.enabled!,
+        deleted: anag?.deleted!,
+        cellsNumber: anag?.cellsNumber,
+        typeId: anag?.typeId,
+        model: anag?.model,
+        brandId: anag?.brandId,
+        label: anag?.label!,
+        seriesId: anag?.seriesId!,
       }
 
       await this.db.deleteItem(this.page, deleteItem);
@@ -158,7 +161,7 @@ export class BatteriesSettingComponent {
     this.slidingItems.forEach((el) => {
       el.closeOpened();
     });
-    this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item.id)]);
+    this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item?.anag?.id)]);
   }
 
   async doRefresh(refresher: RefresherCustomEvent) {

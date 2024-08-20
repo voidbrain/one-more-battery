@@ -29,14 +29,14 @@
   </ion-refresher>
 
   <ion-list>
-    @for (item of items; track item.id) {
+    @for (item of items; track item) {
       <ion-item-sliding #slidingItems>
         <ion-item>
           <ion-label>
             <!--<ion-item lines="none" (click)="showDetail(item)">-->
             <ion-item lines="none">
               <ion-icon name="leaf" slot="start"> </ion-icon>
-              <div [innerHtml]="'Battery ' + item?.label"></div>
+              <div [innerHtml]="'Battery ' + item?.anag?.label"></div>
               @if(item?.series?.label && item?.series?.label !== '') {
                 <div [innerHtml]="'Series' + item?.series?.label"></div>
               }
@@ -66,8 +66,8 @@
         </ion-item>
 
         <ion-item-options side="end">
-          <ion-item-option (click)="showDetail(item)">Edit</ion-item-option>
-          <ion-item-option (click)="deleteItem(item)" color="danger"
+          <ion-item-option (click)="showDetail(item.anag)">Edit</ion-item-option>
+          <ion-item-option (click)="deleteItem(item.anag)" color="danger"
             >Delete</ion-item-option
           >
         </ion-item-options>

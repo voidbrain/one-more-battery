@@ -96,7 +96,7 @@ export class BatteriesMasterComponent {
   }
 
   async presentActionSheet(item: ExtendedBatteryAnagraphInterface) {
-    const status: number = item?.lastStatus?.status;
+    const status: number | undefined = item?.lastStatus?.status;
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Actions',
       
@@ -175,7 +175,7 @@ export class BatteriesMasterComponent {
 
   async getItems() {
     try {
-      const items: BatteryAnagraphInterface[] = (await this.db.getItems('batteries-anag')) as BatteryAnagraphInterface[];
+      const items: BatteryAnagraphInterface[] = (await this.db.getItems<BatteryAnagraphInterface>('batteries-anag'));
       
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
@@ -184,26 +184,26 @@ export class BatteriesMasterComponent {
       const objectStoreSeries = "batteries-series";
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
   
-      for (const item of items) {
+      for (const anag of items) {
         try {
           // Fetching related data for each item
-          const lastStatus: BatteryStatusInterface = await this.db.getLastStatusByDate(objectStoreStatus, 'date') as BatteryStatusInterface;
-          const series: BatteryAnagraphInterface = await this.db.getItem(objectStoreSeries, item.seriesId) as BatteryAnagraphInterface;
-          const totalCycles: number = await this.db.getTotalCycles(objectStoreStatus, item.id!);
+          const lastStatus: BatteryStatusInterface | undefined = await this.db.getLastStatusByDate<BatteryStatusInterface>(objectStoreStatus, 'date');
+          const series: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId);
+          const totalCycles: number | undefined = await this.db.getTotalCycles(objectStoreStatus, anag.id!);
           
           // Calculate timerange as the difference between the last status date and the current date
-          const timeRange = differenceInDays( Date.now(), lastStatus.date.getTime());
+          const timeRange = differenceInDays( Date.now(), lastStatus!.date.getTime());
           const alertLevel = 
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Warning ? 'warning' : 
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Danger ? 'danger' :
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange > batteryStatusDaysAlertEnum.Danger ? 'danger' : 'success'; 
+            lastStatus!.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Warning ? 'warning' : 
+            lastStatus!.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Danger ? 'danger' :
+            lastStatus!.status !== batteryStatusActionEnum.Store && timeRange > batteryStatusDaysAlertEnum.Danger ? 'danger' : 'success'; 
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = { ...item, lastStatus, series, totalCycles, timeRange, alertLevel };
+          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertLevel };
           
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
         } catch (error) {
-          console.error(`Error processing item with id ${item.id}:`, error);
+          console.error(`Error processing item with id ${anag.id}:`, error);
         }
       }
   

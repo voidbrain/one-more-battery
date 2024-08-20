@@ -85,7 +85,7 @@ export class BatteriesDetailComponent implements OnInit {
   private id: number = 0;
   public page = 'batteries';
 
-  batteryAnagArr?: BatteryAnagraphInterface[]
+  batteryAnagArr?: BatteryAnagraphInterface[] | undefined
 
 
   form = new FormGroup({
@@ -111,12 +111,12 @@ export class BatteriesDetailComponent implements OnInit {
       console.log(event);
     });
     this.getItem(+(this.route.snapshot.paramMap.get('id') as string));
-    this.batteryAnagArr = await this.db.getItems('batteries-status') as BatteryAnagraphInterface[];
+    this.batteryAnagArr = await this.db.getItems<BatteryAnagraphInterface>('batteries-status');
     
   }
 
   async getItem(id: number) {
-    const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems('batteries-status') as BatteryStatusInterface[];
+    const batteriesStatus: BatteryStatusInterface[] | undefined = await this.db.getItems<BatteryStatusInterface>('batteries-status');
 
   }
 

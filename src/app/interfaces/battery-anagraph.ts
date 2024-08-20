@@ -20,11 +20,12 @@ export interface BatteryAnagraphInterface {
     label: string,
     seriesId: number,
 }
-export interface ExtendedBatteryAnagraphInterface extends BatteryAnagraphInterface {
-  series: BatterySeriesAnagraphInterface;
-  lastStatus: BatteryStatusInterface,
-  totalCycles: number,
-  timeRange: number,
-  alertLevel: string,
+export interface ExtendedBatteryAnagraphInterface {
+  anag: BatteryAnagraphInterface,
+  series?: BatterySeriesAnagraphInterface,
+  lastStatus?: BatteryStatusInterface,
+  totalCycles?: number,
+  timeRange?: number,
+  alertLevel?: string,
   brand?: BrandsAnagraphInterface,
 }

@@ -109,7 +109,7 @@ export class IncidentsDetailComponent implements OnInit {
   }
 
   async getItem(id: number) {
-    const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems('batteries-status') as BatteryStatusInterface[];
+    const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems<BatteryStatusInterface>('batteries-status');
 
   }
 

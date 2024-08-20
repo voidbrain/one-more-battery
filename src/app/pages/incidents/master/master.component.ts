@@ -83,7 +83,7 @@ export class IncidentsMasterComponent {
 
   async getItems() {
     try {
-      const items: BatteryStatusInterface[] = (await this.db.getItems('batteries-status')) as BatteryStatusInterface[];
+      const items: BatteryStatusInterface[] = (await this.db.getItems<BatteryStatusInterface>('batteries-status'));
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {
       });
@@ -99,7 +99,7 @@ export class IncidentsMasterComponent {
       this.slidingItems.forEach((el) => {
         el.closeOpened();
       });
-      await this.db.deleteItem(this.page, item);
+      await this.db.deleteItem<BatteryStatusInterface>(this.page, item);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
