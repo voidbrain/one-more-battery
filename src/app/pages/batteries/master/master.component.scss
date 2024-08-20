@@ -1,5 +1,6 @@
 ion-icon { vertical-align: middle; }
 ion-title { text-transform: capitalize;  font-size:1.8rem; }
+
 ion-card-title {
 
   ion-button {
@@ -9,4 +10,39 @@ ion-card-title {
 }
 .align-right {
   text-align: right;
+}
+ion-card.intro {
+  animation-delay: 10s;
+  animation: fadeout 2s forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation: fadeout 2s forwards;
+  -webkit-animation-delay: 10s;
+  -webkit-animation-fill-mode: forwards;
+}
+@-webkit-keyframes fadeout {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+  }
+}
+
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden; /* Hides the element after fadeout */
+    display: none;
+  }
 }
