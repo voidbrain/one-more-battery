@@ -25,6 +25,8 @@ import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import * as ionIcons from 'ionicons/icons';
 import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import { DemoDbService } from 'src/app/services/demoDb.service';
+import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 
 @Component({
   selector: 'app-batteries-master',
@@ -32,7 +34,7 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
   imports: [
     RouterLink,
     RouterOutlet,
-   
+
     IonButton,
     IonButtons,
     IonContent,
@@ -57,11 +59,15 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 })
 export class BatteriesMasterComponent {
   @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
-  items: BatteryStatusInterface[] = [];
+  items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
   debug = true;
 
-  constructor(private db: DbService, private router: Router) {
+  constructor(
+    private db: DbService,
+    private router: Router,
+    private demoDb: DemoDbService
+  ) {
     addIcons(ionIcons);
   }
 
@@ -74,6 +80,9 @@ export class BatteriesMasterComponent {
       await this.db.initService(forceLoading);
       await this.getItems();
 
+
+      // this.demoDb.demoDb();
+
     } catch (err) {
       console.error('Error during initialization:', err);
     }
@@ -81,12 +90,16 @@ export class BatteriesMasterComponent {
 
   async getItems() {
     try {
-      const items: BatteryStatusInterface[] = (await this.db.getItems('batteries-status')) as BatteryStatusInterface[];
+      const items: BatteryAnagraphInterface[] = (await this.db.getItems('batteries-anag')) as BatteryAnagraphInterface[];
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
-      items.forEach((item) => {
 
+      items.forEach(async (item) => {
+        const lastStatus: BatteryStatusInterface = await this.db.getLastOrderByDate("batteries-status") as BatteryStatusInterface;
+        const series: BatteryAnagraphInterface = await this.db.getItem("batteries-series", item.seriesId) as BatteryAnagraphInterface;
+        const newObj: ExtendedBatteryAnagraphInterface = {...item, lastStatus, series };
+        this.items.push(newObj)
       });
-      this.items = items;
+
       console.log(this.items)
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -94,7 +107,7 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async deleteItem(item: BatteryStatusInterface) {
+  async deleteItem(item: BatteryAnagraphInterface) {
     try {
       this.slidingItems.forEach((el) => {
         el.closeOpened();
@@ -106,7 +119,7 @@ export class BatteriesMasterComponent {
     }
   }
 
-  showDetail(item: BatteryStatusInterface) {
+  showDetail(item: BatteryAnagraphInterface) {
     this.slidingItems.forEach((el) => {
       el.closeOpened();
     });
@@ -128,8 +141,8 @@ export class BatteriesMasterComponent {
     }
   }
 
-  trackById(index: number, item: BatteryStatusInterface) {
-    return item.id; 
+  trackById(index: number, item: BatteryAnagraphInterface) {
+    return item.id;
   }
-  
+
 }

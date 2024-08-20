@@ -1,6 +1,6 @@
 export interface BrandsAnagraphInterface {
-    id?: number
+    id?: number,
     enabled: number,
     deleted: number,
-    name: string
+    label: string,
 }

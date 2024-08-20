@@ -28,7 +28,9 @@
           <ion-label>
             <ion-item lines="none" (click)="showDetail(item)">
               <ion-icon name="leaf" slot="start"> </ion-icon>
-              <div [innerHtml]="item.id"></div>
+              <div [innerHtml]="item.label"></div>
+              <div [innerHtml]="item.lastStatus.action"></div>
+              <div [innerHtml]="item.lastStatus.date"></div>
             </ion-item>
           </ion-label>
         </ion-item>

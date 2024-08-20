@@ -32,7 +32,7 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
   imports: [
     RouterLink,
     RouterOutlet,
-   
+
     IonButton,
     IonButtons,
     IonContent,
@@ -61,7 +61,10 @@ export class IncidentsMasterComponent {
   page = 'incidents';
   debug = true;
 
-  constructor(private db: DbService, private router: Router) {
+  constructor(
+    private db: DbService,
+    private router: Router
+  ) {
     addIcons(ionIcons);
   }
 
@@ -73,8 +76,6 @@ export class IncidentsMasterComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
       await this.getItems();
-
-      this.db.demoDb();
     } catch (err) {
       console.error('Error during initialization:', err);
     }
