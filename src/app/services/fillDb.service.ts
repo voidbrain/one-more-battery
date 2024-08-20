@@ -8,7 +8,7 @@ import { DbService } from './db.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DemoDbService {
+export class FillDbService {
 
   constructor(
     private db: DbService
@@ -16,8 +16,8 @@ export class DemoDbService {
 
   }
 
-  public demoDb (){
-    console.log("Demo db")
+  public fillDb (){
+    console.error('[DB]: fill Db');
     const itemBatteryType: BatteryTypeInterface =
         {
           enabled: +true,
@@ -148,6 +148,6 @@ export class DemoDbService {
       itemStatus4 = { idBattery: 3, date: new Date("2024-08-18"), action: batteryStatusActionEnum.Store, enabled: +true, deleted: +false };
       this.db.putItem('batteries-status', itemStatus4)
 
-      console.log("Demo db finish")
+      console.log('[DB]: fill Db finish');
     }
 }

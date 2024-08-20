@@ -20,13 +20,13 @@ export class DbService {
     private appSettings: SettingsService,
     private loadingController: LoadingController,
     private toastService: ToastService,
-    private migrations: MigrationsService
+    private migrations: MigrationsService,
   ) {
   }
 
   async load(): Promise<void> {
     try {
-      const resetDb = false; // DB also forged on resetDb
+      const resetDb = this.appSettings.resetDb; // DB also forged on resetDb
       const forceLoading = true;
 
       // Initialize the database and services

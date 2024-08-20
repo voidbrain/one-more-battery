@@ -23,9 +23,10 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
+import { SettingsService } from '../../../services/settings.service'
 import * as ionIcons from 'ionicons/icons';
-import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
-import { DemoDbService } from 'src/app/services/demoDb.service';
+import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 
 @Component({
@@ -66,9 +67,14 @@ export class BatteriesMasterComponent {
   constructor(
     private db: DbService,
     private router: Router,
-    private demoDb: DemoDbService
+    private fillDb: FillDbService,
+    private settings: SettingsService
   ) {
     addIcons(ionIcons);
+  }
+
+  getBatteryStatus(status: number){
+    return batteryStatusActionEnum[status]; 
   }
 
   // Using Ionic lifecycle hook to initialize data when the view is about to be presented
@@ -81,7 +87,9 @@ export class BatteriesMasterComponent {
       await this.getItems();
 
 
-      // this.demoDb.demoDb();
+      if(this.settings.fillDb) {
+        this.fillDb.fillDb();
+      }
 
     } catch (err) {
       console.error('Error during initialization:', err);

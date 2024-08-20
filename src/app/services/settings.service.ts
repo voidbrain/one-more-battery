@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 export class SettingsService {
   public appName = 'OneMoreBattery';
   public dbVersion = 2;
+  public resetDb = false;
+  public fillDb = false;
 
   constructor() { }
 }
