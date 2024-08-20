@@ -3,6 +3,7 @@ import { SettingsService } from './settings.service';
 import { LoadingController } from '@ionic/angular/standalone';
 import { ToastService } from './toast.service';
 import { MigrationsService } from './migrations.service';
+import { batteryStatusActionEnum } from '../interfaces/battery-status';
 
 interface Deletable {
   deleted?: number;
@@ -30,9 +31,9 @@ export class DbService {
 
       // Initialize the database and services
       await this.initDb(resetDb);
-      console.log('[DB]: initDb done');
+      console.info('[DB]: initDb done');
       await this.initService(resetDb || forceLoading);
-      console.log('[DB]: initService done');
+      console.info('[DB]: initService done');
     } catch (error) {
       console.error('[DB]: Error loading data:', error);
       throw error; // Rethrow to propagate the error up the call stack
@@ -136,22 +137,22 @@ export class DbService {
     column = 'id'
   ): Promise<T | undefined> {
     try {
-      
+
       // Ensure the database connection is available
       if (!this.db) {
         throw new Error(`[DB]: Database not initialized.`);
       }
-  
+
       // Create a readonly transaction and access the object store
       const tx = this.db.transaction(objectStore, 'readonly');
       const store = tx.objectStore(objectStore);
       const dataIndex = store.index(column);
-  
+
       // Check if the index exists
       if (!dataIndex) {
         throw new Error(`[DB]: Index not found for column: ${column}`);
       }
-  
+
       // Create a request to get the item by ID
       const request = dataIndex.get([id]) as IDBRequest<T>;
 
@@ -161,7 +162,7 @@ export class DbService {
           const result = (e.target as IDBRequest<T>).result;
           resolve(result);
         };
-        
+
         request.onerror = (e) => {
           console.error(`[DB]: Error getting item from ${objectStore}:`, e);
           reject((e.target as IDBRequest).error);
@@ -172,7 +173,7 @@ export class DbService {
       return Promise.reject(error);
     }
   }
-  
+
 
   async getTotalCycles(objectStore: string, idBattery: number): Promise<number> {
     try {
@@ -184,7 +185,7 @@ export class DbService {
         throw new Error(`[DB]: Compound index not found for idBattery, status, enabled, and deleted columns in ${objectStore}`);
       }
 
-      const status = 1;
+      const status = batteryStatusActionEnum.Discharge;
       const enabled = +true;
       const deleted = +false;
       const query = IDBKeyRange.only([idBattery, status, enabled, deleted]);
@@ -209,39 +210,55 @@ export class DbService {
 
   async getLastStatusByDate<T>(
     objectStore: string = 'batteries-status',
-    dateColumn = 'date'
+    id: string | number,          // Add `id` as a parameter
   ): Promise<T | undefined> {
     try {
       const tx = this.db?.transaction(objectStore, 'readonly');
       const store = tx?.objectStore(objectStore);
-      const index = store?.index(`${dateColumn}, enabled, deleted`);
+
+      // Construct the index based on 'id, date, enabled, deleted' fields
+      const index = store?.index('idBattery, date, enabled, deleted');
 
       if (!index) {
-        throw new Error(`[DB]: Index not found for column: ${dateColumn}`);
+        throw new Error(`[DB]: Index not found for columns: id, date, enabled, deleted`);
       }
 
-      const request = index.openCursor(null, 'prev'); // Open cursor with reverse order
+      // Define proper bounds for the IDBKeyRange
+      const lowerBound = [id, new Date(0), +true, +false];  // Earliest possible date
+      const upperBound = [id, new Date(), +true, +false];     // Latest possible date
 
+      // Use IDBKeyRange.bound() to create a range query between these bounds
+      const keyRange = IDBKeyRange.bound(lowerBound, upperBound);
+
+      // Open a cursor on the index using the range and reverse the direction to get the latest entry
+      const request = index.openCursor(keyRange, 'prev'); // 'prev' ensures we start with the latest date
+
+      // Return a promise to handle the async behavior of IndexedDB
       return new Promise<T | undefined>((resolve, reject) => {
         request.onsuccess = (event) => {
           const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
           if (cursor) {
-            resolve(cursor.value);
+            // Resolve the result, including the primaryKey (id)
+            resolve(cursor.value as T);
           } else {
+            // If no record is found, resolve with undefined
             resolve(undefined);
           }
         };
 
         request.onerror = (event) => {
-          console.error('[DB]: Error fetching last item by date:', event);
+          console.error('[DB]: Error fetching last item by id and date:', event);
           reject(event);
         };
       });
     } catch (error) {
-      console.error(`[DB]: Failed to get last item by date in ${objectStore}:`, error);
+      console.error(`[DB]: Failed to get last item by id and date in ${objectStore}:`, error);
       return undefined;
     }
   }
+
+
+
 
   async getItems<T>(
     objectStore: string,
@@ -252,7 +269,6 @@ export class DbService {
       const tx = (this.db as IDBDatabase).transaction(objectStore, 'readonly');
       const store = tx.objectStore(objectStore);
       const dataIndex = store.index(column);
-console.log(query)
       const request = query.length > 0
         ? dataIndex.getAll(query)
         : dataIndex.getAll();

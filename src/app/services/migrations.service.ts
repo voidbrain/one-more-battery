@@ -46,7 +46,7 @@ export class MigrationsService {
         store.createIndex('id',['id'],{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
-        store.createIndex('date, enabled, deleted',['date', 'enabled', 'deleted'],{ unique: false });
+        store.createIndex('idBattery, date, enabled, deleted',['idBattery', 'date', 'enabled', 'deleted'],{ unique: false });
         store.createIndex('idBattery, status, enabled, deleted',['idBattery', 'status', 'enabled', 'deleted']);
       }
     }

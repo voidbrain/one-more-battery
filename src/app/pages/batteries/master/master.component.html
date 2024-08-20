@@ -8,7 +8,7 @@
       </ion-menu-toggle>
     </ion-buttons>
     <ion-title>{{ page }}</ion-title>
-    
+
     <ion-buttons slot="end">
       <ion-button routerLink="settings"
         ><ion-icon name="cog"></ion-icon
@@ -29,50 +29,51 @@
   </ion-refresher>
 
   <ion-list>
-    @for (item of items; track item) {
+    @for (battery of items; track battery) {
       <ion-item-sliding #slidingItems>
         <ion-item>
           <ion-label>
             <!--<ion-item lines="none" (click)="showDetail(item)">-->
             <ion-item lines="none">
-              <ion-icon name="leaf" slot="start"> </ion-icon>
-              <div [innerHtml]="'Battery ' + item?.anag?.label"></div>
-              @if(item?.series?.label && item?.series?.label !== '') {
-                <div [innerHtml]="'Series' + item?.series?.label"></div>
-              }
-              <div [innerHtml]="getBatteryStatus(item?.lastStatus?.status) + 'd' "></div>
-
-              @if(item.alertLevel !== '' && item?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
+              @if(battery.alertLevel !== '' && battery?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
                 <ion-icon
-                  [color]=" item.alertLevel "
+                  [color]=" battery.alertLevel "
                   aria-hidden="true" name="warning">
                 </ion-icon>
               } @else {
                 <ion-icon
-                  [color]=" item.alertLevel "
+                  [color]=" battery.alertLevel "
                   aria-hidden="true" name="battery-full">
                 </ion-icon>
               }
-                
+              <div [innerHtml]= "battery?.anag?.id"></div>
+              <div [innerHtml]="'Battery ' + battery?.anag?.label"></div>
+              @if(battery?.series?.label && battery?.series?.label !== '') {
+                <div [innerHtml]="'Series' + battery?.series?.label"></div>
+              }
+              <div [innerHtml]="getBatteryStatus(battery?.lastStatus?.status) + 'd' "></div>
 
-              <div [innerHtml]="item.timeRange + ' days ago'"></div>
-              
-              <div [innerHtml]="'Total cycles: ' + item.totalCycles"></div>
 
-              <ion-button (click)="presentActionSheet(item)">Open</ion-button>
-              
+
+
+              <div [innerHtml]="battery.timeRange + ' days ago'"></div>
+
+              <div [innerHtml]="'Total cycles: ' + battery.totalCycles"></div>
+
+              <ion-button (click)="presentActionSheet(battery)">Open</ion-button>
+
             </ion-item>
           </ion-label>
         </ion-item>
 
         <ion-item-options side="end">
-          <ion-item-option (click)="showDetail(item.anag)">Edit</ion-item-option>
-          <ion-item-option (click)="deleteItem(item.anag)" color="danger"
+          <ion-item-option (click)="showDetail(battery.anag)">Edit</ion-item-option>
+          <ion-item-option (click)="deleteItem(battery.anag)" color="danger"
             >Delete</ion-item-option
           >
         </ion-item-options>
       </ion-item-sliding>
     }
   </ion-list>
-  
+
 </ion-content>
