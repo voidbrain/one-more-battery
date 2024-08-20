@@ -91,6 +91,7 @@ export class BatteriesSettingComponent {
 
   async getItems() {
     try {
+
       const items: BatteryAnagraphInterface[] = (await this.db.getItems<BatteryAnagraphInterface>('batteries-anag'));
       
       // Sort items by id
@@ -106,7 +107,9 @@ export class BatteriesSettingComponent {
          
           const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId);
           const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!);
-          console.log(objectStoreBrands, anag.brandId, anag, brand)
+          console.log(anag.seriesId, series, objectStoreSeries); 
+          console.log(anag.brandId, brand, objectStoreBrands);
+          console.log("-----")
          
           
           // Calculate timerange as the difference between the last status date and the current date

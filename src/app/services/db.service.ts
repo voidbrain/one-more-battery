@@ -136,23 +136,35 @@ export class DbService {
     column = 'id'
   ): Promise<T | undefined> {
     try {
-      const tx = this.db?.transaction(objectStore, 'readonly');
-      const store = tx?.objectStore(objectStore);
-      const dataIndex = store?.index(column);
-
+      
+      // Ensure the database connection is available
+      if (!this.db) {
+        throw new Error(`[DB]: Database not initialized.`);
+      }
+  
+      // Create a readonly transaction and access the object store
+      const tx = this.db.transaction(objectStore, 'readonly');
+      const store = tx.objectStore(objectStore);
+      const dataIndex = store.index(column);
+  
+      // Check if the index exists
       if (!dataIndex) {
         throw new Error(`[DB]: Index not found for column: ${column}`);
       }
+  
+      // Create a request to get the item by ID
+      const request = dataIndex.get(id) as IDBRequest<T>;
 
-      const queryExecute: IDBRequest<T> = dataIndex.get(+id);
+      // Return a promise that resolves with the result or rejects on error
       return new Promise<T | undefined>((resolve, reject) => {
-        queryExecute.onsuccess = (e) => {
-          const request = e.target as IDBRequest<T>;
-          resolve(request.result);
+        request.onsuccess = (e) => {
+          const result = (e.target as IDBRequest<T>).result;
+          resolve(result);
         };
-        queryExecute.onerror = (e) => {
+        
+        request.onerror = (e) => {
           console.error(`[DB]: Error getting item from ${objectStore}:`, e);
-          reject(e);
+          reject((e.target as IDBRequest).error);
         };
       });
     } catch (error) {
@@ -160,6 +172,7 @@ export class DbService {
       return Promise.reject(error);
     }
   }
+  
 
   async getTotalCycles(objectStore: string, idBattery: number): Promise<number> {
     try {
