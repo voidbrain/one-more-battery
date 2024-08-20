@@ -4,14 +4,14 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
 
-      <ion-button slot="start" (click)="goBack()">
+      <ion-button slot="start" routerLink="../">
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>{{ page }}</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button routerLink="settings"
+      <ion-button routerLink="../settings"
         ><ion-icon name="cog"></ion-icon
       ></ion-button>
     </ion-buttons>

@@ -133,7 +133,7 @@ export class DbService {
     }
   }
 
-  getItem(objectStore: string, id: number, column = 'id'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface> {
+  getItem(objectStore: string, id: number, column = 'id'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | BrandsAnagraphInterface> {
     const tx = this.db?.transaction(objectStore, 'readonly');
     const store = tx?.objectStore(objectStore);
     const dataIndex: IDBIndex = store?.index(column) as IDBIndex;
@@ -202,7 +202,7 @@ export class DbService {
 }
 
   
-  async getLastStatusByDate(objectStore: string = 'batteries-status', dateColumn = 'date'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | null> {
+  async getLastStatusByDate(objectStore: string = 'batteries-status', dateColumn = 'date'): Promise<BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | BrandsAnagraphInterface | null> {
     try {
       const tx = this.db?.transaction(objectStore, 'readonly');
       const store = tx?.objectStore(objectStore);
@@ -214,7 +214,7 @@ export class DbService {
 
       // Open a cursor to iterate through items in reverse order (latest date first)
       const promise = new Promise<
-        BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | null
+        BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | BrandsAnagraphInterface | null
       >((resolve, reject) => {
         const request = index.openCursor(null, 'prev'); // Open cursor with reverse order
 
@@ -277,7 +277,7 @@ export class DbService {
 
   async putItem(
     objectStore: string,
-    item: BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface
+    item: BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | BrandsAnagraphInterface
   ): Promise<void> {
     try {
 
@@ -301,7 +301,7 @@ export class DbService {
     }
   }
 
-  async deleteItem(objectStore: string, item: BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface): Promise<void> {
+  async deleteItem(objectStore: string, item: BatteryAnagraphInterface | BatteryStatusInterface | BatteryTypeInterface | BrandsAnagraphInterface | BatterySeriesAnagraphInterface | BrandsAnagraphInterface): Promise<void> {
     try {
         item.deleted = +true;
         await this.performStoreOperation(objectStore as unknown as IDBObjectStore, 'put', item as unknown as IDBValidKey, objectStore);

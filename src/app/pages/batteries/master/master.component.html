@@ -36,7 +36,7 @@
             <!--<ion-item lines="none" (click)="showDetail(item)">-->
             <ion-item lines="none">
               <ion-icon name="leaf" slot="start"> </ion-icon>
-              <div [innerHtml]="'Battery' + item?.label"></div>
+              <div [innerHtml]="'Battery ' + item?.label"></div>
               @if(item?.series?.label && item?.series?.label !== '') {
                 <div [innerHtml]="'Series' + item?.series?.label"></div>
               }

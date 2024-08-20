@@ -108,10 +108,6 @@ export class IncidentsDetailComponent implements OnInit {
     this.getItem(+(this.route.snapshot.paramMap.get('id') as string));
   }
 
-  goBack() {
-    this.router.navigate([`tabs/${this.page}`]);
-  }
-
   async getItem(id: number) {
     const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems('batteries-status') as BatteryStatusInterface[];
 

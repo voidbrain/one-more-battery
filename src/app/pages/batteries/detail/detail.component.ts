@@ -115,10 +115,6 @@ export class BatteriesDetailComponent implements OnInit {
     
   }
 
-  goBack() {
-    this.router.navigate([`tabs/${this.page}`]);
-  }
-
   async getItem(id: number) {
     const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems('batteries-status') as BatteryStatusInterface[];
 

@@ -24,11 +24,10 @@ import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import { SettingsService } from '../../../services/settings.service'
 import * as ionIcons from 'ionicons/icons';
-import { batteryStatusActionEnum, batteryStatusDaysAlertEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import { batteryStatusActionEnum  } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
-import { differenceInDays } from 'date-fns';
-import { ActionSheetController } from '@ionic/angular';
+import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 
 @Component({
   selector: 'app-batteries-settings',
@@ -61,7 +60,7 @@ import { ActionSheetController } from '@ionic/angular';
 })
 export class BatteriesSettingComponent {
   @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
-  items: ExtendedBatteryAnagraphInterface[] = [];
+  items: Partial<ExtendedBatteryAnagraphInterface>[] = [];
   page = 'batteries';
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
@@ -71,88 +70,8 @@ export class BatteriesSettingComponent {
     private router: Router,
     private fillDb: FillDbService,
     private settings: SettingsService,
-    private actionSheetCtrl: ActionSheetController
   ) {
     addIcons(ionIcons);
-  }
-
-  goBack() {
-    this.router.navigate([`tabs/${this.page}`]);
-  }
-
-  chargeBattery(item: ExtendedBatteryAnagraphInterface){
-
-  }
-
-  storeBattery(item: ExtendedBatteryAnagraphInterface){
-    
-  }
-
-  dischargeBattery(item: ExtendedBatteryAnagraphInterface){
-    
-  }
-
-  getBatteryStatus(status: number | undefined){
-    if(status) {
-      return batteryStatusActionEnum[status]; 
-    }
-    return;
-  }
-
-  async presentActionSheet(item: ExtendedBatteryAnagraphInterface) {
-    const status: number = item?.lastStatus?.status;
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Actions',
-      
-      
-      buttons: [
-        {
-          disabled: status === batteryStatusActionEnum.Charge,
-          icon: 'battery-full',
-          text: 'Charge',
-          data: {
-            action: 'charge',
-          },
-          handler: () => {
-            this.chargeBattery(item);
-          }
-        },
-        {
-          disabled: status === batteryStatusActionEnum.Store,
-          text: 'Store',
-          icon: 'battery-half-outline',
-          data: {
-            action: 'store',
-          },
-          handler: () => {
-            this.storeBattery(item);
-          }
-        },
-        {
-          disabled: status === batteryStatusActionEnum.Discharge,
-          text: 'Discharge',
-          icon: 'battery-dead-outline',
-          data: {
-            action: 'discharge',
-          },
-          handler: () => {
-            this.dischargeBattery(item);
-          }
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          icon: 'close',
-          data: {
-            action: 'cancel',
-          },
-        },
-      ],
-    });
-
-    
-
-    await actionSheet.present();
   }
 
   // Using Ionic lifecycle hook to initialize data when the view is about to be presented
@@ -163,14 +82,7 @@ export class BatteriesSettingComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
 
-      if(this.settings.fillDb) {
-        await this.fillDb.fillDb();
-      }
-
-      await this.getItems();
-
-
-      
+      await this.getItems();      
 
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -184,25 +96,21 @@ export class BatteriesSettingComponent {
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       
-      const objectStoreStatus = "batteries-status";
+      const objectStoreBrands = "brands-anag";
       const objectStoreSeries = "batteries-series";
-      const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
+      const expandedItems: Partial<ExtendedBatteryAnagraphInterface>[] = [];
   
       for (const item of items) {
         try {
           // Fetching related data for each item
-          const lastStatus: BatteryStatusInterface = await this.db.getLastStatusByDate(objectStoreStatus, 'date') as BatteryStatusInterface;
+         
           const series: BatteryAnagraphInterface = await this.db.getItem(objectStoreSeries, item.seriesId) as BatteryAnagraphInterface;
-          const totalCycles: number = await this.db.getTotalCycles(objectStoreStatus, item.id!);
+          const brand: BrandsAnagraphInterface = await this.db.getItem(objectStoreBrands, item.brandId!) as BrandsAnagraphInterface;
+         
           
           // Calculate timerange as the difference between the last status date and the current date
-          const timeRange = differenceInDays( Date.now(), lastStatus.date.getTime());
-          const alertLevel = 
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Warning ? 'warning' : 
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Danger ? 'danger' :
-            lastStatus.status !== batteryStatusActionEnum.Store && timeRange > batteryStatusDaysAlertEnum.Danger ? 'danger' : 'success'; 
-
-          const expandedItem: ExtendedBatteryAnagraphInterface = { ...item, lastStatus, series, totalCycles, timeRange, alertLevel };
+         
+          const expandedItem: Partial<ExtendedBatteryAnagraphInterface> = { ...item, series, brand};
           
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
@@ -221,19 +129,32 @@ export class BatteriesSettingComponent {
   }
   
 
-  async deleteItem(item: BatteryAnagraphInterface) {
+  async deleteItem(item: Partial<ExtendedBatteryAnagraphInterface>) {
     try {
       this.slidingItems.forEach((el) => {
         el.closeOpened();
       });
-      await this.db.deleteItem(this.page, item);
+
+      const deleteItem: BatteryAnagraphInterface = {
+        id: item.id,
+        enabled: item.enabled!,
+        deleted: item.deleted!,
+        cellsNumber: item.cellsNumber,
+        typeId: item.typeId,
+        model: item.model,
+        brandId: item.brandId,
+        label: item.label!,
+        seriesId: item.seriesId!,
+      }
+
+      await this.db.deleteItem(this.page, deleteItem);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
     }
   }
 
-  showDetail(item: BatteryAnagraphInterface) {
+  showDetail(item: Partial<ExtendedBatteryAnagraphInterface>) {
     this.slidingItems.forEach((el) => {
       el.closeOpened();
     });
