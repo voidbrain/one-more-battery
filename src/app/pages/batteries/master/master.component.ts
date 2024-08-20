@@ -1,4 +1,4 @@
-import { Component, ViewChildren } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -18,7 +18,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  RefresherCustomEvent, IonActionSheet } from '@ionic/angular/standalone';
+  IonActionSheet } from '@ionic/angular/standalone';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
@@ -29,6 +29,8 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays } from 'date-fns';
 import { ActionSheetController } from '@ionic/angular';
+
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-batteries-master',
@@ -60,7 +62,6 @@ import { ActionSheetController } from '@ionic/angular';
   styleUrl: './master.component.scss',
 })
 export class BatteriesMasterComponent {
-  @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
   items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
   debug = true;
@@ -187,7 +188,9 @@ export class BatteriesMasterComponent {
       if(this.settings.fillDb) {
         await this.fillDb.fillDb();
       }
-
+      // await LocalNotifications.cancel({});
+      const stored = await LocalNotifications.getPending();
+      console.log(stored)
       await this.getItems();
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -208,18 +211,25 @@ export class BatteriesMasterComponent {
       for (const anag of items) {
         try {
           // Fetching related data for each item
+
           const lastStatus: BatteryStatusInterface | undefined = await this.db.getLastStatusByDate<BatteryStatusInterface>(objectStoreStatus, anag.id!);
           const series: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
           const totalCycles: number | undefined = await this.db.getTotalCycles(objectStoreStatus, anag.id!);
 
           // Calculate timerange as the difference between the last status date and the current date
           const timeRange = differenceInDays( Date.now(), lastStatus?.date?.getTime() as number);
-          const alertLevel =
-            lastStatus?.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Warning ? 'warning' :
-            lastStatus?.status !== batteryStatusActionEnum.Store && timeRange <= batteryStatusDaysAlertEnum.Danger ? 'danger' :
-            lastStatus?.status !== batteryStatusActionEnum.Store && timeRange > batteryStatusDaysAlertEnum.Danger ? 'danger' : 'success';
+          const lessThanWarningRange = timeRange <= batteryStatusDaysAlertEnum.Warning;
+          const lessThanDangergRange = timeRange <= batteryStatusDaysAlertEnum.Danger;
+          const moreThanDangerRange = timeRange > batteryStatusDaysAlertEnum.Danger;
+          const alertStatus =
+            lastStatus?.status !== batteryStatusActionEnum.Store && lessThanWarningRange ? 'warning' :
+            lastStatus?.status !== batteryStatusActionEnum.Store && lessThanDangergRange ? 'danger' :
+            lastStatus?.status !== batteryStatusActionEnum.Store && moreThanDangerRange ? 'danger' : 'success';
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertLevel };
+          this.setupLocalNotification(anag);
+
+          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertStatus };
+
 
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
@@ -227,7 +237,8 @@ export class BatteriesMasterComponent {
           console.error(`Error processing item with id ${anag.id}:`, error);
         }
       }
-
+      const stored = await LocalNotifications.getPending();
+      console.log(stored)
       this.items = expandedItems;
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -238,9 +249,6 @@ export class BatteriesMasterComponent {
 
   async deleteItem(item: BatteryAnagraphInterface) {
     try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
       await this.db.deleteItem(this.page, item);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
@@ -249,29 +257,44 @@ export class BatteriesMasterComponent {
   }
 
   showDetail(item: BatteryAnagraphInterface) {
-    this.slidingItems.forEach((el) => {
-      el.closeOpened();
-    });
     this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item.id)]);
-  }
-
-  async doRefresh(refresher: RefresherCustomEvent) {
-    try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
-      const forceLoading = true;
-      await this.db.initService(forceLoading);
-      await this.getItems();
-      refresher.target.complete();
-    } catch (error) {
-      refresher.target.complete();
-      console.error('Error refreshing items:', error);
-    }
   }
 
   trackById(index: number, item: BatteryAnagraphInterface) {
     return item.id;
+  }
+
+  async setupLocalNotification(anag: BatteryAnagraphInterface) {
+    // Request permission for iOS or check if already granted
+    const granted = await LocalNotifications.requestPermissions();
+
+    if (granted.display === 'granted') {
+      const notifications = [
+        {
+          title: 'warning',
+          body: "Battery " + anag.label,
+          id: 1,
+          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Warning * 86_400)) }, // 3 * 86_400 seconds in a day
+          actionTypeId: "",
+          extra: null
+        },
+        {
+          title: 'Danger',
+          body: "Battery " + anag.label,
+          id: 1,
+          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Danger * 86_400)) }, // 5 * 86_400 seconds in a day
+          actionTypeId: "",
+          extra: null
+        }
+      ]
+        await LocalNotifications.schedule({
+          notifications
+        });
+
+      console.log('Notification scheduled');
+    } else {
+      console.error('Notification permission not granted');
+    }
   }
 
 }

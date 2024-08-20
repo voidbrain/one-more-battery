@@ -26,6 +26,6 @@ export interface ExtendedBatteryAnagraphInterface {
   lastStatus?: BatteryStatusInterface,
   totalCycles?: number,
   timeRange?: number,
-  alertLevel?: string,
+  alertStatus?: string,
   brand?: BrandsAnagraphInterface,
 }

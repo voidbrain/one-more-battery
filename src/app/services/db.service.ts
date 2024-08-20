@@ -154,7 +154,7 @@ export class DbService {
       }
 
       // Create a request to get the item by ID
-      const request = dataIndex.get([id]) as IDBRequest<T>;
+      const request = dataIndex.get(id) as IDBRequest<T>;
 
       // Return a promise that resolves with the result or rejects on error
       return new Promise<T | undefined>((resolve, reject) => {
