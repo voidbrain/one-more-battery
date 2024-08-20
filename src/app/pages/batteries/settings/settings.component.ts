@@ -103,9 +103,6 @@ export class BatteriesSettingComponent {
          
           const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
           const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
-          console.log(anag.seriesId, series, objectStoreSeries); 
-          console.log(anag.brandId, brand, objectStoreBrands);
-          console.log("-----")
          
           
           // Calculate timerange as the difference between the last status date and the current date
