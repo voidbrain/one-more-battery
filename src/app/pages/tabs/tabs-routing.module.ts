@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { BatteriesMasterComponent } from '../batteries/master/master.component';
 import { BatteriesDetailComponent } from '../batteries/detail/detail.component';
+import { BatteriesSettingComponent } from '../batteries/settings/settings.component';
+
 import { IncidentsMasterComponent } from '../incidents/master/master.component';
 import { IncidentsDetailComponent } from '../incidents/detail/detail.component';
 
@@ -13,6 +15,7 @@ const routes: Routes = [
     children: [
       { path: 'batteries', component: BatteriesMasterComponent },
       { path: 'batteries/create', component: BatteriesDetailComponent },
+      { path: 'batteries/settings', component: BatteriesSettingComponent },
       { path: 'batteries/edit/:id', component: BatteriesDetailComponent },
 
       { path: 'incidents', component: IncidentsMasterComponent },

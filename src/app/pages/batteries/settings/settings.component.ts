@@ -31,7 +31,7 @@ import { differenceInDays } from 'date-fns';
 import { ActionSheetController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-batteries-master',
+  selector: 'app-batteries-settings',
   standalone: true,
   imports: [IonActionSheet, 
     RouterLink,
@@ -56,10 +56,10 @@ import { ActionSheetController } from '@ionic/angular';
     IonTitle,
     IonToolbar,
   ],
-  templateUrl: './master.component.html',
-  styleUrl: './master.component.scss',
+  templateUrl: './settings.component.html',
+  styleUrl: './settings.component.scss',
 })
-export class BatteriesMasterComponent {
+export class BatteriesSettingComponent {
   @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
   items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
@@ -74,6 +74,10 @@ export class BatteriesMasterComponent {
     private actionSheetCtrl: ActionSheetController
   ) {
     addIcons(ionIcons);
+  }
+
+  goBack() {
+    this.router.navigate([`tabs/${this.page}`]);
   }
 
   chargeBattery(item: ExtendedBatteryAnagraphInterface){

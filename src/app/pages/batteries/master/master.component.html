@@ -8,6 +8,13 @@
       </ion-menu-toggle>
     </ion-buttons>
     <ion-title>{{ page }}</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button routerLink="settings"
+        ><ion-icon name="cog"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+
     <ion-buttons slot="end">
       <ion-button routerLink="create"
         ><ion-icon name="add-circle"></ion-icon
@@ -52,7 +59,7 @@
               
               <div [innerHtml]="'Total cycles: ' + item.totalCycles"></div>
 
-              <ion-button (click)="presentActionSheet(item?.lastStatus?.status!)">Open</ion-button>
+              <ion-button (click)="presentActionSheet(item)">Open</ion-button>
               
             </ion-item>
           </ion-label>
