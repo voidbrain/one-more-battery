@@ -48,15 +48,17 @@
 
                   {{ 'Battery ' + battery?.anag?.label }}
 
-                  @if(battery?.series?.label && battery?.series?.label !== '') {
-                    <span [style]="'color: ' +battery?.series?.color">
-                      – {{battery?.series?.label + 'Series'}}
-                    </span>
-                  }
+
 
                   <ion-button shape="round" (click)="presentActionSheet(battery)">
                     <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
                   </ion-button>
+
+                  @if(battery?.series?.label && battery?.series?.label !== '') {
+                    <span [style]="'color: ' +battery?.series?.color">
+                      {{battery?.series?.label + ' series'}}
+                    </span>
+                  }
 
                 </h1>
 

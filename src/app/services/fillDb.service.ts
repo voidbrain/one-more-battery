@@ -99,7 +99,7 @@ export class FillDbService {
           model: "R-line",
           mA: 1400,
           brandId: 1,
-          seriesId: 1,
+          seriesId: 2,
           label: '1',
         }
       this.db.putItem('batteries-anag', b1);
@@ -112,7 +112,7 @@ export class FillDbService {
           model: "R-line",
           mA: 1400,
           brandId: 1,
-          seriesId: 1,
+          seriesId: 2,
           label: '2'
         }
       this.db.putItem('batteries-anag', b2);
@@ -125,7 +125,7 @@ export class FillDbService {
           model: "R-line",
           mA: 1400,
           brandId: 1,
-          seriesId: 1,
+          seriesId: 2,
           label: '3'
         }
       this.db.putItem('batteries-anag', b3);
@@ -138,7 +138,7 @@ export class FillDbService {
           model: "R-line",
           mA: 1400,
           brandId: 1,
-          seriesId: 1,
+          seriesId: 2,
           label: '4'
         }
       this.db.putItem('batteries-anag', b4);
