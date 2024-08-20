@@ -1,4 +1,5 @@
 import { BatteryStatusInterface } from "./battery-status";
+import { BatteryTypeInterface } from "./battery-type";
 import { BrandsAnagraphInterface } from "./brands-anagraph";
 
 export interface BatterySeriesAnagraphInterface {
@@ -16,6 +17,7 @@ export interface BatteryAnagraphInterface {
     cellsNumber?: number,
     typeId?: number,
     model?: string,
+    mA: number,
     brandId?: number,
     label: string,
     seriesId: number,
@@ -28,4 +30,5 @@ export interface ExtendedBatteryAnagraphInterface {
   timeRange?: number,
   alertStatus?: string,
   brand?: BrandsAnagraphInterface,
+  type?: BatteryTypeInterface,
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BatteryAnagraphInterface, BatterySeriesAnagraphInterface } from '../interfaces/battery-anagraph';
+import { BatteryResistanceLogInterface } from '../interfaces/battery-resistance'
 import { BatteryTypeInterface } from '../interfaces/battery-type';
 import { batteryStatusActionEnum, BatteryStatusInterface } from '../interfaces/battery-status';
 import { BrandsAnagraphInterface } from '../interfaces/brands-anagraph';
@@ -25,6 +26,43 @@ export class FillDbService {
           label: "LiPo"
         }
       this.db.putItem('batteries-types', itemBatteryType);
+
+      const itemBatteryResistanceLogs1: BatteryResistanceLogInterface =
+      {
+        idBattery: 1,
+        enabled: +true,
+        deleted: +false,
+        date: new Date("2024-08-15"),
+        values: [4.3, 3.5, 4.3, 5.0, 4.3, 4.3],
+      }
+    this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs1);
+    const itemBatteryResistanceLogs2: BatteryResistanceLogInterface =
+      {
+        idBattery: 2,
+        enabled: +true,
+        deleted: +false,
+        date: new Date("2024-08-15"),
+        values: [4.2, 4.2, 5.6, 4.2, 3.5, 4.2],
+      }
+    this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs2);
+    const itemBatteryResistanceLogs3: BatteryResistanceLogInterface =
+      {
+        idBattery: 3,
+        enabled: +true,
+        deleted: +false,
+        date: new Date("2024-08-15"),
+        values: [5.7, 5.0, 5.0, 5.0, 5.0, 5.0],
+      }
+    this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs3);
+    const itemBatteryResistanceLogs4: BatteryResistanceLogInterface =
+      {
+        idBattery: 4,
+        enabled: +true,
+        deleted: +false,
+        date: new Date("2024-08-15"),
+        values: [3.5, 4.2, 3.5, 3.5, 4.2, 4.2],
+      }
+    this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs4);
 
       let itemBatterySeries: BatterySeriesAnagraphInterface =
       {
@@ -59,9 +97,10 @@ export class FillDbService {
           cellsNumber: 6,
           typeId: 1,
           model: "R-line",
+          mA: 1400,
           brandId: 1,
           seriesId: 1,
-          label: '1'
+          label: '1',
         }
       this.db.putItem('batteries-anag', b1);
       const b2: BatteryAnagraphInterface =
@@ -71,6 +110,7 @@ export class FillDbService {
           cellsNumber: 6,
           typeId: 1,
           model: "R-line",
+          mA: 1400,
           brandId: 1,
           seriesId: 1,
           label: '2'
@@ -83,6 +123,7 @@ export class FillDbService {
           cellsNumber: 6,
           typeId: 1,
           model: "R-line",
+          mA: 1400,
           brandId: 1,
           seriesId: 1,
           label: '3'
@@ -95,6 +136,7 @@ export class FillDbService {
           cellsNumber: 6,
           typeId: 1,
           model: "R-line",
+          mA: 1400,
           brandId: 1,
           seriesId: 1,
           label: '4'

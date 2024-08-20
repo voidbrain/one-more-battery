@@ -1,4 +1,11 @@
-.alertLevel {
-    &.red { stroke:#e0d207 }
-    &.warning { stroke:#b01212 }
+ion-icon { vertical-align: middle; }
+ion-title { text-transform: capitalize;  font-size:1.8rem; }
+ion-card h1 {
+  font-size:1.2rem;
+  ion-button {
+    float: right;
+  }
+}
+.align-right {
+  text-align: right;
 }

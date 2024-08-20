@@ -7,7 +7,9 @@
         ></ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <ion-title>{{ page }}</ion-title>
+    <ion-title>
+      <ion-icon name="battery-charging-outline" size="large"> </ion-icon>
+      {{ page }}</ion-title>
 
     <ion-buttons slot="end">
       <ion-button routerLink="settings"
@@ -24,45 +26,59 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
+  <ion-grid>
+    <ion-row>
+
     @for (battery of items; track battery) {
+      <ion-col size="2" size-sm="4" size-xs="6">
+        <ion-card>
+          <ion-card-header>
+                <h1>
+                @if(battery.alertStatus !== '' && battery?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
+                  <ion-icon size="medium"
+                    [color]=" battery.alertStatus "
+                    aria-hidden="true" name="warning">
+                  </ion-icon>
+                } @else {
+                  <ion-icon size="medium"
+                    [color]=" battery.alertStatus "
+                    aria-hidden="true" name="battery-full">
+                  </ion-icon>
+                }
 
-        <ion-item (click)="presentActionSheet(battery)">
-          <ion-label>
-            <!--<ion-item lines="none" (click)="showDetail(item)">-->
-            <ion-item lines="none">
-              @if(battery.alertStatus !== '' && battery?.lastStatus?.status !== batteryStatusActionEnum.Store ) {
-                <ion-icon
-                  [color]=" battery.alertStatus "
-                  aria-hidden="true" name="warning">
-                </ion-icon>
-              } @else {
-                <ion-icon
-                  [color]=" battery.alertStatus "
-                  aria-hidden="true" name="battery-full">
-                </ion-icon>
-              }
-              <div [innerHtml]= "battery?.anag?.id"></div>
-              <div [innerHtml]="'Battery ' + battery?.anag?.label"></div>
-              @if(battery?.series?.label && battery?.series?.label !== '') {
-                <div [innerHtml]="'Series' + battery?.series?.label"></div>
-              }
-              <div [innerHtml]="getBatteryStatus(battery?.lastStatus?.status) + 'd' "></div>
+                  {{ 'Battery ' + battery?.anag?.label }}
+
+                  @if(battery?.series?.label && battery?.series?.label !== '') {
+                    <span [style]="'color: ' +battery?.series?.color">
+                      – {{battery?.series?.label + 'Series'}}
+                    </span>
+                  }
+
+                  <ion-button shape="round" (click)="presentActionSheet(battery)">
+                    <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
+                  </ion-button>
+
+                </h1>
+
+                {{ battery?.brand?.label }} {{ battery?.anag?.model }} {{ battery?.anag?.cellsNumber + 'S' }} {{ battery?.anag?.mA + 'mA' }}
 
 
 
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{ getBatteryStatus(battery?.lastStatus?.status) + 'd' }} {{ battery.timeRange + ' days ago' }}</p>
+              <p>{{ 'Total cycles: ' + battery.totalCycles }}</p>
 
-              <div [innerHtml]="battery.timeRange + ' days ago'"></div>
-
-              <div [innerHtml]="'Total cycles: ' + battery.totalCycles"></div>
-
-
-
-            </ion-item>
-          </ion-label>
-        </ion-item>
-
+              <p class="align-right">
+                <ion-button color="light" shape="round" (click)="showLogs(battery?.anag?.id!)">
+                  <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+                </ion-button>
+              </p>
+            </ion-card-content>
+        </ion-card>
+      </ion-col>
     }
-  </ion-list>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

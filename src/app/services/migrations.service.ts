@@ -11,6 +11,7 @@ export class MigrationsService {
       this.createBatteriesAnag(db);
       this.createBatteriesStatus(db);
       this.createBatteriesTypes(db);
+      this.createBatteriesResistanceLogs(db);
     }
 
     private createBrandsAnag(db: IDBDatabase) {
@@ -54,6 +55,15 @@ export class MigrationsService {
     private createBatteriesTypes(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-types')) {
         const store = db.createObjectStore('batteries-types', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+        store.createIndex('deleted',['deleted'],{ unique: false });
+      }
+    }
+
+    private createBatteriesResistanceLogs(db: IDBDatabase) {
+      if (!db.objectStoreNames.contains('batteries-resistance-logs')) {
+        const store = db.createObjectStore('batteries-resistance-logs', { keyPath: 'id', autoIncrement: true });
         store.createIndex('id',['id'],{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });

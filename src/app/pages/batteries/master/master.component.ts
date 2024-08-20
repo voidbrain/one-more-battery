@@ -2,7 +2,13 @@ import { Component } from '@angular/core';
 import {
   IonButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
   IonContent,
+  IonGrid,
+  IonCol,
+  IonRow,
   IonHeader,
   IonIcon,
   IonItem,
@@ -31,6 +37,11 @@ import { differenceInDays } from 'date-fns';
 import { ActionSheetController } from '@ionic/angular';
 
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
+import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
+
+import { ModalController } from '@ionic/angular';
+import { ModalExampleComponent } from './internal-resistance-logs.component';
 
 @Component({
   selector: 'app-batteries-master',
@@ -41,7 +52,13 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 
     IonButton,
     IonButtons,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
     IonContent,
+    IonGrid,
+    IonCol,
+    IonRow,
     IonHeader,
     IonIcon,
     IonItem,
@@ -72,7 +89,8 @@ export class BatteriesMasterComponent {
     private router: Router,
     private fillDb: FillDbService,
     private settings: SettingsService,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private modalCtrl: ModalController
   ) {
     addIcons(ionIcons);
   }
@@ -206,6 +224,8 @@ export class BatteriesMasterComponent {
 
       const objectStoreStatus = "batteries-status";
       const objectStoreSeries = "batteries-series";
+      const objectStoreBrands = "brands-anag";
+      const objectStoreType = "batteries-types";
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
 
       for (const anag of items) {
@@ -214,6 +234,8 @@ export class BatteriesMasterComponent {
 
           const lastStatus: BatteryStatusInterface | undefined = await this.db.getLastStatusByDate<BatteryStatusInterface>(objectStoreStatus, anag.id!);
           const series: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
+          const type: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreSeries, anag.typeId!, 'id');
+          const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
           const totalCycles: number | undefined = await this.db.getTotalCycles(objectStoreStatus, anag.id!);
 
           // Calculate timerange as the difference between the last status date and the current date
@@ -228,7 +250,7 @@ export class BatteriesMasterComponent {
 
           this.setupLocalNotification(anag);
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertStatus };
+          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertStatus, type, brand };
 
 
           // Add the expanded item to the array
@@ -246,6 +268,20 @@ export class BatteriesMasterComponent {
     }
   }
 
+  async showLogs(id: number){
+    let message = 'This modal example uses the modalController to present and dismiss modals.';
+
+    const modal = await this.modalCtrl.create({
+      component: ModalExampleComponent,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      message = `Hello, ${data}!`;
+    }
+  }
 
   async deleteItem(item: BatteryAnagraphInterface) {
     try {
@@ -274,7 +310,7 @@ export class BatteriesMasterComponent {
           title: 'warning',
           body: "Battery " + anag.label,
           id: 1,
-          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Warning * 86_400)) }, // 3 * 86_400 seconds in a day
+          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Warning * 86_400 * 1000)) }, // 3 * 86_400 * 1000 seconds in a day
           actionTypeId: "",
           extra: null
         },
@@ -282,7 +318,7 @@ export class BatteriesMasterComponent {
           title: 'Danger',
           body: "Battery " + anag.label,
           id: 1,
-          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Danger * 86_400)) }, // 5 * 86_400 seconds in a day
+          schedule: { at: new Date(new Date().getTime() + (batteryStatusDaysAlertEnum.Danger * 86_400 * 1000)) }, // 5 * 86_400 * 1000 seconds in a day
           actionTypeId: "",
           extra: null
         }
