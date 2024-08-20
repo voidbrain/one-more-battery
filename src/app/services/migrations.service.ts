@@ -17,7 +17,7 @@ export class MigrationsService {
     private createBrandsAnag(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('brands-anag')) {
         const store = db.createObjectStore('brands-anag', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }
@@ -26,7 +26,7 @@ export class MigrationsService {
     private createBatteriesSeriesAnag(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-series')) {
         const store = db.createObjectStore('batteries-series', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }
@@ -35,7 +35,7 @@ export class MigrationsService {
     private createBatteriesAnag(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-anag')) {
         const store = db.createObjectStore('batteries-anag', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }
@@ -44,7 +44,7 @@ export class MigrationsService {
     private createBatteriesStatus(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-status')) {
         const store = db.createObjectStore('batteries-status', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
         store.createIndex('idBattery, date, enabled, deleted',['idBattery', 'date', 'enabled', 'deleted'],{ unique: false });
@@ -55,7 +55,7 @@ export class MigrationsService {
     private createBatteriesTypes(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-types')) {
         const store = db.createObjectStore('batteries-types', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }
@@ -64,7 +64,7 @@ export class MigrationsService {
     private createBatteriesResistanceLogs(db: IDBDatabase) {
       if (!db.objectStoreNames.contains('batteries-resistance-logs')) {
         const store = db.createObjectStore('batteries-resistance-logs', { keyPath: 'id', autoIncrement: true });
-        store.createIndex('id',['id'],{ unique: false });
+        store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }

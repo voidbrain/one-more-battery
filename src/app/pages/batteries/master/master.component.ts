@@ -234,7 +234,7 @@ export class BatteriesMasterComponent {
 
           const lastStatus: BatteryStatusInterface | undefined = await this.db.getLastStatusByDate<BatteryStatusInterface>(objectStoreStatus, anag.id!);
           const series: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
-          const type: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreSeries, anag.typeId!, 'id');
+          const type: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreType, anag.typeId!, 'id');
           const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
           const totalCycles: number | undefined = await this.db.getTotalCycles(objectStoreStatus, anag.id!);
 
@@ -260,7 +260,7 @@ export class BatteriesMasterComponent {
         }
       }
       const stored = await LocalNotifications.getPending();
-      console.log(stored)
+      console.log(expandedItems)
       this.items = expandedItems;
       console.info('[PAGE]: Ready');
     } catch (error) {
