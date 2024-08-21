@@ -27,6 +27,8 @@ import { batteryStatusActionEnum  } from 'src/app/interfaces/battery-status';
 import { BatteryAnagraphInterface, BatterySeriesAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
+import { SettingsService } from 'src/app/services/settings.service';
+import { FillDbService } from 'src/app/services/fillDb.service';
 
 @Component({
   selector: 'app-batteries-settings',
@@ -71,11 +73,17 @@ export class BatteriesSettingComponent {
   constructor(
     private db: DbService,
     private router: Router,
+    private settings: SettingsService,
+    private fillDb: FillDbService
   ) {
     addIcons(ionIcons);
   }
 
   async ionViewWillEnter() {
+    if(this.settings.fillDb) {
+      await this.fillDb.fillDb();
+    }
+
     console.info('[PAGE]: Start');
     try {
       await this.db.load();
@@ -93,10 +101,11 @@ export class BatteriesSettingComponent {
     try {
       const objectStoreSeries = "batteries-series";
       const objectStoreTypes = "batteries-series";
-      const objectStoreBrands = "batteries-series";
+      const objectStoreBrands = "brands-anag";
       const series: BatterySeriesAnagraphInterface[] = await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries);
       const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
       const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
+      console.log(series, brands, types)
       this.series = series;
       this.types = types;
       this.brands = brands;

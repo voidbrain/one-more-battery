@@ -17,6 +17,8 @@ import {
   } from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
+import { SettingsService } from '../../../services/settings.service';
+import { FillDbService } from 'src/app/services/fillDb.service';
 
 @Component({
   selector: 'app-modal-internal-resistance-logs',
@@ -44,7 +46,18 @@ export class ModalResistanceLogsComponent {
   @Input() logs: BatteryResistanceLogInterface[] = [];
   name: string ="name";
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private settings: SettingsService,
+    private fillDb: FillDbService
+  ) {
+  }
+
+  async ionViewWillEnter() {
+    if(this.settings.fillDb) {
+      await this.fillDb.fillDb();
+    }
+  }
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');

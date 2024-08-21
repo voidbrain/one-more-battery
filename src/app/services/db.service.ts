@@ -293,17 +293,21 @@ export class DbService {
     item: T
   ): Promise<void> {
     try {
-      const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
-      const store = tx.objectStore(objectStore);
-      const request = store.put(item);
+      if(objectStore){
+        const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
+        const store = tx.objectStore(objectStore);
+        const request = store.put(item);
 
-      return new Promise<void>((resolve, reject) => {
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => {
-          console.error(`[DB]: Error adding item to ${objectStore}:`, e);
-          reject(e);
-        };
-      });
+        return new Promise<void>((resolve, reject) => {
+          request.onsuccess = () => resolve();
+          request.onerror = (e) => {
+            console.error(`[DB]: Error adding item to ${objectStore}:`, e);
+            reject(e);
+          };
+        });
+      } else {
+        return;
+      }
     } catch (error) {
       console.error(`[DB]: Failed to put item in ${objectStore}:`, error);
       return Promise.reject(error);
