@@ -99,6 +99,32 @@ export class BatteriesSettingComponent {
   brands: BrandsAnagraphInterface[] = [];
   batteries: ExtendedBatteryAnagraphInterface[] = [];
 
+  dateTimeFormatOptions = {
+    date: {
+      month: 'short',
+      day: '2-digit',
+    },
+
+  }
+
+
+  newAnagForm: BatteryAnagraphInterface = {
+    enabled: +true,
+    deleted: +false,
+    mA: 0,
+    label: '',
+    seriesId: 0,
+    date: new Date(),
+    brandId: undefined,
+    typeId: undefined,
+    model: undefined,
+    cellsNumber: undefined,
+    dateString: undefined,
+  }
+  newBatteryForm:ExtendedBatteryAnagraphInterface = {
+    anag: this.newAnagForm
+  }
+
   newBrandForm: BrandsAnagraphInterface = {
     label: '',
     enabled: +true,
@@ -127,9 +153,7 @@ export class BatteriesSettingComponent {
   }
 
   async ionViewWillEnter() {
-    if(this.settings.fillDb) {
-      await this.fillDb.fillDb();
-    }
+
 
     console.info('[PAGE]: Start');
     try {
@@ -137,11 +161,45 @@ export class BatteriesSettingComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
 
+      if(this.settings.fillDb) {
+        await this.fillDb.fillDb();
+      }
+
       await this.getItems();
 
     } catch (err) {
       console.error('Error during initialization:', err);
     }
+  }
+
+  getColor(): string | undefined {
+    return this.series?.find(el => el.id === this.newBatteryForm?.series?.id)?.color;
+  }
+
+  async addBattery(){
+    const objectStore = "brands-anag";
+    console.log(this.newAnagForm);
+    await this.db.putItem(objectStore, this.newAnagForm);
+    this.newAnagForm = {
+      enabled: +true,
+      deleted: +false,
+      mA: 0,
+      label: '',
+      seriesId: 0,
+      date: new Date(),
+      brandId: undefined,
+      typeId: undefined,
+      model: undefined,
+      cellsNumber: undefined,
+      dateString: undefined,
+    };
+    this.newBatteryForm = {
+      anag: this.newAnagForm,
+      brand: undefined,
+      series: undefined,
+      type: undefined,
+    }
+    this.getItems();
   }
 
   async addBrand(){
@@ -185,18 +243,45 @@ export class BatteriesSettingComponent {
     }
   }
 
+  deleteAnagItem(anag: BatteryAnagraphInterface){
+    anag.deleted = +true;
+    const forwardToDb = true;
+    this.updateRowAnag(anag, forwardToDb);
+  }
+
+  deleteBrandsItem(el: BrandsAnagraphInterface){
+    el.deleted = +true;
+    this.updateRowBrands(el);
+  }
+
+  deleteSeriesItem(el: BatterySeriesAnagraphInterface){
+    el.deleted = +true;
+    this.updateRowSeries(el);
+  }
+
+  deleteTypesItem(el: BatteryTypeInterface){
+    el.deleted = +true;
+    this.updateRowTypes(el);
+  }
+
   async updateElement<T>(
     e: ExtendedBatteryAnagraphInterface,
     value: number,
     property: keyof BatteryAnagraphInterface
   ): Promise<T | undefined> {
     try {
+      console.log(
+        e,
+    value,
+    property,
+      )
       if (property in e.anag) {
         // Update the property
         (e.anag as any)[property] = value;
 
         // Wait for updateRowAnag to complete
-        await this.updateRowAnag(e.anag as BatteryAnagraphInterface);
+        const forwardToDb = true;
+        await this.updateRowAnag(e.anag as BatteryAnagraphInterface, forwardToDb);
 
         return e as unknown as T;
       } else {
@@ -216,19 +301,28 @@ export class BatteriesSettingComponent {
       const objectStoreBatteries = "batteries-anag";
 
       // Fetch the data
-      const series: BatterySeriesAnagraphInterface[] = await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries, 'id', []);
-      const anagArr: BatteryAnagraphInterface[] = await this.db.getItems<BatteryAnagraphInterface>(objectStoreBatteries, 'id', []);
-      const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes, 'id', []);
-      const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands, 'id', []);
+      const anagArr: BatteryAnagraphInterface[] = await this.db.getItems<BatteryAnagraphInterface>(objectStoreBatteries);
+      const series: BatterySeriesAnagraphInterface[] = await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries);
+      const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
+      const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
 
-      const batteries: ExtendedBatteryAnagraphInterface[] = [];
+      console.log(this.batteries);
 
-      // Use for...of for async operations
+      // Create a map to keep track of batteries by ID for faster lookup
+      const batteryMap: Map<number, ExtendedBatteryAnagraphInterface> = new Map();
+
       for (const anag of anagArr) {
+        // Check if the record is marked as deleted
+        if (anag.deleted === 1) {
+          // Remove the deleted battery from the array if it exists
+          this.batteries = this.batteries.filter(battery => battery.anag.id !== anag.id);
+          continue;
+        }
+        console.log(anag.date)
         anag.dateString = anag.date.toISOString();
 
         // Fetch series, type, and brand asynchronously
-        const batterySeries: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
+        const batterySeries: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
         const batteryType: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreTypes, anag.typeId!, 'id');
         const batteryBrand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
 
@@ -240,23 +334,18 @@ export class BatteriesSettingComponent {
           brand: batteryBrand,
         };
 
-        // Check if the current battery needs to be updated
-        const existingBattery = this.batteries.find(battery => battery.anag.id === anag.id);
-
-        // Perform deep comparison (this can be more complex depending on your object structure)
-        const hasChanged = !existingBattery || JSON.stringify(existingBattery) !== JSON.stringify(extendedBattery);
-
-        if (hasChanged) {
-          // Update the batteries array if there is a change
-          const index = this.batteries.findIndex(battery => battery.anag.id === anag.id);
-          if (index !== -1) {
-            this.batteries[index] = extendedBattery;
-          } else {
-            this.batteries.push(extendedBattery);
-          }
-        }
+        // Add to the map
+        batteryMap.set(anag.id!, extendedBattery);
       }
-      console.log(this.batteries)
+
+      // Convert the map to an array
+      const updatedBatteries = Array.from(batteryMap.values());
+
+      // Update the batteries array if there is a change
+      if (JSON.stringify(this.batteries) !== JSON.stringify(updatedBatteries)) {
+        this.batteries = updatedBatteries;
+      }
+
       // Assign to class properties only if needed
       if (JSON.stringify(this.series) !== JSON.stringify(series)) this.series = series;
       if (JSON.stringify(this.types) !== JSON.stringify(types)) this.types = types;
@@ -269,12 +358,57 @@ export class BatteriesSettingComponent {
   }
 
 
-  async updateRowAnag(el: BatteryAnagraphInterface){
+  async setRowAnag<T>(
+    anag: BatteryAnagraphInterface,
+    value: number,
+    property: keyof BatteryAnagraphInterface
+  ): Promise<T | undefined> {
+    try {
+      if (property in anag) {
+        // Update the property
+        (anag as any)[property] = value;
+        // Wait for updateRowAnag to complete
+
+        return anag as T;
+      } else {
+        throw new Error(`Property '${property}' does not exist in BatteryAnagraphInterface.`);
+      }
+    } catch (error) {
+      console.error('Error updating element:', error);
+      throw error; // Re-throw the error to be caught by the caller
+    }
+  }
+
+    async setNewBatteryElement<T>(
+      e: ExtendedBatteryAnagraphInterface,
+      value: number,
+      property: keyof BatteryAnagraphInterface
+    ): Promise<T | undefined> {
+      try {
+        if (property in e.anag) {
+          // Update the property
+          (e.anag as any)[property] = value;
+          // Wait for updateRowAnag to complete
+
+          return e as T;
+        } else {
+          throw new Error(`Property '${property}' does not exist in BatteryAnagraphInterface.`);
+        }
+      } catch (error) {
+        console.error('Error updating element:', error);
+        throw error; // Re-throw the error to be caught by the caller
+      }
+    }
+
+  async updateRowAnag(el: BatteryAnagraphInterface, forwardToDb: boolean){
     const objectStore: string = 'batteries-anag';
+    console.log(el)
     el.date = new Date(el.dateString!);
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
-    this.db.putItem(objectStore, el);
+    if(forwardToDb) {
+      this.db.putItem(objectStore, el);
+    }
     await this.getItems()
   }
 
@@ -290,6 +424,7 @@ export class BatteriesSettingComponent {
     const objectStore: string = 'brands-anag';
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
+    console.log(el)
     this.db.putItem(objectStore, el);
     await this.getItems()
   }

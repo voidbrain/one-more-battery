@@ -1,8 +1,12 @@
 .title { font-weight: bold; }
 ion-title { text-transform: capitalize; }
-.text-center { text-align: center; }
-.ml-1 { margin-left:.5em }
 
 ion-select::part(text) {
   color: var(--text-color, --ion-text-color);  // Fallback to black if --text-color is not defined
+}
+.sc-ion-input-md-s>[slot=start]:last-of-type {
+  margin-right: 0;
+  -webkit-margin-end: 0;
+  margin-left: 0;
+  -webkit-margin-start: 0;
 }
