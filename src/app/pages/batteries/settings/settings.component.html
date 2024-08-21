@@ -49,16 +49,20 @@
               @for (el of series; track el){
                 <ion-row>
                   <ion-col>
-                    {{ el.label }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.label }}
+                    </ion-item>
                   </ion-col>
                   <ion-col>
-                    {{ el.color }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.color }}
+                    </ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.enabled }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.deleted }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -79,26 +83,28 @@
                 <ion-col class="title">
                   Label
                 </ion-col>
-                <ion-col class="title">
+                <ion-col class="title text-center">
                   Enabled
                 </ion-col>
-                <ion-col class="title">
+                <ion-col class="title text-center">
                   Deleted
                 </ion-col>
               </ion-row>
       
               @for (el of brands; track el){
-                <ion-row>
-                  <ion-col>
-                    {{ el.label }}
-                  </ion-col>
-                  <ion-col>
-                    {{ el.enabled }}
-                  </ion-col>
-                  <ion-col>
-                    {{ el.deleted }}
-                  </ion-col>
-                </ion-row>
+                <form>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item class="ion-no-padding ion-text-center"><ion-input [value]="el.label"></ion-input></ion-item>
+                    </ion-col>
+                    <ion-col class="text-center">
+                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
+                    </ion-col>
+                    <ion-col class="text-center">
+                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
+                    </ion-col>
+                  </ion-row>
+                </form>
               }
             </ion-grid>
           </ion-card-content>
@@ -129,13 +135,15 @@
               @for (el of types; track el){
                 <ion-row>
                   <ion-col>
-                    {{ el.label }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.label }}
+                    </ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.enabled }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.deleted }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -157,7 +165,7 @@
                 <ion-col class="title">
                   Date
                 </ion-col>
-                <ion-col class="title text-center">
+                <ion-col class="title">
                   Label
                 </ion-col>
                 <ion-col class="title">
@@ -173,8 +181,8 @@
                 <ion-col class="title">
                   Type
                 </ion-col>
-                <ion-col class="title  text-center">
-                  Cells Number
+                <ion-col class="title text-center">
+                  Cells N°
                 </ion-col>
                 <ion-col class="title text-center">
                   mA
@@ -190,38 +198,54 @@
               @for (el of batteries; track el){
                 <ion-row>
                   <ion-col>
-                    {{ el.anag.date | date: "yyyy-MM-dd"  }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.anag.date | date: "yyyy-MM-dd"  }}
+                    </ion-item>
                   </ion-col>
 
                   <ion-col class="text-center">
-                    Battery {{ el.anag.label }}
+                    <ion-item class="ion-no-padding">
+                      Battery {{ el.anag.label }}
+                    </ion-item>
                   </ion-col>
                   <ion-col>
-                    <span [style]="'color: ' + el.series?.color!">
-                      {{ el.series?.label }}
-                    </span>
+                    <ion-item class="ion-no-padding">
+                      <span [style]="'color: ' + el.series?.color!">
+                        {{ el.series?.label }}
+                      </span>
+                    </ion-item>
                   </ion-col>
                   
                   <ion-col>
-                    {{ el.brand?.label }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.brand?.label }}
+                    </ion-item>
                   </ion-col>
                   <ion-col>
-                    {{ el.anag.model }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.anag.model }}
+                    </ion-item>
                   </ion-col>
                   <ion-col>
-                    {{ el.type?.label }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.type?.label }}
+                    </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    {{ el.anag.cellsNumber }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.anag.cellsNumber }}
+                    </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    {{ el.anag.mA }}
+                    <ion-item class="ion-no-padding">
+                      {{ el.anag.mA }}
+                    </ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.anag.deleted }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.anag.enabled"></ion-toggle></ion-item>
                   </ion-col>
-                  <ion-col>
-                    {{ el.anag.enabled }}
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.anag.deleted"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }

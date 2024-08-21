@@ -19,7 +19,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  RefresherCustomEvent, IonActionSheet, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+  RefresherCustomEvent, IonActionSheet, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol, IonInput, IonToggle } from '@ionic/angular/standalone';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
@@ -34,7 +34,7 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 @Component({
   selector: 'app-batteries-settings',
   standalone: true,
-  imports: [
+  imports: [IonToggle, IonInput, 
     RouterLink,
     RouterOutlet,
     DatePipe,
