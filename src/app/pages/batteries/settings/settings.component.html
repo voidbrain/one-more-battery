@@ -105,6 +105,7 @@
         </ion-card>
 
       </ion-col>
+
       <ion-col size-lg="3" size-md="6" size-xs="12">
 
         <ion-card>
@@ -143,6 +144,93 @@
         </ion-card>
 
       </ion-col>
+
+      <ion-col size-lg="12" size-md="12" size-xs="12">
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Batteries Anag</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col class="title">
+                  Date
+                </ion-col>
+                <ion-col class="title text-center">
+                  Label
+                </ion-col>
+                <ion-col class="title">
+                  Series
+                </ion-col>
+                
+                <ion-col class="title">
+                  Brand
+                </ion-col>
+                <ion-col class="title">
+                  Model
+                </ion-col>
+                <ion-col class="title">
+                  Type
+                </ion-col>
+                <ion-col class="title  text-center">
+                  Cells Number
+                </ion-col>
+                <ion-col class="title text-center">
+                  mA
+                </ion-col>
+                <ion-col class="title">
+                  Deleted
+                </ion-col>
+                <ion-col class="title">
+                  Enabled
+                </ion-col>
+              </ion-row>
+      
+              @for (el of batteries; track el){
+                <ion-row>
+                  <ion-col>
+                    {{ el.anag.date | date: "yyyy-MM-dd"  }}
+                  </ion-col>
+
+                  <ion-col class="text-center">
+                    Battery {{ el.anag.label }}
+                  </ion-col>
+                  <ion-col>
+                    <span [style]="'color: ' + el.series?.color!">
+                      {{ el.series?.label }}
+                    </span>
+                  </ion-col>
+                  
+                  <ion-col>
+                    {{ el.brand?.label }}
+                  </ion-col>
+                  <ion-col>
+                    {{ el.anag.model }}
+                  </ion-col>
+                  <ion-col>
+                    {{ el.type?.label }}
+                  </ion-col>
+                  <ion-col class="text-center">
+                    {{ el.anag.cellsNumber }}
+                  </ion-col>
+                  <ion-col class="text-center">
+                    {{ el.anag.mA }}
+                  </ion-col>
+                  <ion-col>
+                    {{ el.anag.deleted }}
+                  </ion-col>
+                  <ion-col>
+                    {{ el.anag.enabled }}
+                  </ion-col>
+                </ion-row>
+              }
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+
     </ion-row>
   </ion-grid>
   

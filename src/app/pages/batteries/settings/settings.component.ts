@@ -1,4 +1,5 @@
 import { Component, ViewChildren } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import {
   IonButton,
   IonButtons,
@@ -33,10 +34,12 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 @Component({
   selector: 'app-batteries-settings',
   standalone: true,
-  imports: [IonCol, IonRow, IonGrid, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonActionSheet, 
+  imports: [
     RouterLink,
     RouterOutlet,
+    DatePipe,
 
+    IonCol, IonRow, IonGrid, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonActionSheet, 
     IonButton,
     IonButtons,
     IonContent,
@@ -62,13 +65,14 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 export class BatteriesSettingComponent {
   @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
   items: Partial<ExtendedBatteryAnagraphInterface>[] = [];
-  page = 'batteries';
+  page = 'settings';
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
 
   series: BatterySeriesAnagraphInterface[] = [];
   types: BatteryTypeInterface[] = [];
   brands: BrandsAnagraphInterface[] = [];
+  batteries: ExtendedBatteryAnagraphInterface[] = [];
 
   constructor(
     private db: DbService,
@@ -99,16 +103,30 @@ export class BatteriesSettingComponent {
 
   async getItems() {
     try {
-      const objectStoreSeries = "batteries-series";
-      const objectStoreTypes = "batteries-series";
+      const objectStoreSeries = "batteries-series"; 
+      const objectStoreTypes = "batteries-types";
       const objectStoreBrands = "brands-anag";
+      const objectStoreBatteries = "batteries-anag";
       const series: BatterySeriesAnagraphInterface[] = await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries);
+      const anagArr: BatteryAnagraphInterface[] = await this.db.getItems<BatteryAnagraphInterface>(objectStoreBatteries);
       const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
       const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
-      console.log(series, brands, types)
+      const batteries: ExtendedBatteryAnagraphInterface[] = [];
+
+      anagArr.map(async anag => {
+        const batterySeries: BatteryAnagraphInterface | undefined = await this.db.getItem<BatteryAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
+        const batteryType: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreTypes, anag.typeId!, 'id');
+        const batteryBrand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
+        console.log(batteryType)
+        batteries.push({anag, series: batterySeries, type: batteryType, brand: batteryBrand})
+      });
+
+      
+
       this.series = series;
       this.types = types;
       this.brands = brands;
+      this.batteries = batteries;
       
       console.info('[PAGE]: Ready');
     } catch (error) {

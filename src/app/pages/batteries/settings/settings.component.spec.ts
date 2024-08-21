@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BatteriesMasterComponent } from './master.component';
+import { BatteriesSettingComponent } from './settings.component';
 
-describe('BatteriesMasterComponent', () => {
-  let component: BatteriesMasterComponent;
-  let fixture: ComponentFixture<BatteriesMasterComponent>;
+describe('BatteriesSettingComponent', () => {
+  let component: BatteriesSettingComponent;
+  let fixture: ComponentFixture<BatteriesSettingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BatteriesMasterComponent],
+      imports: [BatteriesSettingComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BatteriesMasterComponent);
+    fixture = TestBed.createComponent(BatteriesSettingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
