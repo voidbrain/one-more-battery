@@ -93,7 +93,6 @@ export class DbService {
         const currentVersion = event.oldVersion;
 
         try {
-          console.info('[DB]: Migrations', db, currentVersion)
           await this.migrations.addMigration(db, currentVersion); // Apply migrations based on currentVersion
           if (this.debug) {
             console.info('[DB]: Migrations applied');
@@ -263,7 +262,7 @@ export class DbService {
   async getItems<T>(
     objectStore: string,
     column = 'enabled, deleted',
-    query = [1, 0]
+    query = [+true, +false]
   ): Promise<T[]> {
     try {
       const tx = (this.db as IDBDatabase).transaction(objectStore, 'readonly');

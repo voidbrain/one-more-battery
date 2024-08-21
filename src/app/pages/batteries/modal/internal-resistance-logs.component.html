@@ -12,7 +12,7 @@
         <ion-row>
           <ion-col class="title">Date</ion-col>
           @for (cell of [].constructor(anag?.cellsNumber); track $index;) {
-            <ion-col class="title">cell {{ $index +1 }}</ion-col>
+            <ion-col class="title text-center">cell {{ $index +1 }}</ion-col>
           }
         </ion-row>
       @for (row of logs; track row){
@@ -20,8 +20,8 @@
           <ion-col>
             {{ row.date | date: "yyyy-MM-dd" }}
           </ion-col>
-          @for (cell of row?.values; track cell) {
-            <ion-col>
+          @for (cell of row?.values; track $index;) {
+            <ion-col class="text-center">
               {{ cell }}mΩ
             </ion-col>
           }

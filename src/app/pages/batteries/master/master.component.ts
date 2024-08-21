@@ -43,7 +43,7 @@ import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
 import { ModalController } from '@ionic/angular';
-import { ModalResistanceLogsComponent } from './internal-resistance-logs.component';
+import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 
 @Component({
@@ -98,6 +98,25 @@ export class BatteriesMasterComponent {
     private modalCtrl: ModalController
   ) {
     addIcons(ionIcons);
+  }
+
+  async ionViewWillEnter() {
+    console.info('[PAGE]: Start');
+    try {
+      await this.db.load();
+      const forceLoading = true;
+      await this.db.initService(forceLoading);
+
+      if(this.settings.fillDb) {
+        await this.fillDb.fillDb();
+      }
+      // await LocalNotifications.cancel({});
+      const stored = await LocalNotifications.getPending();
+      console.log(stored)
+      await this.getItems();
+    } catch (err) {
+      console.error('Error during initialization:', err);
+    }
   }
 
   async chargeBattery(item: ExtendedBatteryAnagraphInterface){
@@ -198,26 +217,6 @@ export class BatteriesMasterComponent {
 
 
     await actionSheet.present();
-  }
-
-  // Using Ionic lifecycle hook to initialize data when the view is about to be presented
-  async ionViewWillEnter() {
-    console.info('[PAGE]: Start');
-    try {
-      await this.db.load();
-      const forceLoading = true;
-      await this.db.initService(forceLoading);
-
-      if(this.settings.fillDb) {
-        await this.fillDb.fillDb();
-      }
-      // await LocalNotifications.cancel({});
-      const stored = await LocalNotifications.getPending();
-      console.log(stored)
-      await this.getItems();
-    } catch (err) {
-      console.error('Error during initialization:', err);
-    }
   }
 
   getAge(age: Date){

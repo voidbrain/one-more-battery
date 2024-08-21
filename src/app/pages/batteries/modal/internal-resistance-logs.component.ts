@@ -19,9 +19,9 @@ import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 
 @Component({
-  selector: 'app-modal-example',
+  selector: 'app-modal-internal-resistance-logs',
   templateUrl: 'internal-resistance-logs.component.html',
-  styleUrl: 'master.component.scss',
+  styleUrl: 'internal-resistance-logs.component.scss',
   standalone: true,
   imports: [
     IonButton,

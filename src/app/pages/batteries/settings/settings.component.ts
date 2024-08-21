@@ -18,7 +18,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  RefresherCustomEvent, IonActionSheet } from '@ionic/angular/standalone';
+  RefresherCustomEvent, IonActionSheet, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
@@ -26,11 +26,12 @@ import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum  } from 'src/app/interfaces/battery-status';
 import { BatteryAnagraphInterface, BatterySeriesAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
+import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
 @Component({
   selector: 'app-batteries-settings',
   standalone: true,
-  imports: [IonActionSheet, 
+  imports: [IonCol, IonRow, IonGrid, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonActionSheet, 
     RouterLink,
     RouterOutlet,
 
@@ -63,6 +64,10 @@ export class BatteriesSettingComponent {
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
 
+  series: BatterySeriesAnagraphInterface[] = [];
+  types: BatteryTypeInterface[] = [];
+  brands: BrandsAnagraphInterface[] = [];
+
   constructor(
     private db: DbService,
     private router: Router,
@@ -70,7 +75,6 @@ export class BatteriesSettingComponent {
     addIcons(ionIcons);
   }
 
-  // Using Ionic lifecycle hook to initialize data when the view is about to be presented
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
@@ -87,38 +91,16 @@ export class BatteriesSettingComponent {
 
   async getItems() {
     try {
-
-      const items: BatteryAnagraphInterface[] = (await this.db.getItems<BatteryAnagraphInterface>('batteries-anag'));
-      
-      // Sort items by id
-      items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
-      
-      const objectStoreBrands = "brands-anag";
       const objectStoreSeries = "batteries-series";
-      const expandedItems: Partial<ExtendedBatteryAnagraphInterface>[] = [];
-  
-      for (const anag of items) {
-        try {
-          // Fetching related data for each item
-         
-          const series: BatterySeriesAnagraphInterface | undefined = await this.db.getItem<BatterySeriesAnagraphInterface>(objectStoreSeries, anag.seriesId, 'id');
-          const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
-         
-          
-          // Calculate timerange as the difference between the last status date and the current date
-         
-          const expandedItem: Partial<ExtendedBatteryAnagraphInterface> = { anag, series, brand};
-          
-          // Add the expanded item to the array
-          expandedItems.push(expandedItem);
-        } catch (error) {
-          console.error(`Error processing item with id ${anag.id}:`, error);
-        }
-      }
-  
-      this.items = expandedItems; // Assign the array after it is fully populated
-  
-      console.log(this.items);
+      const objectStoreTypes = "batteries-series";
+      const objectStoreBrands = "batteries-series";
+      const series: BatterySeriesAnagraphInterface[] = await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries);
+      const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
+      const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
+      this.series = series;
+      this.types = types;
+      this.brands = brands;
+      
       console.info('[PAGE]: Ready');
     } catch (error) {
       console.error('Error fetching items:', error);
