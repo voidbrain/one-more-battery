@@ -256,9 +256,6 @@ export class DbService {
     }
   }
 
-
-
-
   async getItems<T>(
     objectStore: string,
     column = 'enabled, deleted',
@@ -293,7 +290,6 @@ export class DbService {
     item: T
   ): Promise<void> {
     try {
-      console.log(item, objectStore)
       if(objectStore){
         const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
         const store = tx.objectStore(objectStore);

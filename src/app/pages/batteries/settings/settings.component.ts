@@ -308,8 +308,6 @@ export class BatteriesSettingComponent {
       const types: BatteryTypeInterface[] = await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
       const brands: BrandsAnagraphInterface[] = await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
 
-      console.log(this.batteries);
-
       // Create a map to keep track of batteries by ID for faster lookup
       const batteryMap: Map<number, ExtendedBatteryAnagraphInterface> = new Map();
 
@@ -359,6 +357,10 @@ export class BatteriesSettingComponent {
     }
   }
 
+  get newBatteryFormAddDisabled() {
+    return !this.newBatteryForm.anag.label || this.newBatteryForm.anag.label ==='' || !this.newBatteryForm.type?.id || !this.newBatteryForm.brand?.id
+
+  }
 
   async setRowAnag<T>(
     anag: BatteryAnagraphInterface,
