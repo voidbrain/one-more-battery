@@ -172,12 +172,14 @@ export class BatteriesSettingComponent {
     }
   }
 
-  getColor(): string | undefined {
-    return this.series?.find(el => el.id === this.newBatteryForm?.series?.id)?.color;
+  get getColor(): string | undefined {
+    return this.series?.find(el => el.id === this.newBatteryForm?.anag?.seriesId)?.color;
   }
 
   async addBattery(){
-    const objectStore = "brands-anag";
+    const objectStore = "batteries-anag";
+    this.newAnagForm.date = new Date(this.newAnagForm.date);
+    this.newAnagForm.dateString = this.newAnagForm.date.toISOString();
     console.log(this.newAnagForm);
     await this.db.putItem(objectStore, this.newAnagForm);
     this.newAnagForm = {
@@ -266,7 +268,7 @@ export class BatteriesSettingComponent {
 
   async updateElement<T>(
     e: ExtendedBatteryAnagraphInterface,
-    value: number,
+    value: number | string,
     property: keyof BatteryAnagraphInterface
   ): Promise<T | undefined> {
     try {
@@ -360,7 +362,7 @@ export class BatteriesSettingComponent {
 
   async setRowAnag<T>(
     anag: BatteryAnagraphInterface,
-    value: number,
+    value: number | string |  string[],
     property: keyof BatteryAnagraphInterface
   ): Promise<T | undefined> {
     try {
@@ -381,7 +383,7 @@ export class BatteriesSettingComponent {
 
     async setNewBatteryElement<T>(
       e: ExtendedBatteryAnagraphInterface,
-      value: number,
+      value: number | string,
       property: keyof BatteryAnagraphInterface
     ): Promise<T | undefined> {
       try {

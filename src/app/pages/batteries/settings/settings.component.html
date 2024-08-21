@@ -388,7 +388,7 @@
                         <ion-datetime
                           #datetime
 
-                          (ionChange)="setRowAnag(newBatteryForm.anag, +($event.target.value)!, 'dateString'); datetime.cancel(true);"
+                          (ionChange)="setRowAnag(newBatteryForm.anag, ($event.target.value!), 'dateString'); datetime.cancel(true);"
                           [(ngModel)]="newBatteryForm.anag.dateString"
                           presentation="date"
                           [formatOptions]="dateTimeFormatOptions"
@@ -401,7 +401,7 @@
 
                 <ion-col class="ion-text-center">
                   <ion-item class="ion-no-padding">
-                    <ion-input name="anagLabel" [value]="newBatteryForm.anag.label" (ionChange)="setRowAnag(newBatteryForm.anag, +($event.target.value)!, 'label')">
+                    <ion-input name="anagLabel" [value]="newBatteryForm.anag.label" (ionChange)="setRowAnag(newBatteryForm.anag, ($event.target.value)!, 'label')">
                       <ion-item class="ion-no-padding" slot="start">Battery</ion-item>
                     </ion-input>
                   </ion-item>
@@ -411,7 +411,7 @@
 
                     <ion-item class="ion-no-padding">
                       <ion-select
-                      [style.--text-color]="getColor()"
+                      [style.--text-color]="getColor"
                       [value]="newBatteryForm.series?.id" (ionChange)="setNewBatteryElement(newBatteryForm, $event.target.value, 'seriesId')">
                         @for (el of series; track el) {
                           <ion-select-option [value]="el.id">
@@ -434,7 +434,7 @@
                 </ion-col>
                 <ion-col>
                   <ion-item class="ion-no-padding">
-                    <ion-input name="anagModel" [value]="newBatteryForm.anag.model" (ionChange)="setRowAnag(newBatteryForm.anag, +($event.target.value)!, 'model')"></ion-input>
+                    <ion-input name="anagModel" [value]="newBatteryForm.anag.model" (ionChange)="setRowAnag(newBatteryForm.anag, ($event.target.value)!, 'model')"></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col>

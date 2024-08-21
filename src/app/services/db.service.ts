@@ -293,13 +293,17 @@ export class DbService {
     item: T
   ): Promise<void> {
     try {
+      console.log(item, objectStore)
       if(objectStore){
         const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
         const store = tx.objectStore(objectStore);
         const request = store.put(item);
 
+
         return new Promise<void>((resolve, reject) => {
-          request.onsuccess = () => resolve();
+          request.onsuccess = () => {
+            console.log(item, objectStore)
+            resolve()};
           request.onerror = (e) => {
             console.error(`[DB]: Error adding item to ${objectStore}:`, e);
             reject(e);
