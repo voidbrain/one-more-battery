@@ -3,11 +3,30 @@
     <ion-buttons slot="end">
       <ion-button color="dark" (click)="cancel()">Close</ion-button>
     </ion-buttons>
-    <ion-title>Welcome</ion-title>
+    <ion-title>Battery {{ anag?.label }} resistance logs</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
   <ion-item>
-
+    <ion-grid>
+        <ion-row>
+          <ion-col class="title">Date</ion-col>
+          @for (cell of [].constructor(anag?.cellsNumber); track $index;) {
+            <ion-col class="title">cell {{ $index +1 }}</ion-col>
+          }
+        </ion-row>
+      @for (row of logs; track row){
+        <ion-row>
+          <ion-col>
+            {{ row.date | date: "yyyy-MM-dd" }}
+          </ion-col>
+          @for (cell of row?.values; track cell) {
+            <ion-col>
+              {{ cell }}mΩ
+            </ion-col>
+          }
+        </ion-row>
+      }
+    </ion-grid>
   </ion-item>
 </ion-content>

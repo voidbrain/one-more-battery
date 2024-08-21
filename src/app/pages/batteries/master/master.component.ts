@@ -35,7 +35,7 @@ import * as ionIcons from 'ionicons/icons';
 import { batteryStatusActionEnum, batteryStatusDaysAlertEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
-import { differenceInDays, differenceInMonths, formatDuration } from 'date-fns';
+import { differenceInDays, formatDuration } from 'date-fns';
 import { ActionSheetController } from '@ionic/angular';
 
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -43,7 +43,8 @@ import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
 import { ModalController } from '@ionic/angular';
-import { ModalExampleComponent } from './internal-resistance-logs.component';
+import { ModalResistanceLogsComponent } from './internal-resistance-logs.component';
+import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 
 @Component({
   selector: 'app-batteries-master',
@@ -236,6 +237,7 @@ export class BatteriesMasterComponent {
       const objectStoreSeries = "batteries-series";
       const objectStoreBrands = "brands-anag";
       const objectStoreType = "batteries-types";
+      const objectStoreResistanceLogs = "batteries-resistance-logs"
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
 
       for (const anag of items) {
@@ -247,9 +249,11 @@ export class BatteriesMasterComponent {
           const type: BatteryTypeInterface | undefined = await this.db.getItem<BatteryTypeInterface>(objectStoreType, anag.typeId!, 'id');
           const brand: BrandsAnagraphInterface | undefined = await this.db.getItem<BrandsAnagraphInterface>(objectStoreBrands, anag.brandId!, 'id');
           const totalCycles: number | undefined = await this.db.getTotalCycles(objectStoreStatus, anag.id!);
+          const resistanceLogs: BatteryResistanceLogInterface[] = await this.db.getItems<BatteryResistanceLogInterface>(objectStoreResistanceLogs, 'idBattery, enabled, deleted', [anag.id!, +true, +false]);
 
           // Calculate timerange as the difference between the last status date and the current date
           const timeRange = differenceInDays( Date.now(), lastStatus?.date?.getTime() as number);
+          const timeAgo = this.getAge(lastStatus?.date!);
           const lessThanWarningRange = timeRange <= batteryStatusDaysAlertEnum.Warning;
           const lessThanDangergRange = timeRange <= batteryStatusDaysAlertEnum.Danger;
           const moreThanDangerRange = timeRange > batteryStatusDaysAlertEnum.Danger;
@@ -260,7 +264,7 @@ export class BatteriesMasterComponent {
 
           this.setupLocalNotification(anag);
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeRange, alertStatus, type, brand };
+          const expandedItem: ExtendedBatteryAnagraphInterface = { anag, lastStatus, series, totalCycles, timeAgo, timeRange, alertStatus, type, brand, resistanceLogs };
 
 
           // Add the expanded item to the array
@@ -278,11 +282,15 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async showLogs(id: number){
+  async showLogs(anag: BatteryAnagraphInterface, logs: BatteryResistanceLogInterface[]){
     let message = 'This modal example uses the modalController to present and dismiss modals.';
 
     const modal = await this.modalCtrl.create({
-      component: ModalExampleComponent,
+      component: ModalResistanceLogsComponent,
+      componentProps: {
+        anag,
+        logs
+      },
     });
     modal.present();
 

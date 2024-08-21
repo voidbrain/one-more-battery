@@ -1,3 +1,4 @@
+import { BatteryResistanceLogInterface } from "./battery-resistance";
 import { BatteryStatusInterface } from "./battery-status";
 import { BatteryTypeInterface } from "./battery-type";
 import { BrandsAnagraphInterface } from "./brands-anagraph";
@@ -29,7 +30,9 @@ export interface ExtendedBatteryAnagraphInterface {
   lastStatus?: BatteryStatusInterface,
   totalCycles?: number,
   timeRange?: number,
+  timeAgo?: string,
   alertStatus?: string,
   brand?: BrandsAnagraphInterface,
   type?: BatteryTypeInterface,
+  resistanceLogs?: BatteryResistanceLogInterface[],
 }

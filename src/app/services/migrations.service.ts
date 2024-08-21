@@ -66,6 +66,7 @@ export class MigrationsService {
         const store = db.createObjectStore('batteries-resistance-logs', { keyPath: 'id', autoIncrement: true });
         store.createIndex('id','id',{ unique: false });
         store.createIndex('enabled, deleted',['enabled', 'deleted'],);
+        store.createIndex('idBattery, enabled, deleted',['idBattery', 'enabled', 'deleted'],);
         store.createIndex('deleted',['deleted'],{ unique: false });
       }
     }

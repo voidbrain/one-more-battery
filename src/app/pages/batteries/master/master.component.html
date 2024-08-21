@@ -82,12 +82,12 @@
 
             </ion-card-header>
             <ion-card-content>
-              <p>{{ getBatteryStatus(battery?.lastStatus?.status) + 'd' }} {{ battery.timeRange + ' days ago' }}</p>
+              <p>{{ getBatteryStatus(battery?.lastStatus?.status) + 'd' }} {{ battery.timeAgo }}</p>
               <p>{{ 'Total cycles: ' + battery.totalCycles }}</p>
               <p>{{ 'Age: ' + getAge(battery?.anag?.date!) }}</p>
 
               <p class="align-right">
-                <ion-button color="light" shape="round" (click)="showLogs(battery?.anag?.id!)">
+                <ion-button color="light" shape="round" (click)="showLogs(battery?.anag!, battery?.resistanceLogs!)">
                   <ion-icon slot="icon-only" name="list-outline"></ion-icon>
                 </ion-button>
               </p>

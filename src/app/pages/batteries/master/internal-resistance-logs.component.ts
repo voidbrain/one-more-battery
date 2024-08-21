@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-
-import { IonInput, ModalController } from '@ionic/angular';
+import { Component, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ModalController } from '@ionic/angular';
 import {
   IonButton,
   IonButtons,
@@ -15,10 +15,13 @@ import {
   IonTitle,
   IonToolbar,
   } from '@ionic/angular/standalone';
+import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
+import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 
 @Component({
   selector: 'app-modal-example',
   templateUrl: 'internal-resistance-logs.component.html',
+  styleUrl: 'master.component.scss',
   standalone: true,
   imports: [
     IonButton,
@@ -33,9 +36,12 @@ import {
     IonLabel,
     IonTitle,
     IonToolbar,
+    DatePipe
   ]
 })
-export class ModalExampleComponent {
+export class ModalResistanceLogsComponent {
+  @Input() anag: BatteryAnagraphInterface | undefined = undefined;
+  @Input() logs: BatteryResistanceLogInterface[] = [];
   name: string ="name";
 
   constructor(private modalCtrl: ModalController) {}
