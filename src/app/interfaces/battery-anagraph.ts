@@ -23,6 +23,7 @@ export interface BatteryAnagraphInterface {
     label: string,
     seriesId: number,
     date: Date,
+    dateString?: string,
 }
 export interface ExtendedBatteryAnagraphInterface {
   anag: BatteryAnagraphInterface,
