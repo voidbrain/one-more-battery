@@ -62,7 +62,7 @@
                     <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesEnabled" [(ngModel)]="el.deleted" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesDeleted" [(ngModel)]="el.deleted" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -101,7 +101,7 @@
                       <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
                     </ion-col>
                     <ion-col class="text-center">
-                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsDisabled" [(ngModel)]="el.deleted" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
+                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsDeleted" [(ngModel)]="el.deleted" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
                     </ion-col>
                   </ion-row>
                 </form>
@@ -143,7 +143,7 @@
                     <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="typesEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowTypes(el)"></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="typesEnabled" [(ngModel)]="el.deleted" (ionChange)="updateRowTypes(el)"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="typesDeleted" [(ngModel)]="el.deleted" (ionChange)="updateRowTypes(el)"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -188,10 +188,10 @@
                   mA
                 </ion-col>
                 <ion-col class="title">
-                  Deleted
+                  Enabled
                 </ion-col>
                 <ion-col class="title">
-                  Enabled
+                  Deleted
                 </ion-col>
               </ion-row>
       
@@ -287,7 +287,7 @@
                     <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled" [(ngModel)]="el.anag.enabled" (ionChange)="updateRowAnag(el.anag)"></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled" [(ngModel)]="el.anag.deleted" (ionChange)="updateRowAnag(el.anag)"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagDeleted" [(ngModel)]="el.anag.deleted" (ionChange)="updateRowAnag(el.anag)"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }

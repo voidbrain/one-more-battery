@@ -165,26 +165,34 @@ export class BatteriesSettingComponent {
   }
   
   async updateRowAnag(el: BatteryAnagraphInterface){
-    const objectStore: string = 'batteries-anag'
+    const objectStore: string = 'batteries-anag';
     el.date = new Date(el.dateString!);
+    el.enabled = +el.enabled;
+    el.deleted = +el.deleted;
     this.db.putItem(objectStore, el);
     await this.getItems()
   }
 
   async updateRowSeries(el: BatterySeriesAnagraphInterface){
-    const objectStore: string = 'batteries-series'
+    const objectStore: string = 'batteries-series';
+    el.enabled = +el.enabled;
+    el.deleted = +el.deleted;
     this.db.putItem(objectStore, el);
     await this.getItems()
   }
 
   async updateRowBrands(el: BrandsAnagraphInterface){
-    const objectStore: string = 'brands-anag'
+    const objectStore: string = 'brands-anag';
+    el.enabled = +el.enabled;
+    el.deleted = +el.deleted;    
     this.db.putItem(objectStore, el);
     await this.getItems()
   }
 
   async updateRowTypes(el: BatteryTypeInterface){
-    const objectStore: string = 'batteries-types'    
+    const objectStore: string = 'batteries-types';
+    el.enabled = +el.enabled;
+    el.deleted = +el.deleted;    
     this.db.putItem(objectStore, el);
     await this.getItems()
   }
