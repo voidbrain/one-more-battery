@@ -44,6 +44,7 @@
                 <ion-col class="title">
                   Deleted
                 </ion-col>
+                <ion-col></ion-col>
               </ion-row>
 
               @for (el of series; track el){
@@ -62,11 +63,10 @@
                         [hideColorPicker]="true"
                         colorPickerControls="default"
                         [(ngModel)]="el.color"
-                        (close)="changeColor($event, el)"
+                        (close)="changeColor($event, el, true)"
                       >
                       </ngx-colors>
 
-                      <!-- <ion-input name="seriesColor" [value]="el.color" (ionChange)="updateRowSeries(el)"></ion-input> -->
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
@@ -75,8 +75,44 @@
                   <ion-col class="text-center">
                     <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesDeleted" [(ngModel)]="el.deleted" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
                   </ion-col>
+                  <ion-col></ion-col>
                 </ion-row>
               }
+
+              <form #form="ngForm">
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-input [(ngModel)]="newSeriesForm.label" required name="label"></ion-input></ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-item class="ion-no-padding">
+
+                      <ngx-colors name="ngx-colors-trigger"
+                        ngx-colors-trigger
+                        [hideTextInput]="true"
+                        [hideColorPicker]="true"
+                        colorPickerControls="default"
+                        [(ngModel)]="newSeriesForm.color"
+                        (close)="changeColor($event, newSeriesForm, false)"
+                      >
+                      </ngx-colors>
+
+                    </ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newSeriesForm.enabled" name="enabled"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newSeriesForm.deleted" name="deleted"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button [disabled]="!newSeriesForm.label || newSeriesForm.label ===''" shape="round" (click)="addSeries()">
+                      <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </form>
+
             </ion-grid>
           </ion-card-content>
         </ion-card>
@@ -100,6 +136,7 @@
                 <ion-col class="title text-center">
                   Deleted
                 </ion-col>
+                <ion-col></ion-col>
               </ion-row>
 
               @for (el of brands; track el){
@@ -114,9 +151,29 @@
                     <ion-col class="text-center">
                       <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsDeleted" [(ngModel)]="el.deleted" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
                     </ion-col>
+                    <ion-col></ion-col>
                   </ion-row>
                 </form>
               }
+              <form #form="ngForm">
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-input [(ngModel)]="newBrandForm.label" required name="label"></ion-input></ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newBrandForm.enabled" name="enabled"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newBrandForm.deleted" name="deleted"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button [disabled]="!newBrandForm.label || newBrandForm.label ===''" shape="round" (click)="addBrand()">
+                      <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </form>
+
             </ion-grid>
           </ion-card-content>
         </ion-card>
@@ -158,6 +215,26 @@
                   </ion-col>
                 </ion-row>
               }
+
+              <form #form="ngForm">
+                <ion-row>
+                  <ion-col>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-input [(ngModel)]="newTypeForm.label" required name="label"></ion-input></ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newTypeForm.enabled" name="enabled"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="newTypeForm.deleted" name="deleted"></ion-toggle></ion-item>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button [disabled]="!newTypeForm.label || newTypeForm.label ===''" shape="round" (click)="addType()">
+                      <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </form>
+
             </ion-grid>
           </ion-card-content>
         </ion-card>

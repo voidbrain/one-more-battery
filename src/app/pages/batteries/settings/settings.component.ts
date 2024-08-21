@@ -99,6 +99,25 @@ export class BatteriesSettingComponent {
   brands: BrandsAnagraphInterface[] = [];
   batteries: ExtendedBatteryAnagraphInterface[] = [];
 
+  newBrandForm: BrandsAnagraphInterface = {
+    label: '',
+    enabled: +true,
+    deleted: +false
+  };
+
+  newTypeForm: BatteryTypeInterface = {
+    label: '',
+    enabled: +true,
+    deleted: +false
+  };
+
+  newSeriesForm: BatterySeriesAnagraphInterface = {
+    label: '',
+    enabled: +true,
+    deleted: +false,
+    color: '',
+  };
+
   constructor(
     private db: DbService,
     private settings: SettingsService,
@@ -125,9 +144,45 @@ export class BatteriesSettingComponent {
     }
   }
 
-  changeColor(value: string, el: any){
+  async addBrand(){
+    const objectStore = "brands-anag";
+    await this.db.putItem(objectStore, this.newBrandForm);
+    this.newBrandForm = {
+      label: '',
+      enabled: +true,
+      deleted: +false,
+    };
+    this.getItems();
+  }
+
+  async addType(){
+    const objectStore = "batteries-types";
+    await this.db.putItem(objectStore, this.newTypeForm);
+    this.newTypeForm = {
+      label: '',
+      enabled: +true,
+      deleted: +false,
+    };
+    this.getItems();
+  }
+
+  async addSeries(){
+    const objectStore = "batteries-series";
+    await this.db.putItem(objectStore, this.newSeriesForm);
+    this.newSeriesForm = {
+      label: '',
+      enabled: +true,
+      deleted: +false,
+      color: ''
+    };
+    this.getItems();
+  }
+
+  changeColor(value: string, el: any, forwardToDb: boolean){
     el.color = value;
-    this.updateRowSeries(el);
+    if(forwardToDb){
+      this.updateRowSeries(el);
+    }
   }
 
   async updateElement<T>(
@@ -135,25 +190,22 @@ export class BatteriesSettingComponent {
     value: number,
     property: keyof BatteryAnagraphInterface
   ): Promise<T | undefined> {
-    return new Promise<T | undefined>((resolve, reject) => {
-      try {
-        // Check if 'property' is a key in BatteryAnagraphInterface
-        if (property in e.anag) {
-          // Ensure the property is of type number
-          if (typeof e.anag[property] === 'number') {
-            (e.anag as any)[property] = value; // Use 'as any' to bypass TypeScript errors
-            resolve(e as unknown as T);
-          } else {
-            reject(new Error(`Property '${property}' is not of type number.`));
-          }
-        } else {
-          reject(new Error(`Property '${property}' does not exist in BatteryAnagraphInterface.`));
-        }
-      } catch (error) {
-        console.error('Error updating element:', error);
-        reject(error);
+    try {
+      if (property in e.anag) {
+        // Update the property
+        (e.anag as any)[property] = value;
+
+        // Wait for updateRowAnag to complete
+        await this.updateRowAnag(e.anag as BatteryAnagraphInterface);
+
+        return e as unknown as T;
+      } else {
+        throw new Error(`Property '${property}' does not exist in BatteryAnagraphInterface.`);
       }
-    });
+    } catch (error) {
+      console.error('Error updating element:', error);
+      throw error; // Re-throw the error to be caught by the caller
+    }
   }
 
   async getItems() {
