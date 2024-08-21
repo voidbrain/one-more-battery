@@ -50,12 +50,12 @@
                 <ion-row>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      {{ el.label }}
+                      <ion-input name="seriesLabel" [value]="el.label" (ionChange)="updateRowSeries(el)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      {{ el.color }}
+                      <ion-input name="seriesColor" [value]="el.color" (ionChange)="updateRowSeries(el)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
@@ -136,7 +136,7 @@
                 <ion-row>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      {{ el.label }}
+                      <ion-input name="typesLabel" [value]="el.label" (ionChange)="updateRowTypes(el)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
@@ -226,40 +226,61 @@
 
                   <ion-col class="text-center">
                     <ion-item class="ion-no-padding">
-                      Battery {{ el.anag.label }}
+                      Battery <ion-input name="anagLabel" [value]="el.anag.label" (ionChange)="updateRowAnag(el.anag)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      <span [style]="'color: ' + el.series?.color!">
+                      <!-- 
                         {{ el.series?.label }}
-                      </span>
+                      </span> -->
+
+                      <ion-item class="ion-no-padding">
+                        <ion-select [value]="el.series?.id" (ionChange)="updateElement(el, $event.target.value, 'seriesId')">
+                          @for (el of series; track el) {
+                            <ion-select-option [value]="el.id">
+                              <span [style]="'color: ' + el.color">
+                                {{el.label}} {{ el.color }}
+                              </span>
+                            </ion-select-option>
+                          }
+                        </ion-select>
+                      </ion-item>
                     </ion-item>
                   </ion-col>
                   
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      {{ el.brand?.label }}
+                      <ion-select [value]="el.brand?.id" (ionChange)="updateElement(el, $event.target.value, 'brandId')">
+                        @for (el of brands; track el) {
+                          <ion-select-option [value]="el.id">{{el.label}}</ion-select-option>
+                        }
+                      </ion-select>
                     </ion-item>
                   </ion-col>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      {{ el.anag.model }}
+                      <ion-input name="anagModel" [value]="el.anag.model" (ionChange)="updateRowAnag(el.anag)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col>
+                    
+                      <ion-item class="ion-no-padding">
+                        <ion-select [value]="el.type?.id" (ionChange)="updateElement(el, $event.target.value, 'typeId')">
+                          @for (el of types; track el) {
+                            <ion-select-option [value]="el.id">{{el.label}}</ion-select-option>
+                          }
+                        </ion-select>
+                      </ion-item>
+                  </ion-col>
+                  <ion-col class="text-center">
                     <ion-item class="ion-no-padding">
-                      {{ el.type?.label }}
+                      <ion-input class="ion-text-center" name="anagCellsNumber" [value]="el.anag.cellsNumber" (ionChange)="updateRowAnag(el.anag)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
                     <ion-item class="ion-no-padding">
-                      {{ el.anag.cellsNumber }}
-                    </ion-item>
-                  </ion-col>
-                  <ion-col class="text-center">
-                    <ion-item class="ion-no-padding">
-                      {{ el.anag.mA }}
+                      <ion-input class="ion-text-center" name="anagmA" [value]="el.anag.mA" (ionChange)="updateRowAnag(el.anag)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">

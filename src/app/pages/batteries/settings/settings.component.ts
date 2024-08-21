@@ -20,6 +20,8 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
+  IonSelect,
+  IonSelectOption,
   RefresherCustomEvent, IonActionSheet, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol, IonInput, IonToggle, IonModal, IonDatetime, IonDatetimeButton } from '@ionic/angular/standalone';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
@@ -60,6 +62,8 @@ import { FillDbService } from 'src/app/services/fillDb.service';
     IonRefresherContent,
     IonTitle,
     IonToolbar,
+    IonSelect,
+    IonSelectOption,
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
@@ -101,6 +105,32 @@ export class BatteriesSettingComponent {
     } catch (err) {
       console.error('Error during initialization:', err);
     }
+  }
+
+  async updateElement<T>(
+    e: ExtendedBatteryAnagraphInterface,
+    value: number,
+    property: keyof BatteryAnagraphInterface
+  ): Promise<T | undefined> {
+    return new Promise<T | undefined>((resolve, reject) => {
+      try {
+        // Check if 'property' is a key in BatteryAnagraphInterface
+        if (property in e.anag) {
+          // Ensure the property is of type number
+          if (typeof e.anag[property] === 'number') {
+            (e.anag as any)[property] = value; // Use 'as any' to bypass TypeScript errors
+            resolve(e as unknown as T);
+          } else {
+            reject(new Error(`Property '${property}' is not of type number.`));
+          }
+        } else {
+          reject(new Error(`Property '${property}' does not exist in BatteryAnagraphInterface.`));
+        }
+      } catch (error) {
+        console.error('Error updating element:', error);
+        reject(error);
+      }
+    });
   }
 
   async getItems() {
