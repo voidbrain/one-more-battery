@@ -1,4 +1,4 @@
-import { Component, ViewChildren } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -56,7 +56,7 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
   styleUrl: './master.component.scss',
 })
 export class IncidentsMasterComponent {
-  @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
+  
   items: BatteryStatusInterface[] = [];
   page = 'incidents';
   debug = true;
@@ -96,9 +96,6 @@ export class IncidentsMasterComponent {
 
   async deleteItem(item: BatteryStatusInterface) {
     try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
       await this.db.deleteItem<BatteryStatusInterface>(this.page, item);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
@@ -107,17 +104,11 @@ export class IncidentsMasterComponent {
   }
 
   showDetail(item: BatteryStatusInterface) {
-    this.slidingItems.forEach((el) => {
-      el.closeOpened();
-    });
     this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item.id)]);
   }
 
   async doRefresh(refresher: RefresherCustomEvent) {
     try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
       const forceLoading = true;
       await this.db.initService(forceLoading);
       await this.getItems();

@@ -69,7 +69,6 @@ import { FillDbService } from 'src/app/services/fillDb.service';
   styleUrl: './settings.component.scss',
 })
 export class BatteriesSettingComponent {
-  @ViewChildren('slidingItems') private slidingItems: IonItemSliding[] = [];
   items: Partial<ExtendedBatteryAnagraphInterface>[] = [];
   page = 'settings';
   debug = true;
@@ -168,66 +167,25 @@ export class BatteriesSettingComponent {
   async updateRowAnag(el: BatteryAnagraphInterface){
     const objectStore: string = 'batteries-anag'
     el.date = new Date(el.dateString!);
-    
     this.db.putItem(objectStore, el);
+    await this.getItems()
   }
 
   async updateRowSeries(el: BatterySeriesAnagraphInterface){
     const objectStore: string = 'batteries-series'
     this.db.putItem(objectStore, el);
+    await this.getItems()
   }
 
   async updateRowBrands(el: BrandsAnagraphInterface){
     const objectStore: string = 'brands-anag'
     this.db.putItem(objectStore, el);
+    await this.getItems()
   }
 
   async updateRowTypes(el: BatteryTypeInterface){
     const objectStore: string = 'batteries-types'    
     this.db.putItem(objectStore, el);
+    await this.getItems()
   }
-
-  async deleteItem(item: Partial<ExtendedBatteryAnagraphInterface>) {
-    try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
-
-      const { anag } = item;
-
-      const deleteItem: BatteryAnagraphInterface | undefined = anag;
-
-      await this.db.deleteItem(this.page, deleteItem!);
-      await this.getItems(); // Refresh the list after deletion
-    } catch (error) {
-      console.error('Error deleting item:', error);
-    }
-  }
-
-  showDetail(item: Partial<ExtendedBatteryAnagraphInterface>) {
-    this.slidingItems.forEach((el) => {
-      el.closeOpened();
-    });
-    this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item?.anag?.id)]);
-  }
-
-  async doRefresh(refresher: RefresherCustomEvent) {
-    try {
-      this.slidingItems.forEach((el) => {
-        el.closeOpened();
-      });
-      const forceLoading = true;
-      await this.db.initService(forceLoading);
-      await this.getItems();
-      refresher.target.complete();
-    } catch (error) {
-      refresher.target.complete();
-      console.error('Error refreshing items:', error);
-    }
-  }
-
-  trackById(index: number, item: BatteryAnagraphInterface) {
-    return item.id;
-  }
-
 }
