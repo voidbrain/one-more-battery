@@ -59,10 +59,10 @@
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="seriesEnabled" [(ngModel)]="el.deleted" (ionChange)="updateRowSeries(el)" ></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -95,13 +95,13 @@
                 <form>
                   <ion-row>
                     <ion-col>
-                      <ion-item class="ion-no-padding ion-text-center"><ion-input [value]="el.label"></ion-input></ion-item>
+                      <ion-item class="ion-no-padding ion-text-center"><ion-input name="brandsLabel" [value]="el.label" (ionChange)="updateRowBrands(el)"></ion-input></ion-item>
                     </ion-col>
                     <ion-col class="text-center">
-                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
+                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
                     </ion-col>
                     <ion-col class="text-center">
-                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
+                      <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="brandsDisabled" [(ngModel)]="el.deleted" (ionChange)="updateRowBrands(el)"></ion-toggle></ion-item>
                     </ion-col>
                   </ion-row>
                 </form>
@@ -140,10 +140,10 @@
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.enabled"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="typesEnabled" [(ngModel)]="el.enabled" (ionChange)="updateRowTypes(el)"></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [checked]="el.deleted"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="typesEnabled" [(ngModel)]="el.deleted" (ionChange)="updateRowTypes(el)"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
@@ -206,8 +206,8 @@
                         <ng-template>
                           
                           <ion-datetime
-                            (ionChange)="updateRow(el.anag)"
-                            [(ngModel)]="el.anag.date"
+                            (ionChange)="updateRowAnag(el.anag)"
+                            [(ngModel)]="el.anag.dateString"
                             presentation="date"
                             [formatOptions]="{
                               date: {
@@ -263,10 +263,10 @@
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="el.anag.enabled" (ionChange)="updateRow(el.anag)" [checked]="el.anag.enabled"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled" [(ngModel)]="el.anag.enabled" (ionChange)="updateRowAnag(el.anag)"></ion-toggle></ion-item>
                   </ion-col>
                   <ion-col class="text-center">
-                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle [(ngModel)]="el.anag.deleted" (ionChange)="updateRow(el.anag)" [checked]="el.anag.deleted"></ion-toggle></ion-item>
+                    <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled" [(ngModel)]="el.anag.deleted" (ionChange)="updateRowAnag(el.anag)"></ion-toggle></ion-item>
                   </ion-col>
                 </ion-row>
               }
