@@ -15,7 +15,7 @@
         ><ion-icon name="add-circle"></ion-icon
       ></ion-button>
     </ion-buttons>
-    
+
   </ion-toolbar>
 </ion-header>
 
@@ -45,7 +45,7 @@
                   Deleted
                 </ion-col>
               </ion-row>
-      
+
               @for (el of series; track el){
                 <ion-row>
                   <ion-col>
@@ -55,7 +55,18 @@
                   </ion-col>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      <ion-input name="seriesColor" [value]="el.color" (ionChange)="updateRowSeries(el)"></ion-input>
+
+                      <ngx-colors name="ngx-colors-trigger"
+                        ngx-colors-trigger
+                        [hideTextInput]="true"
+                        [hideColorPicker]="true"
+                        colorPickerControls="default"
+                        [(ngModel)]="el.color"
+                        (close)="changeColor($event, el)"
+                      >
+                      </ngx-colors>
+
+                      <!-- <ion-input name="seriesColor" [value]="el.color" (ionChange)="updateRowSeries(el)"></ion-input> -->
                     </ion-item>
                   </ion-col>
                   <ion-col class="text-center">
@@ -90,7 +101,7 @@
                   Deleted
                 </ion-col>
               </ion-row>
-      
+
               @for (el of brands; track el){
                 <form>
                   <ion-row>
@@ -131,7 +142,7 @@
                   Deleted
                 </ion-col>
               </ion-row>
-      
+
               @for (el of types; track el){
                 <ion-row>
                   <ion-col>
@@ -171,7 +182,7 @@
                 <ion-col class="title">
                   Series
                 </ion-col>
-                
+
                 <ion-col class="title">
                   Brand
                 </ion-col>
@@ -194,19 +205,20 @@
                   Deleted
                 </ion-col>
               </ion-row>
-      
+
               @for (el of batteries; track el){
                 <ion-row>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                 
+
                       <ion-datetime-button [datetime]="'datetime' + el.anag.id"></ion-datetime-button>
 
                       <ion-modal [keepContentsMounted]="true">
                         <ng-template>
-                          
+
                           <ion-datetime
-                            (ionChange)="updateRowAnag(el.anag)"
+                            #datetime
+                            (ionChange)="updateRowAnag(el.anag); datetime.cancel(true);"
                             [(ngModel)]="el.anag.dateString"
                             presentation="date"
                             [formatOptions]="{
@@ -215,7 +227,7 @@
                                 month: 'short',
                                 day: '2-digit',
                               },
-                              
+
                             }"
                             [id]="'datetime' + el.anag.id">
                           </ion-datetime>
@@ -226,29 +238,28 @@
 
                   <ion-col class="text-center">
                     <ion-item class="ion-no-padding">
-                      Battery <ion-input name="anagLabel" [value]="el.anag.label" (ionChange)="updateRowAnag(el.anag)"></ion-input>
+                      Battery <ion-input class="ml-1" name="anagLabel" [value]="el.anag.label" (ionChange)="updateRowAnag(el.anag)"></ion-input>
                     </ion-item>
                   </ion-col>
                   <ion-col>
                     <ion-item class="ion-no-padding">
-                      <!-- 
+                      <!--
                         {{ el.series?.label }}
                       </span> -->
 
                       <ion-item class="ion-no-padding">
-                        <ion-select [value]="el.series?.id" (ionChange)="updateElement(el, $event.target.value, 'seriesId')">
+                        <ion-select [style.--text-color]="el.series?.color"
+                        [value]="el.series?.id" (ionChange)="updateElement(el, $event.target.value, 'seriesId')">
                           @for (el of series; track el) {
                             <ion-select-option [value]="el.id">
-                              <span [style]="'color: ' + el.color">
-                                {{el.label}} {{ el.color }}
-                              </span>
+                                {{el.label}}
                             </ion-select-option>
                           }
                         </ion-select>
                       </ion-item>
                     </ion-item>
                   </ion-col>
-                  
+
                   <ion-col>
                     <ion-item class="ion-no-padding">
                       <ion-select [value]="el.brand?.id" (ionChange)="updateElement(el, $event.target.value, 'brandId')">
@@ -264,7 +275,7 @@
                     </ion-item>
                   </ion-col>
                   <ion-col>
-                    
+
                       <ion-item class="ion-no-padding">
                         <ion-select [value]="el.type?.id" (ionChange)="updateElement(el, $event.target.value, 'typeId')">
                           @for (el of types; track el) {
@@ -299,11 +310,11 @@
 
     </ion-row>
   </ion-grid>
-  
-  
 
-  
 
-    
-  
+
+
+
+
+
 </ion-content>

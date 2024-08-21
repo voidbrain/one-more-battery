@@ -1,3 +1,8 @@
 .title { font-weight: bold; }
 ion-title { text-transform: capitalize; }
 .text-center { text-align: center; }
+.ml-1 { margin-left:.5em }
+
+ion-select::part(text) {
+  color: var(--text-color, --ion-text-color);  // Fallback to black if --text-color is not defined
+}
