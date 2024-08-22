@@ -18,11 +18,6 @@
       ></ion-button>
     </ion-buttons>
 
-    <ion-buttons slot="end">
-      <ion-button routerLink="create"
-        ><ion-icon name="add-circle"></ion-icon
-      ></ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -95,5 +90,6 @@
       }
     </ion-row>
   </ion-grid>
-  <ion-button (click)=" setupLN() "></ion-button>
+  <ion-button (click)=" setupLN() ">notifications</ion-button>
+  <ion-button (click)=" fillDatabase() ">fillDb</ion-button>
 </ion-content>

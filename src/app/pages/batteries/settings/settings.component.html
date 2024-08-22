@@ -9,11 +9,6 @@
     </ion-buttons>
     <ion-title>{{ page }}</ion-title>
 
-    <ion-buttons slot="end">
-      <ion-button routerLink="../create"
-        ><ion-icon name="add-circle"></ion-icon
-      ></ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -31,7 +26,7 @@
                 <ion-col class="title"> Label </ion-col>
                 <ion-col class="title"> Color </ion-col>
                 <ion-col class="title"> Enabled </ion-col>
-                <ion-col class="title ion-text-center"> Delete </ion-col>
+                <ion-col class="title ion-text-center"> Action </ion-col>
               </ion-row>
 
               @for (el of series; track el) {
@@ -143,7 +138,7 @@
               <ion-row>
                 <ion-col class="title"> Label </ion-col>
                 <ion-col class="title"> Enabled </ion-col>
-                <ion-col class="title ion-text-center"> Delete </ion-col>
+                <ion-col class="title ion-text-center"> Action </ion-col>
               </ion-row>
 
               @for (el of brands; track el) {
@@ -229,7 +224,7 @@
               <ion-row>
                 <ion-col class="title"> Label </ion-col>
                 <ion-col class="title"> Enabled </ion-col>
-                <ion-col class="title ion-text-center"> Delete </ion-col>
+                <ion-col class="title ion-text-center"> Action </ion-col>
               </ion-row>
 
               @for (el of types; track el) {
@@ -322,7 +317,7 @@
                 <ion-col class="title ion-text-center"> Cells N° </ion-col>
                 <ion-col class="title ion-text-center"> mA </ion-col>
                 <ion-col class="title"> Enabled </ion-col>
-                <ion-col class="title ion-text-center"> Delete </ion-col>
+                <ion-col class="title ion-text-center"> Action </ion-col>
               </ion-row>
 
               @for (battery of batteries; track battery) {

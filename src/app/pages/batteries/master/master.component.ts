@@ -109,6 +109,11 @@ export class BatteriesMasterComponent {
     addIcons(ionIcons);
   }
 
+  public async fillDatabase(){
+    await this.fillDb.fillDb();
+    await this.getItems();
+  }
+
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
