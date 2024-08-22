@@ -1,10 +1,17 @@
-.title { font-weight: bold; }
-ion-title { text-transform: capitalize; }
+.title {
+  font-weight: bold;
+}
+ion-title {
+  text-transform: capitalize;
+}
 
 ion-select::part(text) {
-  color: var(--text-color, --ion-text-color);  // Fallback to black if --text-color is not defined
+  color: var(
+    --text-color,
+    --ion-text-color
+  ); // Fallback to black if --text-color is not defined
 }
-.sc-ion-input-md-s>[slot=start]:last-of-type {
+.sc-ion-input-md-s > [slot="start"]:last-of-type {
   margin-right: 0;
   -webkit-margin-end: 0;
   margin-left: 0;

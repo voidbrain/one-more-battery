@@ -1,4 +1,3 @@
-
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -15,7 +14,6 @@
         ><ion-icon name="cog"></ion-icon
       ></ion-button>
     </ion-buttons>
-    
   </ion-toolbar>
 </ion-header>
 
@@ -27,17 +25,11 @@
   </ion-header>
 
   <div id="container">
-
     <form>
       <label>Battery</label>
       <select name="batteryId">
-        @for (battery of batteryAnagArr; track battery){
-
-        }
-
-
+        @for (battery of batteryAnagArr; track battery) {}
       </select>
     </form>
-
   </div>
 </ion-content>

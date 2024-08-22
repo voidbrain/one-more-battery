@@ -14,7 +14,7 @@ import {
   IonLabel,
   IonTitle,
   IonToolbar,
-  } from '@ionic/angular/standalone';
+} from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 import { SettingsService } from '../../../services/settings.service';
@@ -38,23 +38,22 @@ import { FillDbService } from 'src/app/services/fillDb.service';
     IonLabel,
     IonTitle,
     IonToolbar,
-    DatePipe
-  ]
+    DatePipe,
+  ],
 })
 export class ModalResistanceLogsComponent {
   @Input() anag: BatteryAnagraphInterface | undefined = undefined;
   @Input() logs: BatteryResistanceLogInterface[] = [];
-  name: string ="name";
+  name: string = 'name';
 
   constructor(
     private modalCtrl: ModalController,
     private settings: SettingsService,
-    private fillDb: FillDbService
-  ) {
-  }
+    private fillDb: FillDbService,
+  ) {}
 
   async ionViewWillEnter() {
-    if(this.settings.fillDb) {
+    if (this.settings.fillDb) {
       await this.fillDb.fillDb();
     }
   }

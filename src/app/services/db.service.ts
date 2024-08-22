@@ -10,10 +10,9 @@ interface Deletable {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DbService {
-
   private db: IDBDatabase | undefined;
   private debug = false;
 
@@ -86,7 +85,10 @@ export class DbService {
     }
 
     return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open(this.appSettings.appName, this.appSettings.dbVersion); // Use a version number higher than the current
+      const openRequest = indexedDB.open(
+        this.appSettings.appName,
+        this.appSettings.dbVersion,
+      ); // Use a version number higher than the current
 
       openRequest.onupgradeneeded = async (event) => {
         const db = (event.target as IDBRequest<IDBDatabase>).result;
@@ -111,7 +113,10 @@ export class DbService {
       };
 
       openRequest.onerror = (event) => {
-        console.error('[DB]: Error opening database', (event.target as IDBRequest).error);
+        console.error(
+          '[DB]: Error opening database',
+          (event.target as IDBRequest).error,
+        );
         reject((event.target as IDBRequest).error);
       };
     });
@@ -133,10 +138,9 @@ export class DbService {
   async getItem<T>(
     objectStore: string,
     id: number,
-    column = 'id'
+    column = 'id',
   ): Promise<T | undefined> {
     try {
-
       // Ensure the database connection is available
       if (!this.db) {
         throw new Error(`[DB]: Database not initialized.`);
@@ -173,15 +177,19 @@ export class DbService {
     }
   }
 
-
-  async getTotalCycles(objectStore: string, idBattery: number): Promise<number> {
+  async getTotalCycles(
+    objectStore: string,
+    idBattery: number,
+  ): Promise<number> {
     try {
       const tx = this.db?.transaction(objectStore, 'readonly');
       const store = tx?.objectStore(objectStore);
       const index = store?.index('idBattery, status, enabled, deleted');
 
       if (!index) {
-        throw new Error(`[DB]: Compound index not found for idBattery, status, enabled, and deleted columns in ${objectStore}`);
+        throw new Error(
+          `[DB]: Compound index not found for idBattery, status, enabled, and deleted columns in ${objectStore}`,
+        );
       }
 
       const status = batteryStatusActionEnum.Discharge;
@@ -197,19 +205,25 @@ export class DbService {
         };
 
         request.onerror = (event) => {
-          console.error(`[DB]: Error counting total cycles in ${objectStore}:`, event);
+          console.error(
+            `[DB]: Error counting total cycles in ${objectStore}:`,
+            event,
+          );
           reject(event);
         };
       });
     } catch (error) {
-      console.error(`[DB]: Failed to get total cycles in ${objectStore}:`, error);
+      console.error(
+        `[DB]: Failed to get total cycles in ${objectStore}:`,
+        error,
+      );
       return Promise.reject(error);
     }
   }
 
   async getLastStatusByDate<T>(
     objectStore: string = 'batteries-status',
-    id: string | number,          // Add `id` as a parameter
+    id: string | number, // Add `id` as a parameter
   ): Promise<T | undefined> {
     try {
       const tx = this.db?.transaction(objectStore, 'readonly');
@@ -219,12 +233,14 @@ export class DbService {
       const index = store?.index('idBattery, date, enabled, deleted');
 
       if (!index) {
-        throw new Error(`[DB]: Index not found for columns: id, date, enabled, deleted`);
+        throw new Error(
+          `[DB]: Index not found for columns: id, date, enabled, deleted`,
+        );
       }
 
       // Define proper bounds for the IDBKeyRange
-      const lowerBound = [id, new Date(0), +true, +false];  // Earliest possible date
-      const upperBound = [id, new Date(), +true, +false];     // Latest possible date
+      const lowerBound = [id, new Date(0), +true, +false]; // Earliest possible date
+      const upperBound = [id, new Date(), +true, +false]; // Latest possible date
 
       // Use IDBKeyRange.bound() to create a range query between these bounds
       const keyRange = IDBKeyRange.bound(lowerBound, upperBound);
@@ -235,7 +251,8 @@ export class DbService {
       // Return a promise to handle the async behavior of IndexedDB
       return new Promise<T | undefined>((resolve, reject) => {
         request.onsuccess = (event) => {
-          const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+          const cursor = (event.target as IDBRequest<IDBCursorWithValue>)
+            .result;
           if (cursor) {
             // Resolve the result, including the primaryKey (id)
             resolve(cursor.value as T);
@@ -246,12 +263,18 @@ export class DbService {
         };
 
         request.onerror = (event) => {
-          console.error('[DB]: Error fetching last item by id and date:', event);
+          console.error(
+            '[DB]: Error fetching last item by id and date:',
+            event,
+          );
           reject(event);
         };
       });
     } catch (error) {
-      console.error(`[DB]: Failed to get last item by id and date in ${objectStore}:`, error);
+      console.error(
+        `[DB]: Failed to get last item by id and date in ${objectStore}:`,
+        error,
+      );
       return undefined;
     }
   }
@@ -259,15 +282,14 @@ export class DbService {
   async getItems<T>(
     objectStore: string,
     column = 'enabled, deleted',
-    query = [+true, +false]
+    query = [+true, +false],
   ): Promise<T[]> {
     try {
       const tx = (this.db as IDBDatabase).transaction(objectStore, 'readonly');
       const store = tx.objectStore(objectStore);
       const dataIndex = store.index(column);
-      const request = query.length > 0
-        ? dataIndex.getAll(query)
-        : dataIndex.getAll();
+      const request =
+        query.length > 0 ? dataIndex.getAll(query) : dataIndex.getAll();
 
       return new Promise<T[]>((resolve, reject) => {
         request.onsuccess = (e) => {
@@ -285,16 +307,15 @@ export class DbService {
     }
   }
 
-  async putItem<T>(
-    objectStore: string,
-    item: T
-  ): Promise<void> {
+  async putItem<T>(objectStore: string, item: T): Promise<void> {
     try {
-      if(objectStore){
-        const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
+      if (objectStore) {
+        const tx = (this.db as IDBDatabase).transaction(
+          objectStore,
+          'readwrite',
+        );
         const store = tx.objectStore(objectStore);
         const request = store.put(item);
-
 
         return new Promise<void>((resolve, reject) => {
           request.onsuccess = () => resolve();
@@ -314,7 +335,7 @@ export class DbService {
 
   async deleteItem<T extends Deletable>(
     objectStore: string,
-    item: T
+    item: T,
   ): Promise<void> {
     try {
       // Assuming `deleted` property is common for all types
@@ -331,17 +352,22 @@ export class DbService {
   private performStoreOperation<T>(
     objectStore: string,
     operation: 'delete' | 'put',
-    data: T
+    data: T,
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const tx = (this.db as IDBDatabase).transaction(objectStore, 'readwrite');
       const store = tx.objectStore(objectStore);
-      const request = operation === 'delete' ? store.delete((data as any).id) : store.put(data);
+      const request =
+        operation === 'delete'
+          ? store.delete((data as any).id)
+          : store.put(data);
 
       request.onsuccess = () => {
         if (this.debug) {
           const action = operation === 'delete' ? 'deleted' : 'updated';
-          console.info(`[DB]: Item ${action}. Table: "${objectStore}", Data: ${JSON.stringify(data)}`);
+          console.info(
+            `[DB]: Item ${action}. Table: "${objectStore}", Data: ${JSON.stringify(data)}`,
+          );
         }
         resolve();
       };

@@ -21,19 +21,19 @@ const routes: Routes = [
       { path: 'incidents', component: IncidentsMasterComponent },
       { path: 'incidents/create', component: IncidentsDetailComponent },
       { path: 'incidents/edit/:id', component: IncidentsDetailComponent },
-     
+
       {
         path: '',
         redirectTo: '/tabs/batteries',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '',
     redirectTo: '/tabs/batteries',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({

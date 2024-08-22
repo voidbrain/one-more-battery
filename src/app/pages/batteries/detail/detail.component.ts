@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ActivatedRoute,
@@ -8,7 +6,14 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { DbService } from '../../../services/db.service';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import {
   IonBadge,
@@ -85,12 +90,11 @@ export class BatteriesDetailComponent implements OnInit {
   private id: number = 0;
   public page = 'batteries';
 
-  batteryAnagArr?: BatteryAnagraphInterface[] | undefined
-
+  batteryAnagArr?: BatteryAnagraphInterface[] | undefined;
 
   form = new FormGroup({
-    name: new FormControl("John"),
-    surname: new FormControl("Doe"),
+    name: new FormControl('John'),
+    surname: new FormControl('Doe'),
     age: new FormControl(30),
   });
 
@@ -111,13 +115,13 @@ export class BatteriesDetailComponent implements OnInit {
       console.log(event);
     });
     this.getItem(+(this.route.snapshot.paramMap.get('id') as string));
-    this.batteryAnagArr = await this.db.getItems<BatteryAnagraphInterface>('batteries-status');
-    
+    this.batteryAnagArr =
+      await this.db.getItems<BatteryAnagraphInterface>('batteries-status');
   }
 
   async getItem(id: number) {
-    const batteriesStatus: BatteryStatusInterface[] | undefined = await this.db.getItems<BatteryStatusInterface>('batteries-status');
-
+    const batteriesStatus: BatteryStatusInterface[] | undefined =
+      await this.db.getItems<BatteryStatusInterface>('batteries-status');
   }
 
   formSubmitted(value: CustomEvent) {

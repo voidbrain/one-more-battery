@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingsService {
   public appName = '1More';
@@ -9,5 +9,5 @@ export class SettingsService {
   public resetDb = false;
   public fillDb = false;
 
-  constructor() { }
+  constructor() {}
 }

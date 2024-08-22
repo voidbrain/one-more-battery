@@ -1,19 +1,31 @@
-ion-icon { vertical-align: middle; }
-ion-title { text-transform: capitalize;  font-size:1.8rem; }
+ion-icon {
+  vertical-align: middle;
+}
+ion-title {
+  text-transform: capitalize;
+  font-size: 1.8rem;
+}
 
 ion-card-title {
-
   ion-button {
     float: right;
   }
-  span { white-space: nowrap; font-size:1rem; display: block; }
+  span {
+    white-space: nowrap;
+    font-size: 1rem;
+    display: block;
+  }
 }
 .align-right {
   text-align: right;
 }
 
-ion-col.title { font-weight: bold; }
-ion-col.text-center { text-align: center; }
+ion-col.title {
+  font-weight: bold;
+}
+ion-col.text-center {
+  text-align: center;
+}
 
 @-webkit-keyframes fadeout {
   0% {

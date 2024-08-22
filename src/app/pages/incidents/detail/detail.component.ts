@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ActivatedRoute,
@@ -8,7 +6,14 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { DbService } from '../../../services/db.service';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import {
   IonBadge,
@@ -84,8 +89,8 @@ export class IncidentsDetailComponent implements OnInit {
   private id: number = 0;
   public page = 'incidents';
   form = new FormGroup({
-    name: new FormControl("John"),
-    surname: new FormControl("Doe"),
+    name: new FormControl('John'),
+    surname: new FormControl('Doe'),
     age: new FormControl(30),
   });
 
@@ -109,8 +114,8 @@ export class IncidentsDetailComponent implements OnInit {
   }
 
   async getItem(id: number) {
-    const batteriesStatus: BatteryStatusInterface[] = await this.db.getItems<BatteryStatusInterface>('batteries-status');
-
+    const batteriesStatus: BatteryStatusInterface[] =
+      await this.db.getItems<BatteryStatusInterface>('batteries-status');
   }
 
   formSubmitted(value: CustomEvent) {

@@ -56,14 +56,13 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
   styleUrl: './master.component.scss',
 })
 export class IncidentsMasterComponent {
-  
   items: BatteryStatusInterface[] = [];
   page = 'incidents';
   debug = true;
 
   constructor(
     private db: DbService,
-    private router: Router
+    private router: Router,
   ) {
     addIcons(ionIcons);
   }
@@ -83,10 +82,10 @@ export class IncidentsMasterComponent {
 
   async getItems() {
     try {
-      const items: BatteryStatusInterface[] = (await this.db.getItems<BatteryStatusInterface>('batteries-status'));
+      const items: BatteryStatusInterface[] =
+        await this.db.getItems<BatteryStatusInterface>('batteries-status');
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
-      items.forEach((item) => {
-      });
+      items.forEach((item) => {});
       this.items = items;
       console.info('[PAGE]: Ready');
     } catch (error) {

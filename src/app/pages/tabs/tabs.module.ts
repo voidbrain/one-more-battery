@@ -6,12 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    TabsPageRoutingModule
-  ],
-  declarations: []
+  imports: [IonicModule, CommonModule, FormsModule, TabsPageRoutingModule],
+  declarations: [],
 })
 export class TabsPageModule {}
