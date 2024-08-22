@@ -461,11 +461,6 @@
                   <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled" [(ngModel)]="newBatteryForm.anag.enabled" (ionChange)="setRowAnag(newBatteryForm.anag, +($event.target.value)!, 'enabled')"></ion-toggle></ion-item>
                 </ion-col>
                 <ion-col class="ion-text-center">
-                  {{
-                    newBatteryForm.anag.label  + " | " +
-                    newBatteryForm.type?.id + " | " +  newBatteryForm.brand?.id
-
-                  }} {{ newBatteryFormAddDisabled }}
                   <ion-button [disabled]="newBatteryFormAddDisabled" shape="round" size="small" (click)="addBattery()">
                     <ion-icon slot="icon-only" name="add-outline"></ion-icon>
                   </ion-button>

@@ -351,7 +351,10 @@ export class BatteriesSettingComponent {
   }
 
   get newBatteryFormAddDisabled() {
-    return !this.newBatteryForm.anag.label || this.newBatteryForm.anag.label ==='' || !this.newBatteryForm.type?.id || !this.newBatteryForm.brand?.id
+    return !this.newBatteryForm.anag.label 
+          || this.newBatteryForm.anag.label ==='' 
+          || !this.newBatteryForm.anag?.typeId 
+          || !this.newBatteryForm.anag?.brandId
 
   }
 
@@ -386,6 +389,7 @@ export class BatteriesSettingComponent {
           // Update the property
           (e.anag as any)[property] = value;
           // Wait for updateRowAnag to complete
+          console.log(e, value, property)
 
           return e as T;
         } else {
