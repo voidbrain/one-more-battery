@@ -13,25 +13,22 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-      <ion-col size-lg="6" size-md="12" size-xs="12">
+
         <ion-card>
           <ion-card-header>
             <ion-card-title>Series</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-grid>
-              <ion-row>
+            
+              <!-- <ion-item>
                 <ion-col class="title"> Label </ion-col>
                 <ion-col class="title"> Color </ion-col>
                 <ion-col class="title"> Enabled </ion-col>
                 <ion-col class="title ion-text-center"> Action </ion-col>
-              </ion-row>
+              </ion-item> -->
 
               @for (el of series; track el) {
-                <ion-row>
-                  <ion-col>
+           <ion-card class="ion-padding"><label> Label </label>
                     <ion-item class="ion-no-padding">
                       <ion-input
                         name="seriesLabel"
@@ -39,9 +36,8 @@
                         (ionChange)="updateRowSeries(el)"
                       ></ion-input>
                     </ion-item>
-                  </ion-col>
-                  <ion-col>
-                    <ion-item class="ion-no-padding">
+                
+                    <ion-item class="ion-no-padding"><label> Color </label>
                       <ngx-colors
                         name="ngx-colors-trigger"
                         ngx-colors-trigger
@@ -53,17 +49,17 @@
                       >
                       </ngx-colors>
                     </ion-item>
-                  </ion-col>
-                  <ion-col class="ion-text-center">
+                 
                     <ion-item class="ion-no-padding ion-text-center"
-                      ><ion-toggle
+                      >
+                      <label> Enabled </label>
+                      <ion-toggle
                         name="seriesEnabled"
                         [(ngModel)]="el.enabled"
                         (ionChange)="updateRowSeries(el)"
                       ></ion-toggle
                     ></ion-item>
-                  </ion-col>
-                  <ion-col class="ion-text-center">
+                 
                     <ion-button
                       shape="round"
                       size="small"
@@ -72,12 +68,12 @@
                     >
                       <ion-icon slot="icon-only" name="remove"></ion-icon>
                     </ion-button>
-                  </ion-col>
-                </ion-row>
+                
+                  </ion-card>
               }
 
               <form #form="ngForm">
-                <ion-row>
+                <ion-item>
                   <ion-col>
                     <ion-item class="ion-no-padding ion-text-center"
                       ><ion-input
@@ -122,13 +118,12 @@
                       <ion-icon slot="icon-only" name="add-outline"></ion-icon>
                     </ion-button>
                   </ion-col>
-                </ion-row>
+                </ion-item>
               </form>
-            </ion-grid>
+            
           </ion-card-content>
         </ion-card>
-      </ion-col>
-      <ion-col size-lg="3" size-md="6" size-xs="12">
+
         <ion-card>
           <ion-card-header>
             <ion-card-title>Brands</ion-card-title>
@@ -212,9 +207,9 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      </ion-col>
 
-      <ion-col size-lg="3" size-md="6" size-xs="12">
+
+   
         <ion-card>
           <ion-card-header>
             <ion-card-title>Batteries Types</ion-card-title>
@@ -297,9 +292,9 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      </ion-col>
 
-      <ion-col size-lg="12" size-md="12" size-xs="12">
+
+
         <ion-card>
           <ion-card-header>
             <ion-card-title>Batteries Anag</ion-card-title>
@@ -659,7 +654,5 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    
 </ion-content>
