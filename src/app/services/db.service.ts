@@ -297,9 +297,7 @@ export class DbService {
 
 
         return new Promise<void>((resolve, reject) => {
-          request.onsuccess = () => {
-            console.log(item, objectStore)
-            resolve()};
+          request.onsuccess = () => resolve();
           request.onerror = (e) => {
             console.error(`[DB]: Error adding item to ${objectStore}:`, e);
             reject(e);

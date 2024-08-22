@@ -180,7 +180,6 @@ export class BatteriesSettingComponent {
     const objectStore = "batteries-anag";
     this.newAnagForm.date = new Date(this.newAnagForm.date);
     this.newAnagForm.dateString = this.newAnagForm.date.toISOString();
-    console.log(this.newAnagForm);
     await this.db.putItem(objectStore, this.newAnagForm);
     this.newAnagForm = {
       enabled: +true,
@@ -272,11 +271,6 @@ export class BatteriesSettingComponent {
     property: keyof BatteryAnagraphInterface
   ): Promise<T | undefined> {
     try {
-      console.log(
-        e,
-    value,
-    property,
-      )
       if (property in e.anag) {
         // Update the property
         (e.anag as any)[property] = value;
@@ -318,7 +312,6 @@ export class BatteriesSettingComponent {
           this.batteries = this.batteries.filter(battery => battery.anag.id !== anag.id);
           continue;
         }
-        console.log(anag.date)
         anag.dateString = anag.date.toISOString();
 
         // Fetch series, type, and brand asynchronously
@@ -406,7 +399,6 @@ export class BatteriesSettingComponent {
 
   async updateRowAnag(el: BatteryAnagraphInterface, forwardToDb: boolean){
     const objectStore: string = 'batteries-anag';
-    console.log(el)
     el.date = new Date(el.dateString!);
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
@@ -428,7 +420,6 @@ export class BatteriesSettingComponent {
     const objectStore: string = 'brands-anag';
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
-    console.log(el)
     this.db.putItem(objectStore, el);
     await this.getItems()
   }
