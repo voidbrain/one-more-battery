@@ -314,7 +314,7 @@ export class BatteriesMasterComponent {
                   ? 'danger'
                   : 'success';
 
-          this.setupLocalNotification(anag);
+          this.setupLocalNotification(anag, lastStatus!);
 
           const expandedItem: ExtendedBatteryAnagraphInterface = {
             anag,
@@ -384,16 +384,36 @@ export class BatteriesMasterComponent {
     return item.id;
   }
 
-  async setupLocalNotification(anag: BatteryAnagraphInterface) {
-    // Request permission for iOS or check if already granted
+  async setupLN(){
     const granted = await LocalNotifications.requestPermissions();
-
     if (granted.display === 'granted') {
+      console.log("yes")
+      this.items.map(async el => {
+        const objectStoreStatus = 'batteries-status';
+        const lastStatus: BatteryStatusInterface | undefined =
+            await this.db.getLastStatusByDate<BatteryStatusInterface>(
+              objectStoreStatus,
+              el.anag.id!,
+            );
+        el.lastStatus = lastStatus;
+        this.setupLocalNotification(el.anag, el.lastStatus!)
+      })
+    } else {
+      console.log("no")
+    }
+    
+  }
+
+  async setupLocalNotification(anag: BatteryAnagraphInterface, lastStatus: BatteryStatusInterface) {
+    // Request permission for iOS or check if already granted
+    
+
+    
       const notifications = [
         {
-          title: 'warning',
-          body: 'Battery ' + anag.label,
-          id: 1,
+          title: anag.label + ' Warning',
+          body: 'Battery ' + anag.label + ' has been ' + lastStatus?.status + ' 3 days ago. Please put it in Storage to preserve battery life',
+          id: anag?.id! + 10,
           schedule: {
             at: new Date(
               new Date().getTime() +
@@ -404,9 +424,9 @@ export class BatteriesMasterComponent {
           extra: null,
         },
         {
-          title: 'Danger',
-          body: 'Battery ' + anag.label,
-          id: 1,
+          title: anag.label + ' Warning',
+          body: 'Battery ' + anag.label + ' has been ' + lastStatus?.status + ' 3 days ago. Please put it in Storage to preserve battery life',
+          id: anag?.id! + 20,
           schedule: {
             at: new Date(
               new Date().getTime() +
@@ -420,10 +440,8 @@ export class BatteriesMasterComponent {
       await LocalNotifications.schedule({
         notifications,
       });
-
+      console.log(notifications);
       console.log('Notification scheduled');
-    } else {
-      console.error('Notification permission not granted');
-    }
+    
   }
 }
