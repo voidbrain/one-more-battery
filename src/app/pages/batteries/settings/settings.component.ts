@@ -368,6 +368,9 @@ export class BatteriesSettingComponent {
         // Update the property
         (anag as any)[property] = value;
         // Wait for updateRowAnag to complete
+        if(property==="dateString"){
+          anag.date = new Date(anag.dateString!);
+        };
 
         return anag as T;
       } else {
