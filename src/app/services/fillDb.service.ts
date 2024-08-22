@@ -19,7 +19,7 @@ export class FillDbService {
   constructor(private db: DbService) {}
 
   public fillDb() {
-    console.log('[DB]: fill Db');
+    console.info('[DB]: fill Db');
     const itemBatteryType: BatteryTypeInterface = {
       enabled: +true,
       deleted: +false,
@@ -303,6 +303,6 @@ export class FillDbService {
     };
     this.db.putItem('batteries-status', itemStatus4);
 
-    console.log('[DB]: fill Db finish');
+    console.info('[DB]: fill Db finish');
   }
 }

@@ -462,7 +462,6 @@ export class BatteriesSettingComponent {
         // Update the property
         (e.anag as any)[property] = value;
         // Wait for updateRowAnag to complete
-        console.log(e, value, property);
 
         return e as T;
       } else {

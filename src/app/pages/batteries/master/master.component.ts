@@ -119,9 +119,9 @@ export class BatteriesMasterComponent {
       if (this.settings.fillDb) {
         await this.fillDb.fillDb();
       }
-      // await LocalNotifications.cancel({});
+  
       const stored = await LocalNotifications.getPending();
-      console.log(stored);
+      
       await this.getItems();
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -313,8 +313,15 @@ export class BatteriesMasterComponent {
                     moreThanDangerRange
                   ? 'danger'
                   : 'success';
-
-          this.setupLocalNotification(anag, lastStatus!);
+          if(lastStatus?.status !== batteryStatusActionEnum.Store){
+            this.setupLocalNotification(anag, lastStatus!);
+          } else {
+            LocalNotifications.cancel({ notifications: [
+              { id: anag?.id! + 10}, 
+              { id: anag?.id! + 20}, 
+            ]});
+          }
+          
 
           const expandedItem: ExtendedBatteryAnagraphInterface = {
             anag,
@@ -336,7 +343,7 @@ export class BatteriesMasterComponent {
         }
       }
       const stored = await LocalNotifications.getPending();
-      console.log(expandedItems);
+      
       this.items = expandedItems;
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -387,7 +394,7 @@ export class BatteriesMasterComponent {
   async setupLN(){
     const granted = await LocalNotifications.requestPermissions();
     if (granted.display === 'granted') {
-      console.log("yes")
+      
       this.items.map(async el => {
         const objectStoreStatus = 'batteries-status';
         const lastStatus: BatteryStatusInterface | undefined =
@@ -398,9 +405,7 @@ export class BatteriesMasterComponent {
         el.lastStatus = lastStatus;
         this.setupLocalNotification(el.anag, el.lastStatus!)
       })
-    } else {
-      console.log("no")
-    }
+    } 
     
   }
 
@@ -412,7 +417,7 @@ export class BatteriesMasterComponent {
       const notifications = [
         {
           title: anag.label + ' Warning',
-          body: 'Battery ' + anag.label + ' has been ' + lastStatus?.status + ' 3 days ago. Please put it in Storage to preserve battery life',
+          body: 'Battery ' + anag.label + ' has been ' + batteryStatusActionEnum[lastStatus.status!] + 'd 3 days ago. Please put it in Storage to preserve battery life',
           id: anag?.id! + 10,
           schedule: {
             at: new Date(
@@ -425,7 +430,7 @@ export class BatteriesMasterComponent {
         },
         {
           title: anag.label + ' Warning',
-          body: 'Battery ' + anag.label + ' has been ' + lastStatus?.status + ' 3 days ago. Please put it in Storage to preserve battery life',
+          body: 'Battery ' + anag.label + ' has been ' + batteryStatusActionEnum[lastStatus.status!] + 'd 3 days ago. Please put it in Storage to preserve battery life',
           id: anag?.id! + 20,
           schedule: {
             at: new Date(
@@ -440,8 +445,6 @@ export class BatteriesMasterComponent {
       await LocalNotifications.schedule({
         notifications,
       });
-      console.log(notifications);
-      console.log('Notification scheduled');
     
   }
 }

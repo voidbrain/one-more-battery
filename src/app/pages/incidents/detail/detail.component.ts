@@ -108,7 +108,7 @@ export class IncidentsDetailComponent implements OnInit {
     await this.db.load();
 
     this.form.events.subscribe((event) => {
-      console.log(event);
+      
     });
     this.getItem(+(this.route.snapshot.paramMap.get('id') as string));
   }
