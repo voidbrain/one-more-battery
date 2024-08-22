@@ -366,13 +366,334 @@
   </ion-card>
 
 
-
   <ion-card>
     <ion-card-header>
       <ion-card-title>Batteries Anag</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-grid>
+
+      @for (battery of batteries; track battery) {
+
+      <ion-card color="success">
+        <ion-card-content>
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+
+                  <ion-datetime-button color="secondary" [datetime]="'datetime' + battery.anag.id"></ion-datetime-button>
+
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime #datetime (ionChange)="
+                                  updateRowAnag(battery.anag, true);
+                                  datetime.cancel(true)
+                                " [(ngModel)]="battery.anag.dateString" presentation="date"
+                        [formatOptions]="dateTimeFormatOptions" [id]="'datetime' + battery.anag.id">
+                      </ion-datetime>
+                    </ng-template>
+                  </ion-modal>
+                  </ion-item>
+              </ion-col>
+              </ion-row>
+              <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-input placeholder="*" name="anagLabel" [value]="battery.anag.label"
+                  (ionChange)="updateRowAnag(battery.anag, true)">
+                  <ion-item class="ion-no-padding" slot="start">Battery</ion-item>
+                </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+
+
+
+                  <ion-select [style.--text-color]="battery.series?.color" [value]="battery.series?.id" (ionChange)="
+                            updateElement(
+                              battery,
+                              $event.target.value,
+                              'seriesId'
+                            )
+                          ">
+                  @for (el of series; track el) {
+                  <ion-select-option [value]="el.id">
+                    {{ el.label }}
+                  </ion-select-option>
+                  }
+                </ion-select>
+
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-select [value]="battery.brand?.id" (ionChange)="
+                          updateElement(battery, $event.target.value, 'brandId')
+                        ">
+                @for (el of brands; track el) {
+                <ion-select-option [value]="el.id">{{
+                  el.label
+                  }}</ion-select-option>
+                }
+              </ion-select>
+
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+
+                <ion-item>
+                  <ion-input name="anagModel" [value]="battery.anag.model"
+                (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
+                </ion-item>
+
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-item class="ion-no-padding">
+                <ion-select [value]="battery.type?.id" (ionChange)="
+                            updateElement(battery, $event.target.value, 'typeId')
+                          ">
+                  @for (el of types; track el) {
+                  <ion-select-option [value]="el.id">{{
+                    el.label
+                    }}</ion-select-option>
+                  }
+                </ion-select>
+              </ion-item>
+            </ion-row>
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding">
+                  <ion-input class="ion-text-center" name="anagCellsNumber" [value]="battery.anag.cellsNumber"
+                    (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding">
+                  <ion-input class="ion-text-center" name="anagmA" [value]="battery.anag.mA"
+                    (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled"
+                    [(ngModel)]="battery.anag.enabled"
+                    (ionChange)="updateRowAnag(battery.anag, true)">Enabled</ion-toggle></ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-button shape="round" size="small" (click)="deleteAnagItem(battery.anag)" color="danger">
+                  <ion-icon slot="icon-only" name="remove"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      }
+
+      <ion-card [color]="(newBatteryFormAddDisabled ? 'light' : 'success')">
+        <ion-card-content>
+          <form #form="ngForm">
+          <ion-grid class="ion-no-padding">
+
+
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-datetime-button color="secondary"
+                    [datetime]="'datetime' + newBatteryForm.anag.id"></ion-datetime-button>
+
+                  <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                      <ion-datetime
+                        #datetime
+                        (ionChange)="
+                          setRowAnag(
+                            newBatteryForm.anag,
+                            $event.target.value!,
+                            'dateString'
+                          );
+                          datetime.cancel(true)
+                        "
+                        [name]="'datetime' + newBatteryForm.anag.id"
+                        [(ngModel)]="newBatteryForm.anag.dateString" presentation="date"
+                        [formatOptions]="dateTimeFormatOptions" [id]="'datetime' + newBatteryForm.anag.id">
+                      </ion-datetime>
+                    </ng-template>
+                  </ion-modal>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+
+
+
+
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding">
+                  <ion-input name="anagLabel" [value]="newBatteryForm.anag.label" (ionChange)="
+                            setRowAnag(
+                              newBatteryForm.anag,
+                              $event.target.value!,
+                              'label'
+                            )
+                          ">
+                    <ion-item class="ion-no-padding" slot="start">Battery</ion-item>
+                  </ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-item class="ion-no-padding">
+                  <ion-item class="ion-no-padding">
+                    <ion-select [style.--text-color]="getColor" [value]="newBatteryForm.series?.id" (ionChange)="
+                              setNewBatteryElement(
+                                newBatteryForm,
+                                $event.target.value,
+                                'seriesId'
+                              )
+                            ">
+                      @for (el of series; track el) {
+                      <ion-select-option [value]="el.id">
+                        {{ el.label }}
+                      </ion-select-option>
+                      }
+                    </ion-select>
+                  </ion-item>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-item class="ion-no-padding">
+                  <ion-select [value]="newBatteryForm.brand?.id" (ionChange)="
+                            setNewBatteryElement(
+                              newBatteryForm,
+                              $event.target.value,
+                              'brandId'
+                            )
+                          ">
+                    @for (el of brands; track el) {
+                    <ion-select-option [value]="el.id">{{
+                      el.label
+                      }}</ion-select-option>
+                    }
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-item class="ion-no-padding">
+                  <ion-input name="anagModel" [value]="newBatteryForm.anag.model" (ionChange)="
+                            setRowAnag(
+                              newBatteryForm.anag,
+                              $event.target.value!,
+                              'model'
+                            )
+                          "></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+
+
+
+
+            <ion-row>
+              <ion-col>
+                <ion-item class="ion-no-padding">
+                  <ion-select [value]="newBatteryForm.type?.id" (ionChange)="
+                            setNewBatteryElement(
+                              newBatteryForm,
+                              $event.target.value,
+                              'typeId'
+                            )
+                          ">
+                    @for (el of types; track el) {
+                    <ion-select-option [value]="el.id">{{
+                      el.label
+                      }}</ion-select-option>
+                    }
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding">
+                  <ion-input class="ion-text-center" name="anagCellsNumber" [value]="newBatteryForm.anag.cellsNumber"
+                    (ionChange)="
+                            setRowAnag(
+                              newBatteryForm.anag,
+                              +$event.target.value!,
+                              'cellsNumber'
+                            )
+                          "></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding">
+                  <ion-input class="ion-text-center" name="anagmA" [value]="newBatteryForm.anag.mA" (ionChange)="
+                            setRowAnag(
+                              newBatteryForm.anag,
+                              +$event.target.value!,
+                              'mA'
+                            )
+                          "></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled"
+                    [(ngModel)]="newBatteryForm.anag.enabled" (ionChange)="
+                            setRowAnag(
+                              newBatteryForm.anag,
+                              +$event.target.value!,
+                              'enabled'
+                            )
+                          ">Enabled</ion-toggle></ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <ion-button [disabled]="newBatteryFormAddDisabled" shape="round" size="small" (click)="addBattery()">
+                  <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </form>
+        </ion-card-content>
+      </ion-card>
+    </ion-card-content>
+  </ion-card>
+  <!--
         <ion-row>
           <ion-col class="title"> Date </ion-col>
           <ion-col class="title"> Label </ion-col>
@@ -386,253 +707,5 @@
           <ion-col class="title"> Enabled </ion-col>
           <ion-col class="title ion-text-center"> Action </ion-col>
         </ion-row>
-
-        @for (battery of batteries; track battery) {
-        <ion-row>
-          <ion-col>
-            <ion-item>
-              <ion-datetime-button color="secondary" [datetime]="'datetime' + battery.anag.id"></ion-datetime-button>
-
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime #datetime (ionChange)="
-                              updateRowAnag(battery.anag, true);
-                              datetime.cancel(true)
-                            " [(ngModel)]="battery.anag.dateString" presentation="date"
-                    [formatOptions]="dateTimeFormatOptions" [id]="'datetime' + battery.anag.id">
-                  </ion-datetime>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
-          </ion-col>
-
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input placeholder="*" name="anagLabel" [value]="battery.anag.label"
-                (ionChange)="updateRowAnag(battery.anag, true)">
-                <ion-item class="ion-no-padding" slot="start">Battery</ion-item>
-              </ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-item class="ion-no-padding">
-                <ion-select [style.--text-color]="battery.series?.color" [value]="battery.series?.id" (ionChange)="
-                            updateElement(
-                              battery,
-                              $event.target.value,
-                              'seriesId'
-                            )
-                          ">
-                  @for (el of series; track el) {
-                  <ion-select-option [value]="el.id">
-                    {{ el.label }}
-                  </ion-select-option>
-                  }
-                </ion-select>
-              </ion-item>
-            </ion-item>
-          </ion-col>
-
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-select [value]="battery.brand?.id" (ionChange)="
-                          updateElement(battery, $event.target.value, 'brandId')
-                        ">
-                @for (el of brands; track el) {
-                <ion-select-option [value]="el.id">{{
-                  el.label
-                  }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-input name="anagModel" [value]="battery.anag.model"
-                (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-select [value]="battery.type?.id" (ionChange)="
-                          updateElement(battery, $event.target.value, 'typeId')
-                        ">
-                @for (el of types; track el) {
-                <ion-select-option [value]="el.id">{{
-                  el.label
-                  }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input class="ion-text-center" name="anagCellsNumber" [value]="battery.anag.cellsNumber"
-                (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input class="ion-text-center" name="anagmA" [value]="battery.anag.mA"
-                (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled"
-                [(ngModel)]="battery.anag.enabled"
-                (ionChange)="updateRowAnag(battery.anag, true)">Enabled</ion-toggle></ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-button shape="round" size="small" (click)="deleteAnagItem(battery.anag)" color="danger">
-              <ion-icon slot="icon-only" name="remove"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        }
-
-        <ion-row>
-          <ion-col>
-            <ion-item>
-              <ion-datetime-button color="secondary"
-                [datetime]="'datetime' + newBatteryForm.anag.id"></ion-datetime-button>
-
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime #datetime (ionChange)="
-                            setRowAnag(
-                              newBatteryForm.anag,
-                              $event.target.value!,
-                              'dateString'
-                            );
-                            datetime.cancel(true)
-                          " [(ngModel)]="newBatteryForm.anag.dateString" presentation="date"
-                    [formatOptions]="dateTimeFormatOptions" [id]="'datetime' + newBatteryForm.anag.id">
-                  </ion-datetime>
-                </ng-template>
-              </ion-modal>
-            </ion-item>
-          </ion-col>
-
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input name="anagLabel" [value]="newBatteryForm.anag.label" (ionChange)="
-                        setRowAnag(
-                          newBatteryForm.anag,
-                          $event.target.value!,
-                          'label'
-                        )
-                      ">
-                <ion-item class="ion-no-padding" slot="start">Battery</ion-item>
-              </ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-item class="ion-no-padding">
-                <ion-select [style.--text-color]="getColor" [value]="newBatteryForm.series?.id" (ionChange)="
-                          setNewBatteryElement(
-                            newBatteryForm,
-                            $event.target.value,
-                            'seriesId'
-                          )
-                        ">
-                  @for (el of series; track el) {
-                  <ion-select-option [value]="el.id">
-                    {{ el.label }}
-                  </ion-select-option>
-                  }
-                </ion-select>
-              </ion-item>
-            </ion-item>
-          </ion-col>
-
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-select [value]="newBatteryForm.brand?.id" (ionChange)="
-                        setNewBatteryElement(
-                          newBatteryForm,
-                          $event.target.value,
-                          'brandId'
-                        )
-                      ">
-                @for (el of brands; track el) {
-                <ion-select-option [value]="el.id">{{
-                  el.label
-                  }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-input name="anagModel" [value]="newBatteryForm.anag.model" (ionChange)="
-                        setRowAnag(
-                          newBatteryForm.anag,
-                          $event.target.value!,
-                          'model'
-                        )
-                      "></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item class="ion-no-padding">
-              <ion-select [value]="newBatteryForm.type?.id" (ionChange)="
-                        setNewBatteryElement(
-                          newBatteryForm,
-                          $event.target.value,
-                          'typeId'
-                        )
-                      ">
-                @for (el of types; track el) {
-                <ion-select-option [value]="el.id">{{
-                  el.label
-                  }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input class="ion-text-center" name="anagCellsNumber" [value]="newBatteryForm.anag.cellsNumber"
-                (ionChange)="
-                        setRowAnag(
-                          newBatteryForm.anag,
-                          +$event.target.value!,
-                          'cellsNumber'
-                        )
-                      "></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding">
-              <ion-input class="ion-text-center" name="anagmA" [value]="newBatteryForm.anag.mA" (ionChange)="
-                        setRowAnag(
-                          newBatteryForm.anag,
-                          +$event.target.value!,
-                          'mA'
-                        )
-                      "></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-item class="ion-no-padding ion-text-center"><ion-toggle name="anagEnabled"
-                [(ngModel)]="newBatteryForm.anag.enabled" (ionChange)="
-                        setRowAnag(
-                          newBatteryForm.anag,
-                          +$event.target.value!,
-                          'enabled'
-                        )
-                      ">Enabled</ion-toggle></ion-item>
-          </ion-col>
-          <ion-col class="ion-text-center">
-            <ion-button [disabled]="newBatteryFormAddDisabled" shape="round" size="small" (click)="addBattery()">
-              <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
-
+-->
 </ion-content>
