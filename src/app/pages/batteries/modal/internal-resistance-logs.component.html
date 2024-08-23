@@ -7,114 +7,115 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-
-   
-      
-      @for (row of logs; track row.id) {
-        <ion-card>
-          <ion-card-content>
+  @for (row of logs; track row.id) {
+    <ion-card>
+      <ion-card-content>
         <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-item>
-              Date
-              {{ row.date | date: "yyyy-MM-dd" }}
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item>
-
-
-
-              <ion-toggle name="seriesEnabled" [(ngModel)]="row.enabled"
-                (ionChange)="updateRow(row)">Enabled</ion-toggle>
-
-            </ion-item>
-          </ion-col>
-          
-          <ion-col >
-
-            <ion-item>
-              <ion-label>Delete</ion-label>
-              <ion-button shape="round" size="small" (click)="deleteRow(row)" color="danger">
-                <ion-icon slot="icon-only" name="remove"></ion-icon>
-              </ion-button>
-            </ion-item>
-
-          </ion-col>
-        </ion-row>
-        @for (cell of row?.values; track $index) {
           <ion-row>
-              <ion-col class="title ">cell {{ $index + 1 }}</ion-col>
-              <ion-col class="ion-text-right"> {{ cell }}mΩ </ion-col>
+            <ion-col>
+              <ion-item>
+                Date
+                {{ row.date | date: "yyyy-MM-dd" }}
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-toggle
+                  name="seriesEnabled"
+                  [(ngModel)]="row.enabled"
+                  (ionChange)="updateRow(row)"
+                  >Enabled</ion-toggle
+                >
+              </ion-item>
+            </ion-col>
+
+            <ion-col>
+              <ion-item>
+                <ion-label>Delete</ion-label>
+                <ion-button
+                  shape="round"
+                  size="small"
+                  (click)="deleteRow(row)"
+                  color="danger"
+                >
+                  <ion-icon slot="icon-only" name="remove"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-col>
           </ion-row>
-        }
+          @for (cell of row?.values; track $index) {
+            <ion-row>
+              <ion-col class="title">cell {{ $index + 1 }}</ion-col>
+              <ion-col class="ion-text-right"> {{ cell }}mΩ </ion-col>
+            </ion-row>
+          }
         </ion-grid>
       </ion-card-content>
-      </ion-card>
-      }
+    </ion-card>
+  }
 
-      
-
-
-
-
-
-      <ion-card>
-        <ion-card-content>
+  <ion-card>
+    <ion-card-content>
       <ion-grid>
-      <ion-row>
-        <ion-col class="title">Date</ion-col>
-        <ion-col>
-          <ion-item>
-
-            <ion-datetime-button color="secondary" [datetime]="'datetimeLogNewRow' "></ion-datetime-button>
-
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime #datetimeLogNewRow 
-                  (ionChange)="datetimeLogNewRow.cancel(true)"  
-                  presentation="date"
-                  [formatOptions]="dateTimeFormatOptions" 
-                  [id]="'datetimeLogNewRow'" 
-                  [name]="'datetimeLogNewRow'"
-                >
-                </ion-datetime>
-              </ng-template>
-            </ion-modal>
-            </ion-item>
-        </ion-col>
-      </ion-row>
-      @for (cell of getArray(anag?.cellsNumber!); track $index; let i = $index) {
         <ion-row>
-            <ion-col class="title ">cell {{ $index + 1 }}</ion-col>
-            <ion-col class="ion-text-right"> 
-              
-              <ion-item>
-                <ion-input type="number" name="anagModel" [value]="newRowForm.values[$index]"
-              (ionChange)="updateRowValues($event, $index)">
-                <div slot="end">mΩ</div>
-              </ion-input>
-              </ion-item>
-               </ion-col>
+          <ion-col class="title">Date</ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-datetime-button
+                color="secondary"
+                [datetime]="'datetimeLogNewRow'"
+              ></ion-datetime-button>
+
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime
+                    #datetimeLogNewRow
+                    (ionChange)="datetimeLogNewRow.cancel(true)"
+                    presentation="date"
+                    [formatOptions]="dateTimeFormatOptions"
+                    [id]="'datetimeLogNewRow'"
+                    [name]="'datetimeLogNewRow'"
+                  >
+                  </ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+          </ion-col>
         </ion-row>
-      }
-      <ion-row>
-      <ion-col class="ion-text-right">
-
-       
-          
-          <ion-button [disabled]="isAddNewDisabled" shape="round" size="small" (click)="addLog()">
-            <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-          </ion-button>
-       
-
-      </ion-col>
-      
-      </ion-row>
+        @for (
+          cell of getArray(anag?.cellsNumber!);
+          track $index;
+          let i = $index
+        ) {
+          <ion-row>
+            <ion-col class="title">cell {{ $index + 1 }}</ion-col>
+            <ion-col class="ion-text-right">
+              <ion-item>
+                <ion-input
+                  type="number"
+                  name="anagModel"
+                  [value]="newRowForm.values[$index]"
+                  (ionChange)="updateRowValues($event, $index)"
+                >
+                  <div slot="end">mΩ</div>
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        }
+        <ion-row>
+          <ion-col class="ion-text-right">
+            <ion-button
+              [disabled]="isAddNewDisabled"
+              shape="round"
+              size="small"
+              (click)="addLog()"
+            >
+              <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
       </ion-grid>
     </ion-card-content>
-    </ion-card>
-    
-
+  </ion-card>
 </ion-content>

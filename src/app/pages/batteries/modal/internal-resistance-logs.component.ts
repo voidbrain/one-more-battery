@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonButtons,
@@ -14,7 +14,14 @@ import {
   IonItem,
   IonLabel,
   IonTitle,
-  IonToolbar, IonCard, IonCardContent, IonDatetimeButton, IonModal, IonDatetime, IonInput } from '@ionic/angular/standalone';
+  IonToolbar,
+  IonCard,
+  IonCardContent,
+  IonDatetimeButton,
+  IonModal,
+  IonDatetime,
+  IonInput,
+} from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 import { DbService } from '../../../services/db.service';
@@ -25,7 +32,12 @@ import { DbService } from '../../../services/db.service';
   styleUrl: 'internal-resistance-logs.component.scss',
   standalone: true,
   imports: [
-    IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
+    IonInput,
+    IonDatetime,
+    IonModal,
+    IonDatetimeButton,
+    IonCardContent,
+    IonCard,
     IonButton,
     IonButtons,
     IonContent,
@@ -39,7 +51,7 @@ import { DbService } from '../../../services/db.service';
     IonTitle,
     IonToolbar,
     DatePipe,
-    FormsModule
+    FormsModule,
   ],
 })
 export class ModalResistanceLogsComponent {
@@ -47,7 +59,7 @@ export class ModalResistanceLogsComponent {
 
   newRowForm: BatteryResistanceLogInterface = {
     date: new Date(),
-   
+
     idBattery: 0,
     enabled: +true,
     deleted: +false,
@@ -55,7 +67,7 @@ export class ModalResistanceLogsComponent {
   };
 
   logs: BatteryResistanceLogInterface[] = [];
-  objectStore = "batteries-resistance-logs";
+  objectStore = 'batteries-resistance-logs';
 
   dateTimeFormatOptions = {
     date: {
@@ -67,16 +79,14 @@ export class ModalResistanceLogsComponent {
   constructor(
     private modalCtrl: ModalController,
     private db: DbService,
-  ) {
-    
-  }
+  ) {}
 
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
       const forceLoading = false;
       await this.db.initService(forceLoading);
-      
+
       await this.getItems();
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -95,36 +105,40 @@ export class ModalResistanceLogsComponent {
     await this.getItems();
   }
 
-  async getItems(){
-    if(this.anag?.id) {
+  async getItems() {
+    if (this.anag?.id) {
       this.newRowForm.idBattery = this.anag.id;
-      this.logs = await this.db.getItems(this.objectStore, 
+      this.logs = await this.db.getItems(
+        this.objectStore,
         'idBattery, enabled, deleted',
-        [this.anag.id, +true, +false]
-      )
+        [this.anag.id, +true, +false],
+      );
     }
   }
 
-  addLog(){
-    console.log(this.newRowForm )
+  addLog() {
+    console.log(this.newRowForm);
     this.db.putItem(this.objectStore, this.newRowForm);
     this.newRowForm = {
       date: new Date(),
-     
+
       idBattery: 0,
       enabled: +true,
       deleted: +false,
       values: [],
-    }
+    };
     this.getItems();
   }
 
-  get isAddNewDisabled(){
-    
-    const isNull = this.newRowForm.values.some(el => (''+el === '' || el === null));
-    return  !this.newRowForm.date || 
-            this.newRowForm.values.length !== this.anag?.cellsNumber || 
-            isNull;
+  get isAddNewDisabled() {
+    const isNull = this.newRowForm.values.some(
+      (el) => '' + el === '' || el === null,
+    );
+    return (
+      !this.newRowForm.date ||
+      this.newRowForm.values.length !== this.anag?.cellsNumber ||
+      isNull
+    );
   }
 
   cancel() {
@@ -135,7 +149,7 @@ export class ModalResistanceLogsComponent {
     return Array.from({ length: size });
   }
 
-  updateRowValues(event: CustomEvent, index: number){
+  updateRowValues(event: CustomEvent, index: number) {
     const value = event.detail.value;
     this.newRowForm.values[index] = value;
   }

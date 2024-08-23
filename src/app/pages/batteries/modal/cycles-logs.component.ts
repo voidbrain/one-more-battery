@@ -14,10 +14,20 @@ import {
   IonItem,
   IonLabel,
   IonTitle,
-  IonToolbar, IonCard, IonCardContent, IonDatetimeButton, IonModal, IonDatetime, IonInput } from '@ionic/angular/standalone';
+  IonToolbar,
+  IonCard,
+  IonCardContent,
+  IonDatetimeButton,
+  IonModal,
+  IonDatetime,
+  IonInput,
+} from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { DbService } from '../../../services/db.service';
-import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import {
+  batteryStatusActionEnum,
+  BatteryStatusInterface,
+} from 'src/app/interfaces/battery-status';
 
 @Component({
   selector: 'app-modal-cycles-logs',
@@ -25,7 +35,12 @@ import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfa
   styleUrl: 'cycles-logs.component.scss',
   standalone: true,
   imports: [
-    IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
+    IonInput,
+    IonDatetime,
+    IonModal,
+    IonDatetimeButton,
+    IonCardContent,
+    IonCard,
     IonButton,
     IonButtons,
     IonContent,
@@ -39,7 +54,7 @@ import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfa
     IonTitle,
     IonToolbar,
     DatePipe,
-    FormsModule
+    FormsModule,
   ],
 })
 export class ModalCyclesLogsComponent {
@@ -50,11 +65,11 @@ export class ModalCyclesLogsComponent {
     idBattery: 0,
     enabled: +true,
     deleted: +false,
-    status: 0
+    status: 0,
   };
 
   cycles: BatteryStatusInterface[] = [];
-  objectStore = "batteries-status";
+  objectStore = 'batteries-status';
 
   dateTimeFormatOptions = {
     date: {
@@ -66,9 +81,7 @@ export class ModalCyclesLogsComponent {
   constructor(
     private modalCtrl: ModalController,
     private db: DbService,
-  ) {
-    
-  }
+  ) {}
 
   getBatteryStatus(status: number | undefined) {
     if (status) {
@@ -94,41 +107,40 @@ export class ModalCyclesLogsComponent {
     try {
       const forceLoading = false;
       await this.db.initService(forceLoading);
-      
+
       await this.getItems();
     } catch (err) {
       console.error('Error during initialization:', err);
     }
   }
 
-  async getItems(){
-    if(this.anag?.id) {
+  async getItems() {
+    if (this.anag?.id) {
       this.newRowForm.idBattery = this.anag.id;
-      this.cycles = await this.db.getItems(this.objectStore, 
+      this.cycles = await this.db.getItems(
+        this.objectStore,
         'idBattery, enabled, deleted',
-        [this.anag.id, +true, +false]
-      )
+        [this.anag.id, +true, +false],
+      );
     }
   }
 
-  addLog(){
-    console.log(this.newRowForm )
+  addLog() {
+    console.log(this.newRowForm);
     this.db.putItem(this.objectStore, this.newRowForm);
     this.newRowForm = {
       date: new Date(),
-     
+
       idBattery: 0,
       enabled: +true,
       deleted: +false,
-      status: 0
-    }
+      status: 0,
+    };
     this.getItems();
   }
 
-  get isAddNewDisabled(){
-    
-    return  !this.newRowForm.date || 
-            this.newRowForm.status === 0;
+  get isAddNewDisabled() {
+    return !this.newRowForm.date || this.newRowForm.status === 0;
   }
 
   cancel() {
@@ -138,5 +150,4 @@ export class ModalCyclesLogsComponent {
   getArray(size: number): number[] {
     return Array.from({ length: size });
   }
-
 }

@@ -18,4 +18,7 @@ ion-select::part(text) {
   -webkit-margin-start: 0;
 }
 
-ion-item ion-label, ion-toggle { color:rgb(152, 154, 162) }
+ion-item ion-label,
+ion-toggle {
+  color: rgb(152, 154, 162);
+}

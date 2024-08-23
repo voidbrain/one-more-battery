@@ -54,7 +54,6 @@ import { ModalController } from '@ionic/angular';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
 import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
 
-
 @Component({
   selector: 'app-batteries-master',
   standalone: true,
@@ -110,14 +109,14 @@ export class BatteriesMasterComponent {
     addIcons(ionIcons);
   }
 
-  public async resetDatabase(){
+  public async resetDatabase() {
     await this.db.deleteDb();
     await this.db.load();
     const forceLoading = true;
     await this.db.initService(forceLoading);
   }
 
-  public async fillDatabase(){
+  public async fillDatabase() {
     await this.resetDatabase();
     await this.fillDb.fillDb();
     await this.getItems();
@@ -133,9 +132,9 @@ export class BatteriesMasterComponent {
       if (this.settings.fillDb) {
         await this.fillDb.fillDb();
       }
-  
+
       const stored = await LocalNotifications.getPending();
-      
+
       await this.getItems();
     } catch (err) {
       console.error('Error during initialization:', err);
@@ -263,7 +262,7 @@ export class BatteriesMasterComponent {
       const objectStoreSeries = 'batteries-series';
       const objectStoreBrands = 'brands-anag';
       const objectStoreType = 'batteries-types';
-      
+
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
 
       for (const anag of items) {
@@ -297,7 +296,6 @@ export class BatteriesMasterComponent {
             objectStoreStatus,
             anag.id!,
           );
-          
 
           // Calculate timerange as the difference between the last status date and the current date
           const timeRange = differenceInDays(
@@ -322,15 +320,13 @@ export class BatteriesMasterComponent {
                     moreThanDangerRange
                   ? 'danger'
                   : 'success';
-          if(lastStatus?.status !== batteryStatusActionEnum.Store){
+          if (lastStatus?.status !== batteryStatusActionEnum.Store) {
             this.setupLocalNotification(anag, lastStatus!);
           } else {
-            LocalNotifications.cancel({ notifications: [
-              { id: anag?.id! + 10}, 
-              { id: anag?.id! + 20}, 
-            ]});
+            LocalNotifications.cancel({
+              notifications: [{ id: anag?.id! + 10 }, { id: anag?.id! + 20 }],
+            });
           }
-          
 
           const expandedItem: ExtendedBatteryAnagraphInterface = {
             anag,
@@ -351,7 +347,7 @@ export class BatteriesMasterComponent {
         }
       }
       const stored = await LocalNotifications.getPending();
-      
+
       this.items = expandedItems;
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -359,16 +355,14 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async showCycles(
-    anag: BatteryAnagraphInterface,
-  ) {
+  async showCycles(anag: BatteryAnagraphInterface) {
     let message =
       'This modal example uses the modalController to present and dismiss modals.';
 
     const modal = await this.modalCtrl.create({
       component: ModalCyclesLogsComponent,
       componentProps: {
-        anag
+        anag,
       },
     });
     modal.present();
@@ -380,16 +374,14 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async showLogs(
-    anag: BatteryAnagraphInterface,
-  ) {
+  async showLogs(anag: BatteryAnagraphInterface) {
     let message =
       'This modal example uses the modalController to present and dismiss modals.';
 
     const modal = await this.modalCtrl.create({
       component: ModalResistanceLogsComponent,
       componentProps: {
-        anag
+        anag,
       },
     });
     modal.present();
@@ -418,60 +410,68 @@ export class BatteriesMasterComponent {
     return item.id;
   }
 
-  async setupLN(){
+  async setupLN() {
     const granted = await LocalNotifications.requestPermissions();
     if (granted.display === 'granted') {
-      
-      this.items.map(async el => {
+      this.items.map(async (el) => {
         const objectStoreStatus = 'batteries-status';
         const lastStatus: BatteryStatusInterface | undefined =
-            await this.db.getLastStatusByDate<BatteryStatusInterface>(
-              objectStoreStatus,
-              el.anag.id!,
-            );
+          await this.db.getLastStatusByDate<BatteryStatusInterface>(
+            objectStoreStatus,
+            el.anag.id!,
+          );
         el.lastStatus = lastStatus;
-        this.setupLocalNotification(el.anag, el.lastStatus!)
-      })
-    } 
-    
+        this.setupLocalNotification(el.anag, el.lastStatus!);
+      });
+    }
   }
 
-  async setupLocalNotification(anag: BatteryAnagraphInterface, lastStatus: BatteryStatusInterface) {
+  async setupLocalNotification(
+    anag: BatteryAnagraphInterface,
+    lastStatus: BatteryStatusInterface,
+  ) {
     // Request permission for iOS or check if already granted
-    
 
-    
-      const notifications = [
-        {
-          title: anag.label + ' Warning',
-          body: 'Battery ' + anag.label + ' has been ' + batteryStatusActionEnum[lastStatus.status!] + 'd 3 days ago. Please put it in Storage to preserve battery life',
-          id: anag?.id! + 10,
-          schedule: {
-            at: new Date(
-              new Date().getTime() +
-                batteryStatusDaysAlertEnum.Warning * 86_400 * 1000,
-            ),
-          }, // 3 * 86_400 * 1000 seconds in a day
-          actionTypeId: '',
-          extra: null,
-        },
-        {
-          title: anag.label + ' Warning',
-          body: 'Battery ' + anag.label + ' has been ' + batteryStatusActionEnum[lastStatus.status!] + 'd 3 days ago. Please put it in Storage to preserve battery life',
-          id: anag?.id! + 20,
-          schedule: {
-            at: new Date(
-              new Date().getTime() +
-                batteryStatusDaysAlertEnum.Danger * 86_400 * 1000,
-            ),
-          }, // 5 * 86_400 * 1000 seconds in a day
-          actionTypeId: '',
-          extra: null,
-        },
-      ];
-      await LocalNotifications.schedule({
-        notifications,
-      });
-    
+    const notifications = [
+      {
+        title: anag.label + ' Warning',
+        body:
+          'Battery ' +
+          anag.label +
+          ' has been ' +
+          batteryStatusActionEnum[lastStatus.status!] +
+          'd 3 days ago. Please put it in Storage to preserve battery life',
+        id: anag?.id! + 10,
+        schedule: {
+          at: new Date(
+            new Date().getTime() +
+              batteryStatusDaysAlertEnum.Warning * 86_400 * 1000,
+          ),
+        }, // 3 * 86_400 * 1000 seconds in a day
+        actionTypeId: '',
+        extra: null,
+      },
+      {
+        title: anag.label + ' Warning',
+        body:
+          'Battery ' +
+          anag.label +
+          ' has been ' +
+          batteryStatusActionEnum[lastStatus.status!] +
+          'd 3 days ago. Please put it in Storage to preserve battery life',
+        id: anag?.id! + 20,
+        schedule: {
+          at: new Date(
+            new Date().getTime() +
+              batteryStatusDaysAlertEnum.Danger * 86_400 * 1000,
+          ),
+        }, // 5 * 86_400 * 1000 seconds in a day
+        actionTypeId: '',
+        extra: null,
+      },
+    ];
+    await LocalNotifications.schedule({
+      notifications,
+    });
   }
 }
