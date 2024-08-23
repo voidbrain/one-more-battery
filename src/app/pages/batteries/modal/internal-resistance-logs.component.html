@@ -55,7 +55,6 @@
                   [formatOptions]="dateTimeFormatOptions" 
                   [id]="'datetimeLogNewRow'" 
                   [name]="'datetimeLogNewRow'"
-                  [(ngModel)]="newRowForm.dateString"
                 >
                 </ion-datetime>
               </ng-template>
@@ -63,14 +62,14 @@
             </ion-item>
         </ion-col>
       </ion-row>
-      @for (cell of getArray(anag?.cellsNumber!); track $index) {
+      @for (cell of getArray(anag?.cellsNumber!); track $index; let i = $index) {
         <ion-row>
             <ion-col class="title ">cell {{ $index + 1 }}</ion-col>
             <ion-col class="ion-text-right"> 
               
               <ion-item>
                 <ion-input label="mΩ" name="anagModel" [value]="newRowForm.values[$index]"
-              (ionChange)="updateRowValues(+$event.target.value!, newRowForm.values[$index])"></ion-input>
+              (ionChange)="updateRowValues($event, $index)"></ion-input>
               </ion-item>
                </ion-col>
         </ion-row>

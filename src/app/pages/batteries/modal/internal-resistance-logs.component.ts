@@ -17,8 +17,7 @@ import {
   IonToolbar, IonCard, IonCardContent, IonDatetimeButton, IonModal, IonDatetime, IonInput } from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
-import { SettingsService } from '../../../services/settings.service';
-import { FillDbService } from 'src/app/services/fillDb.service';
+import { DbService } from '../../../services/db.service';
 
 @Component({
   selector: 'app-modal-internal-resistance-logs',
@@ -45,24 +44,19 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 })
 export class ModalResistanceLogsComponent {
   @Input() anag: BatteryAnagraphInterface | undefined = undefined;
-  @Input() logs: BatteryResistanceLogInterface[] = [];
+  // @Input() logs: BatteryResistanceLogInterface[] = [];
 
   newRowForm: BatteryResistanceLogInterface = {
     date: new Date(),
-    dateString: '',
+   
     idBattery: 0,
     enabled: +true,
     deleted: +false,
     values: [],
   };
 
-  addLog(){
-    console.log(this.newRowForm)
-  }
-
-  get isAddNewDisabled(){
-    return !this.newRowForm.date || this.newRowForm.values.find(el=> el === undefined)
-  }
+  logs: BatteryResistanceLogInterface[] = [];
+  objectStore = "batteries-resistance-logs";
 
   dateTimeFormatOptions = {
     date: {
@@ -73,14 +67,35 @@ export class ModalResistanceLogsComponent {
 
   constructor(
     private modalCtrl: ModalController,
-    private settings: SettingsService,
-    private fillDb: FillDbService,
+    private db: DbService,
   ) {}
 
-  async ionViewWillEnter() {
-    if (this.settings.fillDb) {
-      await this.fillDb.fillDb();
+  aIonViewWIllEnter(){
+    this.getItems();
+  }
+
+  async getItems(){
+    this.logs = await this.db.getItems(this.objectStore)
+    // where idBattery = anag.id
+  }
+
+  addLog(){
+    this.db.putItem(this.objectStore, this.newRowForm);
+    this.newRowForm = {
+      date: new Date(),
+     
+      idBattery: 0,
+      enabled: +true,
+      deleted: +false,
+      values: [],
     }
+    this.getItems();
+  }
+
+  get isAddNewDisabled(){
+    return  !this.newRowForm.date || 
+            !this.newRowForm.values.length !== !this.anag?.cellsNumber || 
+            this.newRowForm.values.find(el=> el === undefined);
   }
 
   cancel() {
@@ -91,11 +106,8 @@ export class ModalResistanceLogsComponent {
     return Array.from({ length: size });
   }
 
-  updateRow(){
-
-  }
-
-  updateRowValues(value: number, index: number){
-    
+  updateRowValues(event: CustomEvent, index: number){
+    const value = event.detail.value;
+    this.newRowForm.values[index] = value;
   }
 }

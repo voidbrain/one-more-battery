@@ -358,7 +358,6 @@ export class BatteriesMasterComponent {
 
   async showLogs(
     anag: BatteryAnagraphInterface,
-    logs: BatteryResistanceLogInterface[],
   ) {
     let message =
       'This modal example uses the modalController to present and dismiss modals.';
@@ -366,8 +365,7 @@ export class BatteriesMasterComponent {
     const modal = await this.modalCtrl.create({
       component: ModalResistanceLogsComponent,
       componentProps: {
-        anag,
-        logs,
+        anag
       },
     });
     modal.present();
