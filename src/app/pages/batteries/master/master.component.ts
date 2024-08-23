@@ -52,7 +52,6 @@ import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
 import { ModalController } from '@ionic/angular';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
-import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 
 @Component({
   selector: 'app-batteries-master',
@@ -254,7 +253,7 @@ export class BatteriesMasterComponent {
       const objectStoreSeries = 'batteries-series';
       const objectStoreBrands = 'brands-anag';
       const objectStoreType = 'batteries-types';
-      const objectStoreResistanceLogs = 'batteries-resistance-logs';
+      
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
 
       for (const anag of items) {
@@ -288,12 +287,7 @@ export class BatteriesMasterComponent {
             objectStoreStatus,
             anag.id!,
           );
-          const resistanceLogs: BatteryResistanceLogInterface[] =
-            await this.db.getItems<BatteryResistanceLogInterface>(
-              objectStoreResistanceLogs,
-              'idBattery, enabled, deleted',
-              [anag.id!, +true, +false],
-            );
+          
 
           // Calculate timerange as the difference between the last status date and the current date
           const timeRange = differenceInDays(
@@ -338,7 +332,6 @@ export class BatteriesMasterComponent {
             alertStatus,
             type,
             brand,
-            resistanceLogs,
           };
 
           // Add the expanded item to the array

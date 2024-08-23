@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms'
@@ -42,9 +42,8 @@ import { DbService } from '../../../services/db.service';
     FormsModule
   ],
 })
-export class ModalResistanceLogsComponent {
-  @Input() anag: BatteryAnagraphInterface | undefined = undefined;
-  // @Input() logs: BatteryResistanceLogInterface[] = [];
+export class ModalResistanceLogsComponent implements OnChanges {
+  @Input() anag!: BatteryAnagraphInterface;
 
   newRowForm: BatteryResistanceLogInterface = {
     date: new Date(),
@@ -68,15 +67,20 @@ export class ModalResistanceLogsComponent {
   constructor(
     private modalCtrl: ModalController,
     private db: DbService,
-  ) {}
-
-  aIonViewWIllEnter(){
+  ) {
     this.getItems();
+  }
+  ngOnChanges(changes: SimpleChanges){
+    console.log(changes["anag"])
   }
 
   async getItems(){
-    this.logs = await this.db.getItems(this.objectStore)
-    // where idBattery = anag.id
+    console.log(this.anag?.id)
+    this.logs = await this.db.getItems(this.objectStore, 
+      'idBattery, enabled, deleted',
+      [this.anag?.id!, +true, +false]
+    )
+    
   }
 
   addLog(){
