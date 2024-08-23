@@ -192,7 +192,7 @@ export class DbService {
         );
       }
 
-      const status = batteryStatusActionEnum.Discharge;
+      const status = batteryStatusActionEnum.Charge;
       const enabled = +true;
       const deleted = +false;
       const query = IDBKeyRange.only([idBattery, status, enabled, deleted]);
