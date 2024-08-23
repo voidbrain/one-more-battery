@@ -49,8 +49,14 @@
 
             <ion-modal [keepContentsMounted]="true">
               <ng-template>
-                <ion-datetime #datetimeLogNewRow (ionChange)="datetime.cancel(true)" [(ngModel)]="battery.anag.dateString" presentation="date"
-                  [formatOptions]="dateTimeFormatOptions" [id]="'datetimeLogNewRow'" [name]="'datetimeLogNewRow'">
+                <ion-datetime #datetimeLogNewRow 
+                  (ionChange)="datetimeLogNewRow.cancel(true)"  
+                  presentation="date"
+                  [formatOptions]="dateTimeFormatOptions" 
+                  [id]="'datetimeLogNewRow'" 
+                  [name]="'datetimeLogNewRow'"
+                  [(ngModel)]="newRowForm.dateString"
+                >
                 </ion-datetime>
               </ng-template>
             </ion-modal>
@@ -69,6 +75,18 @@
                </ion-col>
         </ion-row>
       }
+      <ion-row>
+      <ion-col>
+
+        <ion-item>
+          <ion-label>Add</ion-label>
+          <ion-button [disabled]="isAddNewDisabled" shape="round" size="small" (click)="addLog()">
+            <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+      </ion-col>
+      </ion-row>
       </ion-grid>
     </ion-card-content>
     </ion-card>

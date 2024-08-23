@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms'
 import {
   IonButton,
   IonButtons,
@@ -24,7 +25,8 @@ import { FillDbService } from 'src/app/services/fillDb.service';
   templateUrl: 'internal-resistance-logs.component.html',
   styleUrl: 'internal-resistance-logs.component.scss',
   standalone: true,
-  imports: [IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
+  imports: [
+    IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
     IonButton,
     IonButtons,
     IonContent,
@@ -38,6 +40,7 @@ import { FillDbService } from 'src/app/services/fillDb.service';
     IonTitle,
     IonToolbar,
     DatePipe,
+    FormsModule
   ],
 })
 export class ModalResistanceLogsComponent {
@@ -52,6 +55,14 @@ export class ModalResistanceLogsComponent {
     deleted: +false,
     values: [],
   };
+
+  addLog(){
+    console.log(this.newRowForm)
+  }
+
+  get isAddNewDisabled(){
+    return !this.newRowForm.date || this.newRowForm.values.find(el=> el === undefined)
+  }
 
   dateTimeFormatOptions = {
     date: {

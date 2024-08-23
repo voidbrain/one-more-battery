@@ -27,7 +27,7 @@ export class FillDbService {
     };
     this.db.putItem('batteries-types', itemBatteryType);
 
-    const itemBatteryResistanceLogs1: BatteryResistanceLogInterface = {
+    const itemBatteryResistanceLogs1:  Partial<BatteryResistanceLogInterface> = {
       idBattery: 1,
       enabled: +true,
       deleted: +false,
@@ -35,7 +35,7 @@ export class FillDbService {
       values: [4.3, 3.5, 4.3, 5.0, 4.3, 4.3],
     };
     this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs1);
-    const itemBatteryResistanceLogs2: BatteryResistanceLogInterface = {
+    const itemBatteryResistanceLogs2:  Partial<BatteryResistanceLogInterface> = {
       idBattery: 2,
       enabled: +true,
       deleted: +false,
@@ -43,7 +43,7 @@ export class FillDbService {
       values: [4.2, 4.2, 5.6, 4.2, 3.5, 4.2],
     };
     this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs2);
-    const itemBatteryResistanceLogs3: BatteryResistanceLogInterface = {
+    const itemBatteryResistanceLogs3: Partial<BatteryResistanceLogInterface> = {
       idBattery: 3,
       enabled: +true,
       deleted: +false,
@@ -51,7 +51,7 @@ export class FillDbService {
       values: [5.7, 5.0, 5.0, 5.0, 5.0, 5.0],
     };
     this.db.putItem('batteries-resistance-logs', itemBatteryResistanceLogs3);
-    const itemBatteryResistanceLogs4: BatteryResistanceLogInterface = {
+    const itemBatteryResistanceLogs4:  Partial<BatteryResistanceLogInterface> = {
       idBattery: 4,
       enabled: +true,
       deleted: +false,
