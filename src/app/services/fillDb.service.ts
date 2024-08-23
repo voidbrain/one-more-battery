@@ -337,7 +337,6 @@ export class FillDbService {
     };
     this.db.putItem('batteries-status', itemStatus4);
 
-
     console.info('[DB]: fill Db finish');
   }
 }

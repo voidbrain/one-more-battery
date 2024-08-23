@@ -22,107 +22,103 @@
 
 <ion-content padding>
   <ion-card>
+    <ion-card-content>
+      @for (battery of items; track battery.anag.id) {
+        <mat-card class="card">
+          <mat-card-header>
+            <mat-card-title>{{
+              "Battery " + battery?.anag?.label
+            }}</mat-card-title>
+            @if (battery?.series?.label && battery?.series?.label !== "") {
+              <mat-card-subtitle [style]="'color: ' + battery?.series?.color">
+                {{ battery?.series?.label + " series" }}
+              </mat-card-subtitle>
+            }
+            <ion-button shape="round" (click)="presentActionSheet(battery)">
+              <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
+            </ion-button>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              @if (
+                battery.alertStatus !== "" &&
+                battery?.lastStatus?.status !== batteryStatusActionEnum.Store
+              ) {
+                <ion-icon
+                  size="medium"
+                  [color]="battery.alertStatus"
+                  aria-hidden="true"
+                  name="warning"
+                >
+                </ion-icon>
+              } @else {
+                <ion-icon
+                  size="medium"
+                  [color]="battery.alertStatus"
+                  aria-hidden="true"
+                  name="battery-full"
+                >
+                </ion-icon>
+              }
+              {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }}
+              {{ battery.timeAgo }}
+            </p>
 
-
-  <ion-card-content>
-
-
-
-  @for (battery of items; track battery.anag.id) {
-
-    <mat-card class="card">
-
-
-
-      <mat-card-header>
-
-
-
-
-          <mat-card-title>{{ "Battery " + battery?.anag?.label }}</mat-card-title>
-          @if (battery?.series?.label && battery?.series?.label !== "") {
-            <mat-card-subtitle [style]="'color: ' + battery?.series?.color">
-              {{ battery?.series?.label + " series" }}
-            </mat-card-subtitle>
-          }
-          <ion-button shape="round" (click)="presentActionSheet(battery)">
-            <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
-          </ion-button>
-
-      </mat-card-header>
-      <mat-card-content>
-
-        <p>
-          @if (
-            battery.alertStatus !== "" &&
-            battery?.lastStatus?.status !== batteryStatusActionEnum.Store
-          ) {
-            <ion-icon
-              size="medium"
-              [color]="battery.alertStatus"
-              aria-hidden="true"
-              name="warning"
+            <div
+              [@bodyExpansion]="state[battery.anag.id!]"
+              class="expandable-content"
             >
-            </ion-icon>
-          } @else {
-            <ion-icon
-              size="medium"
-              [color]="battery.alertStatus"
-              aria-hidden="true"
-              name="battery-full"
+              <p>
+                {{ battery?.brand?.label }} {{ battery?.anag?.model }}
+                {{ battery?.type?.label }}
+                {{ battery?.anag?.cellsNumber + "S" }}
+                {{ battery?.anag?.mA + "mA" }}
+
+                <br />
+                {{ "Total cycles: " + battery.totalCycles }} |
+                {{ "Age: " + getAge(battery?.anag?.date!) }}
+              </p>
+            </div>
+            <mat-divider> </mat-divider>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <div>
+              <ion-button
+                color="light"
+                shape="round"
+                (click)="showCycles(battery.anag)"
+              >
+                <ion-icon slot="icon-only" name="time-outline"></ion-icon>
+              </ion-button>
+
+              <ion-button
+                color="light"
+                shape="round"
+                (click)="showLogs(battery.anag)"
+              >
+                <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+              </ion-button>
+            </div>
+
+            <ion-button
+              shape="round"
+              color="light"
+              item-right
+              (click)="toggle(battery.anag.id!)"
             >
-            </ion-icon>
-          }
-          {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }} {{ battery.timeAgo }}</p>
-
-        <div [@bodyExpansion]="state[battery.anag.id!]" class="expandable-content">
-          <p>
-            {{ battery?.brand?.label }} {{ battery?.anag?.model }}
-          {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + "S" }}
-          {{ battery?.anag?.mA + "mA" }}
-
+              @if (state[battery.anag.id!] === "collapsed") {
+                <ion-icon name="expand"></ion-icon>
+              } @else {
+                <ion-icon name="contract"></ion-icon>
+              }
+            </ion-button>
+          </mat-card-actions>
+        </mat-card>
         <br />
-        {{ "Total cycles: " + battery.totalCycles }} | {{ "Age: " + getAge(battery?.anag?.date!) }}</p>
-
-        </div>
-      <mat-divider>
-      </mat-divider>
-      </mat-card-content>
-
-      <mat-card-actions>
-        <div>
-          <ion-button
-            color="light"
-            shape="round"
-            (click)="showCycles(battery.anag)"
-          >
-            <ion-icon slot="icon-only" name="time-outline"></ion-icon>
-          </ion-button>
-
-          <ion-button
-            color="light"
-            shape="round"
-            (click)="showLogs(battery.anag)"
-          >
-            <ion-icon slot="icon-only" name="list-outline"></ion-icon>
-          </ion-button>
-        </div>
-
-        <ion-button shape="round" color="light" item-right (click)="toggle(battery.anag.id!)">
-          @if (state[battery.anag.id!] === 'collapsed') {
-          <ion-icon name="expand"></ion-icon>
-          } @else {
-            <ion-icon name="contract"></ion-icon>
-          }
-        </ion-button>
-      </mat-card-actions>
-
-    </mat-card>
-    <br />
-
-  }
-</ion-card-content>
-</ion-card>
+      }
+    </ion-card-content>
+  </ion-card>
   <ion-button (click)="setupLN()">notifications</ion-button>
   <ion-button (click)="fillDatabase()">fillDb</ion-button>
 </ion-content>

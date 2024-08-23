@@ -12,42 +12,37 @@
       @for (row of cycles; track row.id) {
         <ion-grid>
           <ion-item>
-              <div slot="start">{{ row.date | date: "yyyy-MM-dd" }}</div>
-              @if (
-                row?.status !== batteryStatusActionEnum.Store
-              ) {
-                <ion-icon
-                  size="medium"
-                  [color]="row.alertStatus"
-                  aria-hidden="true"
-                  name="warning"
-                >
-                </ion-icon>
-              } @else {
-                <ion-icon
-                  size="medium"
-                  [color]="row.alertStatus"
-                  aria-hidden="true"
-                  name="battery-full"
-                >
-                </ion-icon>
-              }
+            <div slot="start">{{ row.date | date: "yyyy-MM-dd" }}</div>
+            @if (row?.status !== batteryStatusActionEnum.Store) {
+              <ion-icon
+                size="medium"
+                [color]="row.alertStatus"
+                aria-hidden="true"
+                name="warning"
+              >
+              </ion-icon>
+            } @else {
+              <ion-icon
+                size="medium"
+                [color]="row.alertStatus"
+                aria-hidden="true"
+                name="battery-full"
+              >
+              </ion-icon>
+            }
 
-              {{ getBatteryStatus(row.status) }}d
-              <div slot="end">
-
-                <ion-button
-                  shape="round"
-                  size="small"
-                  (click)="deleteRow(row)"
-                  color="danger"
-                >
-                  <ion-icon slot="icon-only" name="remove"></ion-icon>
-                </ion-button>
-
-                </div>
-              </ion-item>
-
+            {{ getBatteryStatus(row.status) }}d
+            <div slot="end">
+              <ion-button
+                shape="round"
+                size="small"
+                (click)="deleteRow(row)"
+                color="danger"
+              >
+                <ion-icon slot="icon-only" name="remove"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
         </ion-grid>
       }
     </ion-card-content>

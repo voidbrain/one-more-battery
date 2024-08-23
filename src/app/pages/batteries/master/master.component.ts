@@ -57,7 +57,13 @@ import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 import { ModalController } from '@ionic/angular';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
 import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-batteries-master',
@@ -104,10 +110,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('bodyExpansion', [
       state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
       state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed, void => collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ])
-  ]
+      transition(
+        'expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      ),
+    ]),
+  ],
 })
 export class BatteriesMasterComponent {
   items: ExtendedBatteryAnagraphInterface[] = [];
@@ -279,7 +287,7 @@ export class BatteriesMasterComponent {
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
 
-      const objectStoreStatus = dbTables['batteries-status']
+      const objectStoreStatus = dbTables['batteries-status'];
       const objectStoreSeries = dbTables['batteries-series'];
       const objectStoreBrands = dbTables['brands-anag'];
       const objectStoreType = dbTables['batteries-types'];
@@ -363,7 +371,7 @@ export class BatteriesMasterComponent {
 
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
-          this.state[anag?.id!] = "collapsed";
+          this.state[anag?.id!] = 'collapsed';
         } catch (error) {
           console.error(`Error processing item with id ${anag.id}:`, error);
         }
@@ -371,7 +379,6 @@ export class BatteriesMasterComponent {
       const stored = await LocalNotifications.getPending();
 
       this.items = expandedItems;
-
 
       console.info('[PAGE]: Ready');
     } catch (error) {

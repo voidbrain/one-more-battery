@@ -241,7 +241,7 @@ export class BatteriesSettingComponent {
   }
 
   async addBrand() {
-    const objectStore =  dbTables['brands-anag'];
+    const objectStore = dbTables['brands-anag'];
     await this.db.putItem(objectStore, this.newBrandForm);
     this.newBrandForm = {
       label: '',

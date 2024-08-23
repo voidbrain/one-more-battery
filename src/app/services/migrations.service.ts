@@ -15,7 +15,7 @@ export class MigrationsService {
   }
 
   private createBrandsAnag(db: IDBDatabase) {
-    const objectStore = dbTables['brands-anag']
+    const objectStore = dbTables['brands-anag'];
     if (!db.objectStoreNames.contains(objectStore)) {
       const store = db.createObjectStore(objectStore, {
         keyPath: 'id',

@@ -28,16 +28,15 @@
                 >
               </ion-item>
             </ion-col>
-
-
           </ion-row>
           @for (cell of row?.values; track $index) {
             <ion-row>
               <ion-col>
-              <ion-item><div slot="start">cell {{ $index + 1 }}</div>
-              <div slot="end" class="ion-text-right"> {{ cell }}mΩ</div>
-              </ion-item>
-            </ion-col>
+                <ion-item
+                  ><div slot="start">cell {{ $index + 1 }}</div>
+                  <div slot="end" class="ion-text-right">{{ cell }}mΩ</div>
+                </ion-item>
+              </ion-col>
             </ion-row>
           }
           <ion-row>

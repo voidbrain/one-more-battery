@@ -127,18 +127,17 @@ export class ModalCyclesLogsComponent {
         'idBattery, enabled, deleted',
         [this.anag.id, +true, +false],
       );
-      cycles.map(row => {
-
+      cycles.map((row) => {
         const alertStatus =
-            row.status !== batteryStatusActionEnum.Store
-              ? 'warning'
+          row.status !== batteryStatusActionEnum.Store
+            ? 'warning'
+            : row.status !== batteryStatusActionEnum.Store
+              ? 'danger'
               : row.status !== batteryStatusActionEnum.Store
                 ? 'danger'
-                : row.status !== batteryStatusActionEnum.Store
-                  ? 'danger'
-                  : 'success';
-                  row.alertStatus = alertStatus;
-      })
+                : 'success';
+        row.alertStatus = alertStatus;
+      });
       this.cycles = cycles;
     }
   }
