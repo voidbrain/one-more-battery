@@ -32,17 +32,28 @@
 
     <mat-card class="card">
 
-        <ion-button shape="round" class="pull-right" (click)="presentActionSheet(battery)">
-          <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
-        </ion-button>
+
 
       <mat-card-header>
 
 
 
 
-          <mat-card-title>
-            @if (
+          <mat-card-title>{{ "Battery " + battery?.anag?.label }}</mat-card-title>
+          @if (battery?.series?.label && battery?.series?.label !== "") {
+            <mat-card-subtitle [style]="'color: ' + battery?.series?.color">
+              {{ battery?.series?.label + " series" }}
+            </mat-card-subtitle>
+          }
+          <ion-button shape="round" (click)="presentActionSheet(battery)">
+            <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
+          </ion-button>
+
+      </mat-card-header>
+      <mat-card-content>
+
+        <p>
+          @if (
             battery.alertStatus !== "" &&
             battery?.lastStatus?.status !== batteryStatusActionEnum.Store
           ) {
@@ -62,27 +73,24 @@
             >
             </ion-icon>
           }
-            {{ "Battery " + battery?.anag?.label }}</mat-card-title>
-          @if (battery?.series?.label && battery?.series?.label !== "") {
-            <mat-card-subtitle [style]="'color: ' + battery?.series?.color">
-              {{ battery?.series?.label + " series" }}
-            </mat-card-subtitle>
-          }
+          {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }} {{ battery.timeAgo }}</p>
 
-      </mat-card-header>
-      <mat-card-content>
-
-        <p>{{ getBatteryStatus(battery?.lastStatus?.status) + "d" }} {{ battery.timeAgo }}</p>
-
-        <div [@bodyExpansion]="state" class="expandable-content">
+        <div [@bodyExpansion]="state[battery.anag.id!]" class="expandable-content">
           <p>
             {{ battery?.brand?.label }} {{ battery?.anag?.model }}
           {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + "S" }}
           {{ battery?.anag?.mA + "mA" }}
 
-        </p>
-        <p> {{ "Total cycles: " + battery.totalCycles }} | {{ "Age: " + getAge(battery?.anag?.date!) }}</p>
-        <div class="align-right">
+        <br />
+        {{ "Total cycles: " + battery.totalCycles }} | {{ "Age: " + getAge(battery?.anag?.date!) }}</p>
+
+        </div>
+      <mat-divider>
+      </mat-divider>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <div>
           <ion-button
             color="light"
             shape="round"
@@ -99,16 +107,18 @@
             <ion-icon slot="icon-only" name="list-outline"></ion-icon>
           </ion-button>
         </div>
-        </div>
-      <mat-divider>
-      </mat-divider>
-      </mat-card-content>
 
-      <mat-card-actions>
-        <button mat-button (click)="toggle()" color="primary">EXPAND</button>
+        <ion-button shape="round" color="light" item-right (click)="toggle(battery.anag.id!)">
+          @if (state[battery.anag.id!] === 'collapsed') {
+          <ion-icon name="expand"></ion-icon>
+          } @else {
+            <ion-icon name="contract"></ion-icon>
+          }
+        </ion-button>
       </mat-card-actions>
 
     </mat-card>
+    <br />
 
   }
 </ion-card-content>

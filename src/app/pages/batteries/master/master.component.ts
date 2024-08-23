@@ -114,9 +114,9 @@ export class BatteriesMasterComponent {
   page = 'batteries';
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
-  state = 'collapsed';
-  toggle(): void {
-    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  state: string[] = [];
+  toggle(id: number): void {
+    this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
 
   constructor(
@@ -363,6 +363,7 @@ export class BatteriesMasterComponent {
 
           // Add the expanded item to the array
           expandedItems.push(expandedItem);
+          this.state[anag?.id!] = "collapsed";
         } catch (error) {
           console.error(`Error processing item with id ${anag.id}:`, error);
         }
@@ -370,6 +371,8 @@ export class BatteriesMasterComponent {
       const stored = await LocalNotifications.getPending();
 
       this.items = expandedItems;
+
+
       console.info('[PAGE]: Ready');
     } catch (error) {
       console.error('Error fetching items:', error);

@@ -31,7 +31,6 @@ ion-col.text-center {
   overflow: hidden;
 }
 
-.pull-right{
-  float:right;
-  clear: after;
+.mat-mdc-card-header, .mat-mdc-card-actions {
+  justify-content: space-between;
 }
