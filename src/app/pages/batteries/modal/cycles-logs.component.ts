@@ -1,7 +1,7 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonButtons,
@@ -16,13 +16,13 @@ import {
   IonTitle,
   IonToolbar, IonCard, IonCardContent, IonDatetimeButton, IonModal, IonDatetime, IonInput } from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
-import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 import { DbService } from '../../../services/db.service';
+import { batteryStatusActionEnum, BatteryStatusInterface } from 'src/app/interfaces/battery-status';
 
 @Component({
-  selector: 'app-modal-internal-resistance-logs',
-  templateUrl: 'internal-resistance-logs.component.html',
-  styleUrl: 'internal-resistance-logs.component.scss',
+  selector: 'app-modal-cycles-logs',
+  templateUrl: 'cycles-logs.component.html',
+  styleUrl: 'cycles-logs.component.scss',
   standalone: true,
   imports: [
     IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
@@ -42,20 +42,19 @@ import { DbService } from '../../../services/db.service';
     FormsModule
   ],
 })
-export class ModalResistanceLogsComponent {
+export class ModalCyclesLogsComponent {
   @Input() anag: BatteryAnagraphInterface | undefined = undefined;
 
-  newRowForm: BatteryResistanceLogInterface = {
+  newRowForm: BatteryStatusInterface = {
     date: new Date(),
-   
     idBattery: 0,
     enabled: +true,
     deleted: +false,
-    values: [],
+    status: 0
   };
 
-  logs: BatteryResistanceLogInterface[] = [];
-  objectStore = "batteries-resistance-logs";
+  cycles: BatteryStatusInterface[] = [];
+  objectStore = "batteries-status";
 
   dateTimeFormatOptions = {
     date: {
@@ -71,6 +70,25 @@ export class ModalResistanceLogsComponent {
     
   }
 
+  getBatteryStatus(status: number | undefined) {
+    if (status) {
+      return batteryStatusActionEnum[status];
+    }
+    return;
+  }
+
+  deleteRow(el: BatteryStatusInterface) {
+    el.deleted = +true;
+    this.updateRow(el);
+  }
+
+  async updateRow(el: BatteryStatusInterface) {
+    el.enabled = +el.enabled;
+    el.deleted = +el.deleted;
+    this.db.putItem(this.objectStore, el);
+    await this.getItems();
+  }
+
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
@@ -83,22 +101,10 @@ export class ModalResistanceLogsComponent {
     }
   }
 
-  deleteRow(el: BatteryResistanceLogInterface) {
-    el.deleted = +true;
-    this.updateRow(el);
-  }
-
-  async updateRow(el: BatteryResistanceLogInterface) {
-    el.enabled = +el.enabled;
-    el.deleted = +el.deleted;
-    this.db.putItem(this.objectStore, el);
-    await this.getItems();
-  }
-
   async getItems(){
     if(this.anag?.id) {
       this.newRowForm.idBattery = this.anag.id;
-      this.logs = await this.db.getItems(this.objectStore, 
+      this.cycles = await this.db.getItems(this.objectStore, 
         'idBattery, enabled, deleted',
         [this.anag.id, +true, +false]
       )
@@ -114,17 +120,15 @@ export class ModalResistanceLogsComponent {
       idBattery: 0,
       enabled: +true,
       deleted: +false,
-      values: [],
+      status: 0
     }
     this.getItems();
   }
 
   get isAddNewDisabled(){
     
-    const isNull = this.newRowForm.values.some(el => (''+el === '' || el === null));
     return  !this.newRowForm.date || 
-            this.newRowForm.values.length !== this.anag?.cellsNumber || 
-            isNull;
+            this.newRowForm.status === 0;
   }
 
   cancel() {
@@ -135,8 +139,4 @@ export class ModalResistanceLogsComponent {
     return Array.from({ length: size });
   }
 
-  updateRowValues(event: CustomEvent, index: number){
-    const value = event.detail.value;
-    this.newRowForm.values[index] = value;
-  }
 }

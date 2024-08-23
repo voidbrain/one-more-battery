@@ -80,6 +80,14 @@
                 <ion-button
                   color="light"
                   shape="round"
+                  (click)="showCycles(battery.anag)"
+                >
+                  <ion-icon slot="icon-only" name="time-outline"></ion-icon>
+                </ion-button>
+
+                <ion-button
+                  color="light"
+                  shape="round"
                   (click)="showLogs(battery.anag)"
                 >
                   <ion-icon slot="icon-only" name="list-outline"></ion-icon>

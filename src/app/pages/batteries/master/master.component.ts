@@ -52,6 +52,8 @@ import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
 import { ModalController } from '@ionic/angular';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
+import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
+
 
 @Component({
   selector: 'app-batteries-master',
@@ -108,7 +110,15 @@ export class BatteriesMasterComponent {
     addIcons(ionIcons);
   }
 
+  public async resetDatabase(){
+    await this.db.deleteDb();
+    await this.db.load();
+    const forceLoading = true;
+    await this.db.initService(forceLoading);
+  }
+
   public async fillDatabase(){
+    await this.resetDatabase();
     await this.fillDb.fillDb();
     await this.getItems();
   }
@@ -346,6 +356,27 @@ export class BatteriesMasterComponent {
       console.info('[PAGE]: Ready');
     } catch (error) {
       console.error('Error fetching items:', error);
+    }
+  }
+
+  async showCycles(
+    anag: BatteryAnagraphInterface,
+  ) {
+    let message =
+      'This modal example uses the modalController to present and dismiss modals.';
+
+    const modal = await this.modalCtrl.create({
+      component: ModalCyclesLogsComponent,
+      componentProps: {
+        anag
+      },
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      message = `Hello, ${data}!`;
     }
   }
 
