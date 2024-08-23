@@ -27,30 +27,6 @@ ion-col.text-center {
   text-align: center;
 }
 
-@-webkit-keyframes fadeout {
-  0% {
-    opacity: 1;
-    visibility: visible;
-    display: block;
-  }
-
-  100% {
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-  }
-}
-
-@keyframes fadeout {
-  0% {
-    opacity: 1;
-    visibility: visible;
-    display: block;
-  }
-
-  100% {
-    opacity: 0;
-    visibility: hidden; /* Hides the element after fadeout */
-    display: none;
-  }
+.expandable-content {
+  overflow: hidden;
 }

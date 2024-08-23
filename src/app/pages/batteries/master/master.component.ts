@@ -28,6 +28,10 @@ import {
   IonToolbar,
   IonActionSheet,
 } from '@ionic/angular/standalone';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
@@ -53,6 +57,7 @@ import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 import { ModalController } from '@ionic/angular';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
 import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-batteries-master',
@@ -61,6 +66,10 @@ import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
     IonActionSheet,
     RouterLink,
     RouterOutlet,
+
+    MatCardModule,
+    MatButtonModule,
+    MatDividerModule,
 
     IonButton,
     IonButtons,
@@ -91,12 +100,24 @@ import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
   ],
   templateUrl: './master.component.html',
   styleUrl: './master.component.scss',
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class BatteriesMasterComponent {
   items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
+  state = 'collapsed';
+  toggle(): void {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  }
 
   constructor(
     private db: DbService,
