@@ -7,24 +7,71 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-  <ion-item>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="title">Date</ion-col>
-        @for (cell of [].constructor(anag?.cellsNumber); track $index) {
-          <ion-col class="title text-center">cell {{ $index + 1 }}</ion-col>
-        }
-      </ion-row>
+
+   
+      
       @for (row of logs; track row) {
+        <ion-card>
+          <ion-card-content>
+        <ion-grid>
         <ion-row>
-          <ion-col>
+          <ion-col class="title">Date</ion-col>
+          <ion-col class="ion-text-right">
             {{ row.date | date: "yyyy-MM-dd" }}
           </ion-col>
-          @for (cell of row?.values; track $index) {
-            <ion-col class="text-center"> {{ cell }}mΩ </ion-col>
-          }
+        </ion-row>
+        @for (cell of row?.values; track $index) {
+          <ion-row>
+              <ion-col class="title ">cell {{ $index + 1 }}</ion-col>
+              <ion-col class="ion-text-right"> {{ cell }}mΩ </ion-col>
+          </ion-row>
+        }
+        </ion-grid>
+      </ion-card-content>
+      </ion-card>
+      }
+
+      
+
+
+
+
+
+      <ion-card>
+        <ion-card-content>
+      <ion-grid>
+      <ion-row>
+        <ion-col class="title">Date</ion-col>
+        <ion-col class="ion-text-right">
+          <ion-item>
+
+            <ion-datetime-button color="secondary" [datetime]="'datetimeLogNewRow' "></ion-datetime-button>
+
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime #datetimeLogNewRow (ionChange)="datetime.cancel(true)" [(ngModel)]="battery.anag.dateString" presentation="date"
+                  [formatOptions]="dateTimeFormatOptions" [id]="'datetimeLogNewRow'" [name]="'datetimeLogNewRow'">
+                </ion-datetime>
+              </ng-template>
+            </ion-modal>
+            </ion-item>
+        </ion-col>
+      </ion-row>
+      @for (cell of getArray(anag?.cellsNumber!); track $index) {
+        <ion-row>
+            <ion-col class="title ">cell {{ $index + 1 }}</ion-col>
+            <ion-col class="ion-text-right"> 
+              
+              <ion-item>
+                <ion-input label="mΩ" name="anagModel" [value]="newRowForm.values[$index]"
+              (ionChange)="updateRowValues(+$event.target.value!, newRowForm.values[$index])"></ion-input>
+              </ion-item>
+               </ion-col>
         </ion-row>
       }
-    </ion-grid>
-  </ion-item>
+      </ion-grid>
+    </ion-card-content>
+    </ion-card>
+    
+
 </ion-content>

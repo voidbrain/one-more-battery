@@ -13,8 +13,7 @@ import {
   IonItem,
   IonLabel,
   IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
+  IonToolbar, IonCard, IonCardContent, IonDatetimeButton, IonModal, IonDatetime, IonInput } from '@ionic/angular/standalone';
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 import { SettingsService } from '../../../services/settings.service';
@@ -25,7 +24,7 @@ import { FillDbService } from 'src/app/services/fillDb.service';
   templateUrl: 'internal-resistance-logs.component.html',
   styleUrl: 'internal-resistance-logs.component.scss',
   standalone: true,
-  imports: [
+  imports: [IonInput, IonDatetime, IonModal, IonDatetimeButton, IonCardContent, IonCard, 
     IonButton,
     IonButtons,
     IonContent,
@@ -44,7 +43,22 @@ import { FillDbService } from 'src/app/services/fillDb.service';
 export class ModalResistanceLogsComponent {
   @Input() anag: BatteryAnagraphInterface | undefined = undefined;
   @Input() logs: BatteryResistanceLogInterface[] = [];
-  name: string = 'name';
+
+  newRowForm: BatteryResistanceLogInterface = {
+    date: new Date(),
+    dateString: '',
+    idBattery: 0,
+    enabled: +true,
+    deleted: +false,
+    values: [],
+  };
+
+  dateTimeFormatOptions = {
+    date: {
+      month: 'short',
+      day: '2-digit',
+    },
+  };
 
   constructor(
     private modalCtrl: ModalController,
@@ -62,7 +76,15 @@ export class ModalResistanceLogsComponent {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  confirm() {
-    return this.modalCtrl.dismiss(this.name, 'confirm');
+  getArray(size: number): number[] {
+    return Array.from({ length: size });
+  }
+
+  updateRow(){
+
+  }
+
+  updateRowValues(value: number, index: number){
+    
   }
 }

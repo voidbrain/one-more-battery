@@ -55,12 +55,14 @@
                   <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
                 </ion-button>
 
-                @if (battery?.series?.label && battery?.series?.label !== "") {
-                  <span [style]="'color: ' + battery?.series?.color">
-                    {{ battery?.series?.label + " series" }}
-                  </span>
-                }
+                
               </ion-card-title>
+
+              @if (battery?.series?.label && battery?.series?.label !== "") {
+                <ion-card-subtitle [style]="'color: ' + battery?.series?.color">
+                  {{ battery?.series?.label + " series" }}
+                </ion-card-subtitle>
+              }
 
               {{ battery?.brand?.label }} {{ battery?.anag?.model }}
               {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + "S" }}

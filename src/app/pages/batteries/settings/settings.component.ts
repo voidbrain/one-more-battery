@@ -39,7 +39,7 @@ import {
   IonDatetime,
   IonDatetimeButton,
 } from '@ionic/angular/standalone';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import * as ionIcons from 'ionicons/icons';

@@ -5,5 +5,6 @@ export interface BatteryResistanceLogInterface {
   idBattery: number;
   values: number[];
   date: Date;
+  dateString: string;
   temperature?: number;
 }
