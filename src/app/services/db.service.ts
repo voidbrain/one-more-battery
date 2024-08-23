@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SettingsService } from './settings.service';
+import { dbTables, SettingsService } from './settings.service';
 import { LoadingController } from '@ionic/angular/standalone';
 import { ToastService } from './toast.service';
 import { MigrationsService } from './migrations.service';
@@ -222,7 +222,7 @@ export class DbService {
   }
 
   async getLastStatusByDate<T>(
-    objectStore: string = 'batteries-status',
+    objectStore: string = dbTables['batteries-status'],
     id: string | number, // Add `id` as a parameter
   ): Promise<T | undefined> {
     try {

@@ -15,7 +15,7 @@
             <ion-col>
               <ion-item>
                 Date
-                {{ row.date | date: "yyyy-MM-dd" }}
+                {{ row.date | date: "MMMM dd" }}
               </ion-item>
             </ion-col>
             <ion-col>
@@ -29,6 +29,18 @@
               </ion-item>
             </ion-col>
 
+
+          </ion-row>
+          @for (cell of row?.values; track $index) {
+            <ion-row>
+              <ion-col>
+              <ion-item><div slot="start">cell {{ $index + 1 }}</div>
+              <div slot="end" class="ion-text-right"> {{ cell }}mΩ</div>
+              </ion-item>
+            </ion-col>
+            </ion-row>
+          }
+          <ion-row>
             <ion-col>
               <ion-item>
                 <ion-label>Delete</ion-label>
@@ -43,12 +55,6 @@
               </ion-item>
             </ion-col>
           </ion-row>
-          @for (cell of row?.values; track $index) {
-            <ion-row>
-              <ion-col class="title">cell {{ $index + 1 }}</ion-col>
-              <ion-col class="ion-text-right"> {{ cell }}mΩ </ion-col>
-            </ion-row>
-          }
         </ion-grid>
       </ion-card-content>
     </ion-card>

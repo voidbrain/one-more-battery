@@ -31,7 +31,7 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
-import { SettingsService } from '../../../services/settings.service';
+import { dbTables, SettingsService } from '../../../services/settings.service';
 import * as ionIcons from 'ionicons/icons';
 import {
   batteryStatusActionEnum,
@@ -258,10 +258,10 @@ export class BatteriesMasterComponent {
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
 
-      const objectStoreStatus = 'batteries-status';
-      const objectStoreSeries = 'batteries-series';
-      const objectStoreBrands = 'brands-anag';
-      const objectStoreType = 'batteries-types';
+      const objectStoreStatus = dbTables['batteries-status']
+      const objectStoreSeries = dbTables['batteries-series'];
+      const objectStoreBrands = dbTables['brands-anag'];
+      const objectStoreType = dbTables['batteries-types'];
 
       const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
 
@@ -414,7 +414,7 @@ export class BatteriesMasterComponent {
     const granted = await LocalNotifications.requestPermissions();
     if (granted.display === 'granted') {
       this.items.map(async (el) => {
-        const objectStoreStatus = 'batteries-status';
+        const objectStoreStatus = dbTables['batteries-status'];
         const lastStatus: BatteryStatusInterface | undefined =
           await this.db.getLastStatusByDate<BatteryStatusInterface>(
             objectStoreStatus,

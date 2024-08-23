@@ -51,7 +51,7 @@ import {
 } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
-import { SettingsService } from 'src/app/services/settings.service';
+import { dbTables, SettingsService } from 'src/app/services/settings.service';
 import { FillDbService } from 'src/app/services/fillDb.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -214,7 +214,7 @@ export class BatteriesSettingComponent {
   }
 
   async addBattery() {
-    const objectStore = 'batteries-anag';
+    const objectStore = dbTables['batteries-anag'];
     this.newAnagForm.date = new Date(this.newAnagForm.date);
     this.newAnagForm.dateString = this.newAnagForm.date.toISOString();
     await this.db.putItem(objectStore, this.newAnagForm);
@@ -241,7 +241,7 @@ export class BatteriesSettingComponent {
   }
 
   async addBrand() {
-    const objectStore = 'brands-anag';
+    const objectStore =  dbTables['brands-anag'];
     await this.db.putItem(objectStore, this.newBrandForm);
     this.newBrandForm = {
       label: '',
@@ -252,7 +252,7 @@ export class BatteriesSettingComponent {
   }
 
   async addType() {
-    const objectStore = 'batteries-types';
+    const objectStore = dbTables['batteries-types'];
     await this.db.putItem(objectStore, this.newTypeForm);
     this.newTypeForm = {
       label: '',
@@ -263,7 +263,7 @@ export class BatteriesSettingComponent {
   }
 
   async addSeries() {
-    const objectStore = 'batteries-series';
+    const objectStore = dbTables['batteries-series'];
     await this.db.putItem(objectStore, this.newSeriesForm);
     this.newSeriesForm = {
       label: '',
@@ -333,10 +333,10 @@ export class BatteriesSettingComponent {
 
   async getItems() {
     try {
-      const objectStoreSeries = 'batteries-series';
-      const objectStoreTypes = 'batteries-types';
-      const objectStoreBrands = 'brands-anag';
-      const objectStoreBatteries = 'batteries-anag';
+      const objectStoreSeries = dbTables['batteries-series'];
+      const objectStoreTypes = dbTables['batteries-types'];
+      const objectStoreBrands = dbTables['brands-anag'];
+      const objectStoreBatteries = dbTables['batteries-anag'];
 
       // Fetch the data
       const anagArr: BatteryAnagraphInterface[] =
@@ -478,7 +478,7 @@ export class BatteriesSettingComponent {
   }
 
   async updateRowAnag(el: BatteryAnagraphInterface, forwardToDb: boolean) {
-    const objectStore: string = 'batteries-anag';
+    const objectStore: string = dbTables['batteries-anag'];
     el.date = new Date(el.dateString!);
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
@@ -489,7 +489,7 @@ export class BatteriesSettingComponent {
   }
 
   async updateRowSeries(el: BatterySeriesAnagraphInterface) {
-    const objectStore: string = 'batteries-series';
+    const objectStore: string = dbTables['batteries-series'];
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
     this.db.putItem(objectStore, el);
@@ -497,7 +497,7 @@ export class BatteriesSettingComponent {
   }
 
   async updateRowBrands(el: BrandsAnagraphInterface) {
-    const objectStore: string = 'brands-anag';
+    const objectStore: string = dbTables['brands-anag'];
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
     this.db.putItem(objectStore, el);
@@ -505,7 +505,7 @@ export class BatteriesSettingComponent {
   }
 
   async updateRowTypes(el: BatteryTypeInterface) {
-    const objectStore: string = 'batteries-types';
+    const objectStore: string = dbTables['batteries-types'];
     el.enabled = +el.enabled;
     el.deleted = +el.deleted;
     this.db.putItem(objectStore, el);

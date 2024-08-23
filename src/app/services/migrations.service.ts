@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { dbTables } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,9 @@ export class MigrationsService {
   }
 
   private createBrandsAnag(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('brands-anag')) {
-      const store = db.createObjectStore('brands-anag', {
+    const objectStore = dbTables['brands-anag']
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });
@@ -26,8 +28,9 @@ export class MigrationsService {
   }
 
   private createBatteriesSeriesAnag(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('batteries-series')) {
-      const store = db.createObjectStore('batteries-series', {
+    const objectStore = dbTables['batteries-series'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });
@@ -38,8 +41,9 @@ export class MigrationsService {
   }
 
   private createBatteriesAnag(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('batteries-anag')) {
-      const store = db.createObjectStore('batteries-anag', {
+    const objectStore = dbTables['batteries-anag'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });
@@ -50,8 +54,9 @@ export class MigrationsService {
   }
 
   private createBatteriesStatus(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('batteries-status')) {
-      const store = db.createObjectStore('batteries-status', {
+    const objectStore = dbTables['batteries-status'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });
@@ -73,8 +78,9 @@ export class MigrationsService {
   }
 
   private createBatteriesTypes(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('batteries-types')) {
-      const store = db.createObjectStore('batteries-types', {
+    const objectStore = dbTables['batteries-types'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });
@@ -85,8 +91,9 @@ export class MigrationsService {
   }
 
   private createBatteriesResistanceLogs(db: IDBDatabase) {
-    if (!db.objectStoreNames.contains('batteries-resistance-logs')) {
-      const store = db.createObjectStore('batteries-resistance-logs', {
+    const objectStore = dbTables['batteries-resistance-logs'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
         keyPath: 'id',
         autoIncrement: true,
       });

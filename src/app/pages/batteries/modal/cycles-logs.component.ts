@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonButtons,
+  IonToggle,
   IonContent,
   IonGrid,
   IonCol,
@@ -28,6 +29,7 @@ import {
   batteryStatusActionEnum,
   BatteryStatusInterface,
 } from 'src/app/interfaces/battery-status';
+import { dbTables } from 'src/app/services/settings.service';
 
 @Component({
   selector: 'app-modal-cycles-logs',
@@ -43,6 +45,7 @@ import {
     IonCard,
     IonButton,
     IonButtons,
+    IonToggle,
     IonContent,
     IonGrid,
     IonCol,
@@ -69,7 +72,7 @@ export class ModalCyclesLogsComponent {
   };
 
   cycles: BatteryStatusInterface[] = [];
-  objectStore = 'batteries-status';
+  objectStore = dbTables['batteries-status'];
 
   dateTimeFormatOptions = {
     date: {

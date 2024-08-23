@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import {
+  IonToggle,
   IonButton,
   IonButtons,
   IonContent,
@@ -25,6 +26,7 @@ import {
 import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { BatteryResistanceLogInterface } from 'src/app/interfaces/battery-resistance';
 import { DbService } from '../../../services/db.service';
+import { dbTables } from 'src/app/services/settings.service';
 
 @Component({
   selector: 'app-modal-internal-resistance-logs',
@@ -38,6 +40,7 @@ import { DbService } from '../../../services/db.service';
     IonDatetimeButton,
     IonCardContent,
     IonCard,
+    IonToggle,
     IonButton,
     IonButtons,
     IonContent,
@@ -67,7 +70,7 @@ export class ModalResistanceLogsComponent {
   };
 
   logs: BatteryResistanceLogInterface[] = [];
-  objectStore = 'batteries-resistance-logs';
+  objectStore = dbTables['batteries-resistance-logs'];
 
   dateTimeFormatOptions = {
     date: {

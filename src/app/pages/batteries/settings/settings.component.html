@@ -719,16 +719,16 @@
                   >
                 </ion-col>
 
-                <ion-col size="5">
+                <ion-col size="5" class="ion-text-center">
                   <ion-item>
-                    <ion-label>Delete</ion-label>
+                    <ion-label>Add</ion-label>
                     <ion-button
+                      [disabled]="newBatteryFormAddDisabled"
                       shape="round"
                       size="small"
-                      (click)="deleteAnagItem(newBatteryForm.anag)"
-                      color="danger"
+                      (click)="addBattery()"
                     >
-                      <ion-icon slot="icon-only" name="remove"></ion-icon>
+                      <ion-icon slot="icon-only" name="add-outline"></ion-icon>
                     </ion-button>
                   </ion-item>
                 </ion-col>
