@@ -11,27 +11,31 @@
     <ion-card-content>
       @for (row of cycles; track row.id) {
         <ion-grid>
-          <ion-row>
-            <ion-col class="title">Date</ion-col>
-            <ion-col class="ion-text-right">
-              {{ row.date | date: "yyyy-MM-dd" }}
-            </ion-col>
-            <ion-col>{{ getBatteryStatus(row.status) }}</ion-col>
-
-            <ion-col>
-              <ion-item>
-                <ion-toggle
-                  name="seriesEnabled"
-                  [(ngModel)]="row.enabled"
-                  (ionChange)="updateRow(row)"
-                  >Enabled</ion-toggle
+          <ion-item>
+              <div slot="start">{{ row.date | date: "yyyy-MM-dd" }}</div>
+              @if (
+                row?.status !== batteryStatusActionEnum.Store
+              ) {
+                <ion-icon
+                  size="medium"
+                  [color]="row.alertStatus"
+                  aria-hidden="true"
+                  name="warning"
                 >
-              </ion-item>
-            </ion-col>
+                </ion-icon>
+              } @else {
+                <ion-icon
+                  size="medium"
+                  [color]="row.alertStatus"
+                  aria-hidden="true"
+                  name="battery-full"
+                >
+                </ion-icon>
+              }
 
-            <ion-col>
-              <ion-item>
-                <ion-label>Delete</ion-label>
+              {{ getBatteryStatus(row.status) }}d
+              <div slot="end">
+
                 <ion-button
                   shape="round"
                   size="small"
@@ -40,9 +44,10 @@
                 >
                   <ion-icon slot="icon-only" name="remove"></ion-icon>
                 </ion-button>
+
+                </div>
               </ion-item>
-            </ion-col>
-          </ion-row>
+
         </ion-grid>
       }
     </ion-card-content>

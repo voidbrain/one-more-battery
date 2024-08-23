@@ -74,6 +74,11 @@ export class MigrationsService {
         'enabled',
         'deleted',
       ]);
+      store.createIndex('idBattery, enabled, deleted', [
+        'idBattery',
+        'enabled',
+        'deleted',
+      ]);
     }
   }
 

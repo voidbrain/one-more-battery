@@ -16,4 +16,5 @@ export interface BatteryStatusInterface {
   idBattery: number;
   status: number;
   date: Date;
+  alertStatus?:string;
 }

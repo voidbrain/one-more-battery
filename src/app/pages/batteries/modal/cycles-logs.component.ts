@@ -27,6 +27,7 @@ import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { DbService } from '../../../services/db.service';
 import {
   batteryStatusActionEnum,
+  batteryStatusDaysAlertEnum,
   BatteryStatusInterface,
 } from 'src/app/interfaces/battery-status';
 import { dbTables } from 'src/app/services/settings.service';
@@ -73,6 +74,7 @@ export class ModalCyclesLogsComponent {
 
   cycles: BatteryStatusInterface[] = [];
   objectStore = dbTables['batteries-status'];
+  public batteryStatusActionEnum = batteryStatusActionEnum;
 
   dateTimeFormatOptions = {
     date: {
@@ -120,11 +122,24 @@ export class ModalCyclesLogsComponent {
   async getItems() {
     if (this.anag?.id) {
       this.newRowForm.idBattery = this.anag.id;
-      this.cycles = await this.db.getItems(
+      const cycles: BatteryStatusInterface[] = await this.db.getItems(
         this.objectStore,
         'idBattery, enabled, deleted',
         [this.anag.id, +true, +false],
       );
+      cycles.map(row => {
+
+        const alertStatus =
+            row.status !== batteryStatusActionEnum.Store
+              ? 'warning'
+              : row.status !== batteryStatusActionEnum.Store
+                ? 'danger'
+                : row.status !== batteryStatusActionEnum.Store
+                  ? 'danger'
+                  : 'success';
+                  row.alertStatus = alertStatus;
+      })
+      this.cycles = cycles;
     }
   }
 

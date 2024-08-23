@@ -21,10 +21,17 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-card>
+
+
+  <ion-card-content>
   @for (battery of items; track battery.anag.id) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>
+
+
+
+
+        <ion-item>
+          <div slot="start">
           @if (
             battery.alertStatus !== "" &&
             battery?.lastStatus?.status !== batteryStatusActionEnum.Store
@@ -47,31 +54,31 @@
           }
 
           {{ "Battery " + battery?.anag?.label }}
+          @if (battery?.series?.label && battery?.series?.label !== "") {
+            <ion-card-subtitle [style]="'color: ' + battery?.series?.color">
+              {{ battery?.series?.label + " series" }}
+            </ion-card-subtitle>
+          }
+          <div>
+            {{ battery?.brand?.label }} {{ battery?.anag?.model }}
+          {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + "S" }}
+          {{ battery?.anag?.mA + "mA" }}
 
+        </div>
+
+          <div>{{ getBatteryStatus(battery?.lastStatus?.status) + "d" }} {{ battery.timeAgo }} <br /> {{ "Total cycles: " + battery.totalCycles }} | {{ "Age: " + getAge(battery?.anag?.date!) }}</div>
+
+        </div>
+        <div slot="end">
           <ion-button shape="round" (click)="presentActionSheet(battery)">
             <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
           </ion-button>
-        </ion-card-title>
+        </div>
 
-        @if (battery?.series?.label && battery?.series?.label !== "") {
-          <ion-card-subtitle [style]="'color: ' + battery?.series?.color">
-            {{ battery?.series?.label + " series" }}
-          </ion-card-subtitle>
-        }
 
-        {{ battery?.brand?.label }} {{ battery?.anag?.model }}
-        {{ battery?.type?.label }} {{ battery?.anag?.cellsNumber + "S" }}
-        {{ battery?.anag?.mA + "mA" }}
-      </ion-card-header>
-      <ion-card-content>
-        <p>
-          {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }}
-          {{ battery.timeAgo }}
-        </p>
-        <p>{{ "Total cycles: " + battery.totalCycles }}</p>
-        <p>{{ "Age: " + getAge(battery?.anag?.date!) }}</p>
 
-        <p class="align-right">
+
+        <div class="align-right">
           <ion-button
             color="light"
             shape="round"
@@ -87,11 +94,12 @@
           >
             <ion-icon slot="icon-only" name="list-outline"></ion-icon>
           </ion-button>
-        </p>
-      </ion-card-content>
-    </ion-card>
-  }
+        </div>
+        </ion-item>
 
+  }
+</ion-card-content>
+</ion-card>
   <ion-button (click)="setupLN()">notifications</ion-button>
   <ion-button (click)="fillDatabase()">fillDb</ion-button>
 </ion-content>
