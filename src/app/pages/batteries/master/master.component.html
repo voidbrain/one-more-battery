@@ -83,6 +83,19 @@
           </mat-card-content>
 
           <mat-card-actions>
+            <ion-button
+              shape="round"
+              color="light"
+              item-right
+              (click)="toggle(battery.anag.id!)"
+            >
+              @if (state[battery.anag.id!] === "collapsed") {
+                <ion-icon name="expand"></ion-icon>
+              } @else {
+                <ion-icon name="contract"></ion-icon>
+              }
+            </ion-button>
+
             <div>
               <ion-button
                 color="light"
@@ -100,19 +113,6 @@
                 <ion-icon slot="icon-only" name="list-outline"></ion-icon>
               </ion-button>
             </div>
-
-            <ion-button
-              shape="round"
-              color="light"
-              item-right
-              (click)="toggle(battery.anag.id!)"
-            >
-              @if (state[battery.anag.id!] === "collapsed") {
-                <ion-icon name="expand"></ion-icon>
-              } @else {
-                <ion-icon name="contract"></ion-icon>
-              }
-            </ion-button>
           </mat-card-actions>
         </mat-card>
         <br />
