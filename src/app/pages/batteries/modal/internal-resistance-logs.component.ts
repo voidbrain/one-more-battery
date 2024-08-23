@@ -42,7 +42,7 @@ import { DbService } from '../../../services/db.service';
     FormsModule
   ],
 })
-export class ModalResistanceLogsComponent implements OnChanges {
+export class ModalResistanceLogsComponent {
   @Input() anag: BatteryAnagraphInterface | undefined = undefined;
 
   newRowForm: BatteryResistanceLogInterface = {
@@ -68,24 +68,33 @@ export class ModalResistanceLogsComponent implements OnChanges {
     private modalCtrl: ModalController,
     private db: DbService,
   ) {
-    this.getItems();
+    
   }
-  ngOnChanges(changes: SimpleChanges){
-    console.log(changes)
+
+  async ionViewWillEnter() {
+    console.info('[PAGE]: Start');
+    try {
+      const forceLoading = false;
+      await this.db.initService(forceLoading);
+      
+      await this.getItems();
+    } catch (err) {
+      console.error('Error during initialization:', err);
+    }
   }
 
   async getItems(){
-    console.log(this.anag)
     if(this.anag?.id) {
-      
+      this.newRowForm.idBattery = this.anag.id;
       this.logs = await this.db.getItems(this.objectStore, 
         'idBattery, enabled, deleted',
-        [this.anag?.id!, +true, +false]
+        [this.anag.id, +true, +false]
       )
     }
   }
 
   addLog(){
+    console.log(this.newRowForm )
     this.db.putItem(this.objectStore, this.newRowForm);
     this.newRowForm = {
       date: new Date(),
@@ -99,9 +108,12 @@ export class ModalResistanceLogsComponent implements OnChanges {
   }
 
   get isAddNewDisabled(){
+    
+    const isNull = this.newRowForm.values.some(el => (''+el === '' || el === null));
+    console.log(this.newRowForm.values.length, this.anag?.cellsNumber)
     return  !this.newRowForm.date || 
-            !this.newRowForm.values.length !== !this.anag?.cellsNumber || 
-            this.newRowForm.values.find(el=> el === null);
+            this.newRowForm.values.length !== this.anag?.cellsNumber || 
+            isNull;
   }
 
   cancel() {
