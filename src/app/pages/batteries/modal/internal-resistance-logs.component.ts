@@ -43,7 +43,7 @@ import { DbService } from '../../../services/db.service';
   ],
 })
 export class ModalResistanceLogsComponent implements OnChanges {
-  @Input() anag!: BatteryAnagraphInterface;
+  @Input() anag: BatteryAnagraphInterface | undefined = undefined;
 
   newRowForm: BatteryResistanceLogInterface = {
     date: new Date(),
@@ -71,16 +71,18 @@ export class ModalResistanceLogsComponent implements OnChanges {
     this.getItems();
   }
   ngOnChanges(changes: SimpleChanges){
-    console.log(changes["anag"])
+    console.log(changes)
   }
 
   async getItems(){
-    console.log(this.anag?.id)
-    this.logs = await this.db.getItems(this.objectStore, 
-      'idBattery, enabled, deleted',
-      [this.anag?.id!, +true, +false]
-    )
-    
+    console.log(this.anag)
+    if(this.anag?.id) {
+      
+      this.logs = await this.db.getItems(this.objectStore, 
+        'idBattery, enabled, deleted',
+        [this.anag?.id!, +true, +false]
+      )
+    }
   }
 
   addLog(){
@@ -99,7 +101,7 @@ export class ModalResistanceLogsComponent implements OnChanges {
   get isAddNewDisabled(){
     return  !this.newRowForm.date || 
             !this.newRowForm.values.length !== !this.anag?.cellsNumber || 
-            this.newRowForm.values.find(el=> el === undefined);
+            this.newRowForm.values.find(el=> el === null);
   }
 
   cancel() {
