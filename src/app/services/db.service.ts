@@ -240,7 +240,11 @@ export class DbService {
 
       // Define proper bounds for the IDBKeyRange
       const lowerBound = [id, new Date(0), +true, +false]; // Earliest possible date
-      const upperBound = [id, new Date(), +true, +false]; // Latest possible date
+
+      const date = new Date();
+      date.setDate(date.getDate() + 1); // So we can see today
+
+      const upperBound = [id, date, +true, +false]; // Latest possible date
 
       // Use IDBKeyRange.bound() to create a range query between these bounds
       const keyRange = IDBKeyRange.bound(lowerBound, upperBound);

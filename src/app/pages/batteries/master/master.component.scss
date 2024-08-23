@@ -30,3 +30,8 @@ ion-col.text-center {
 .expandable-content {
   overflow: hidden;
 }
+
+.pull-right{
+  float:right;
+  clear: after;
+}
