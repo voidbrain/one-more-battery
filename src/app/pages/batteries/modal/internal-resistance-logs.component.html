@@ -42,7 +42,7 @@
       <ion-grid>
       <ion-row>
         <ion-col class="title">Date</ion-col>
-        <ion-col class="ion-text-right">
+        <ion-col>
           <ion-item>
 
             <ion-datetime-button color="secondary" [datetime]="'datetimeLogNewRow' "></ion-datetime-button>
@@ -68,21 +68,23 @@
             <ion-col class="ion-text-right"> 
               
               <ion-item>
-                <ion-input label="mΩ" name="anagModel" [value]="newRowForm.values[$index]"
-              (ionChange)="updateRowValues($event, $index)"></ion-input>
+                <ion-input type="number" name="anagModel" [value]="newRowForm.values[$index]"
+              (ionChange)="updateRowValues($event, $index)">
+                <div slot="end">mΩ</div>
+              </ion-input>
               </ion-item>
                </ion-col>
         </ion-row>
       }
       <ion-row>
-      <ion-col>
+      <ion-col class="ion-text-right">
 
-        <ion-item>
-          <ion-label>Add</ion-label>
+       
+          
           <ion-button [disabled]="isAddNewDisabled" shape="round" size="small" (click)="addLog()">
             <ion-icon slot="icon-only" name="add-outline"></ion-icon>
           </ion-button>
-        </ion-item>
+       
 
       </ion-col>
       </ion-row>

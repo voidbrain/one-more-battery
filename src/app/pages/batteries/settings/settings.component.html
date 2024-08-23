@@ -465,14 +465,14 @@
             
               <ion-col size="4">
                 <ion-item>
-                  <ion-input label="Cell N°" name="anagCellsNumber" [value]="battery.anag.cellsNumber"
+                  <ion-input type="number" label="Cell N°" name="anagCellsNumber" [value]="battery.anag.cellsNumber"
                     (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
                 </ion-item>
               </ion-col>
             
               <ion-col size="4">
                 <ion-item>
-                  <ion-input label="mA" name="anagmA" [value]="battery.anag.mA"
+                  <ion-input type="number" label="mA" name="anagmA" [value]="battery.anag.mA"
                     (ionChange)="updateRowAnag(battery.anag, true)"></ion-input>
                 </ion-item>
               </ion-col>
@@ -610,14 +610,14 @@
           
             <ion-col size="4">
               <ion-item>
-                <ion-input label="Cell N°" name="anagCellsNumber" [value]="newBatteryForm.anag.cellsNumber"
+                <ion-input type="number" label="Cell N°" name="anagCellsNumber" [value]="newBatteryForm.anag.cellsNumber"
                   (ionChange)="updateRowAnag(newBatteryForm.anag, true)"></ion-input>
               </ion-item>
             </ion-col>
           
             <ion-col size="4">
               <ion-item>
-                <ion-input label="mA" name="anagmA" [value]="newBatteryForm.anag.mA"
+                <ion-input type="number" label="mA" name="anagmA" [value]="newBatteryForm.anag.mA"
                   (ionChange)="updateRowAnag(newBatteryForm.anag, true)"></ion-input>
               </ion-item>
             </ion-col>
