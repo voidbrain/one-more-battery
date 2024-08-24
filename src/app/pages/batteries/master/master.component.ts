@@ -441,7 +441,7 @@ export class BatteriesMasterComponent {
     return item.id;
   }
 
-  async setupLN() {
+  async requestNotificationsPermissions() {
     const granted = await LocalNotifications.requestPermissions();
     if (granted.display === 'granted') {
       this.items.map(async (el) => {
@@ -476,9 +476,10 @@ export class BatteriesMasterComponent {
         schedule: {
           at: new Date(
             new Date().getTime() +
-              batteryStatusDaysAlertEnum.Warning * 86_400 * 1000,
+              // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
+              batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
           ),
-        }, // 3 * 86_400 * 1000 seconds in a day
+        },
         actionTypeId: '',
         extra: null,
       },
@@ -494,9 +495,9 @@ export class BatteriesMasterComponent {
         schedule: {
           at: new Date(
             new Date().getTime() +
-              batteryStatusDaysAlertEnum.Danger * 86_400 * 1000,
+              batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
           ),
-        }, // 5 * 86_400 * 1000 seconds in a day
+        },
         actionTypeId: '',
         extra: null,
       },
