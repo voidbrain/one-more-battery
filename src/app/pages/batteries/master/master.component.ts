@@ -26,8 +26,7 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  IonActionSheet,
-} from '@ionic/angular/standalone';
+  IonActionSheet, IonAlert } from '@ionic/angular/standalone';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -42,13 +41,13 @@ import {
   batteryStatusDaysAlertEnum,
   BatteryStatusInterface,
 } from 'src/app/interfaces/battery-status';
-import { FillDbService } from 'src/app/services/fillDb.service';
+
 import {
   BatteryAnagraphInterface,
   ExtendedBatteryAnagraphInterface,
 } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays, formatDuration } from 'date-fns';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, AlertController } from '@ionic/angular';
 
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
@@ -68,7 +67,7 @@ import {
 @Component({
   selector: 'app-batteries-master',
   standalone: true,
-  imports: [
+  imports: [IonAlert, 
     IonActionSheet,
     RouterLink,
     RouterOutlet,
@@ -130,10 +129,10 @@ export class BatteriesMasterComponent {
   constructor(
     private db: DbService,
     private router: Router,
-    private fillDb: FillDbService,
     private settings: SettingsService,
     private actionSheetCtrl: ActionSheetController,
     private modalCtrl: ModalController,
+    private alertController: AlertController
   ) {
     addIcons(ionIcons);
   }
@@ -145,11 +144,6 @@ export class BatteriesMasterComponent {
     await this.db.initService(forceLoading);
   }
 
-  public async fillDatabase() {
-    await this.resetDatabase();
-    await this.fillDb.fillDb();
-    await this.getItems();
-  }
 
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
@@ -158,9 +152,9 @@ export class BatteriesMasterComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
 
-      if (this.settings.fillDb) {
-        await this.fillDb.fillDb();
-      }
+      
+      await this.presentAlert();
+     
 
       const stored = await LocalNotifications.getPending();
 
@@ -168,6 +162,28 @@ export class BatteriesMasterComponent {
     } catch (err) {
       console.error('Error during initialization:', err);
     }
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'A Short Title Is Best',
+      subHeader: 'A Sub Header Is Optional',
+      message: 'A message should be a short, complete sentence.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {},
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: () => { this.requestNotificationsPermissions(); },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   async chargeBattery(item: ExtendedBatteryAnagraphInterface) {
@@ -442,8 +458,10 @@ export class BatteriesMasterComponent {
   }
 
   async requestNotificationsPermissions() {
+    console.log("request")
     const granted = await LocalNotifications.requestPermissions();
     if (granted.display === 'granted') {
+      console.log("granted")
       this.items.map(async (el) => {
         const objectStoreStatus = dbTables['batteries-status'];
         const lastStatus: BatteryStatusInterface | undefined =
@@ -454,6 +472,9 @@ export class BatteriesMasterComponent {
         el.lastStatus = lastStatus;
         this.setupLocalNotification(el.anag, el.lastStatus!);
       });
+    } else {
+      console.log(granted);
+      await LocalNotifications.requestPermissions();
     }
   }
 

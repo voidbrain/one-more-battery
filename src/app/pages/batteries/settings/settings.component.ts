@@ -190,6 +190,19 @@ export class BatteriesSettingComponent {
     addIcons(ionIcons);
   }
 
+  public async resetDatabase() {
+    await this.db.deleteDb();
+    await this.db.load();
+    const forceLoading = true;
+    await this.db.initService(forceLoading);
+  }
+
+  public async fillDatabase() {
+    await this.resetDatabase();
+    await this.fillDb.fillDb();
+    await this.getItems();
+  }
+
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
