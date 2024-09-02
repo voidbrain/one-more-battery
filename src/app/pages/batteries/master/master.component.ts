@@ -178,7 +178,27 @@ export class BatteriesMasterComponent {
         {
           text: 'OK',
           role: 'confirm',
-          handler: () => { this.requestNotificationsPermissions(); },
+          handler: async () => { 
+            
+            const granted = await LocalNotifications.requestPermissions();
+            if (granted.display === 'granted') {
+              console.log("granted")
+              this.items.map(async (el) => {
+                const objectStoreStatus = dbTables['batteries-status'];
+                const lastStatus: BatteryStatusInterface | undefined =
+                  await this.db.getLastStatusByDate<BatteryStatusInterface>(
+                    objectStoreStatus,
+                    el.anag.id!,
+                  );
+                el.lastStatus = lastStatus;
+                this.setupLocalNotification(el.anag, el.lastStatus!);
+              });
+            } else {
+              console.log(granted);
+              await LocalNotifications.requestPermissions();
+            }
+
+           },
         },
       ],
     });
@@ -459,23 +479,7 @@ export class BatteriesMasterComponent {
 
   async requestNotificationsPermissions() {
     console.log("request")
-    const granted = await LocalNotifications.requestPermissions();
-    if (granted.display === 'granted') {
-      console.log("granted")
-      this.items.map(async (el) => {
-        const objectStoreStatus = dbTables['batteries-status'];
-        const lastStatus: BatteryStatusInterface | undefined =
-          await this.db.getLastStatusByDate<BatteryStatusInterface>(
-            objectStoreStatus,
-            el.anag.id!,
-          );
-        el.lastStatus = lastStatus;
-        this.setupLocalNotification(el.anag, el.lastStatus!);
-      });
-    } else {
-      console.log(granted);
-      await LocalNotifications.requestPermissions();
-    }
+    
   }
 
   async setupLocalNotification(
