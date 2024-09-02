@@ -165,10 +165,10 @@ export class BatteriesMasterComponent {
   }
 
   async presentAlert() {
+    console.log("presentAlert")
     const alert = await this.alertController.create({
-      header: 'A Short Title Is Best',
-      subHeader: 'A Sub Header Is Optional',
-      message: 'A message should be a short, complete sentence.',
+      header: 'Allow notifications',
+      message: 'Do you want a reminder about your batteries status?',
       buttons: [
         {
           text: 'Cancel',
