@@ -120,7 +120,6 @@ export class ModalResistanceLogsComponent {
   }
 
   addLog() {
-    console.log(this.newRowForm);
     this.db.putItem(this.objectStore, this.newRowForm);
     this.newRowForm = {
       date: new Date(),
