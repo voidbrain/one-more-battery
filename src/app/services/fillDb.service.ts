@@ -39,7 +39,10 @@ export class FillDbService {
       date: new Date('2024-08-15'),
       values: [4.3, 3.5, 4.3, 5.0, 4.3, 4.3],
     };
-    this.db.putItem(dbTables['batteries-resistance-logs'], itemBatteryResistanceLogs1);
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs1,
+    );
     const itemBatteryResistanceLogs2: BatteryResistanceLogInterface = {
       idBattery: 2,
       enabled: +true,
@@ -47,7 +50,10 @@ export class FillDbService {
       date: new Date('2024-08-15'),
       values: [4.2, 4.2, 5.6, 4.2, 3.5, 4.2],
     };
-    this.db.putItem(dbTables['batteries-resistance-logs'], itemBatteryResistanceLogs2);
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs2,
+    );
     const itemBatteryResistanceLogs3: BatteryResistanceLogInterface = {
       idBattery: 3,
       enabled: +true,
@@ -55,7 +61,10 @@ export class FillDbService {
       date: new Date('2024-08-15'),
       values: [5.7, 5.0, 5.0, 5.0, 5.0, 5.0],
     };
-    this.db.putItem(dbTables['batteries-resistance-logs'], itemBatteryResistanceLogs3);
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs3,
+    );
     const itemBatteryResistanceLogs4: BatteryResistanceLogInterface = {
       idBattery: 4,
       enabled: +true,
@@ -63,7 +72,10 @@ export class FillDbService {
       date: new Date('2024-08-15'),
       values: [3.5, 4.2, 3.5, 3.5, 4.2, 4.2],
     };
-    this.db.putItem(dbTables['batteries-resistance-logs'], itemBatteryResistanceLogs4);
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs4,
+    );
 
     /**
      * Series anag

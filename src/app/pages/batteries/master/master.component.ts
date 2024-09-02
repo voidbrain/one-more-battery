@@ -26,7 +26,9 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-  IonActionSheet, IonAlert } from '@ionic/angular/standalone';
+  IonActionSheet,
+  IonAlert,
+} from '@ionic/angular/standalone';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -49,7 +51,10 @@ import {
 import { differenceInDays, formatDuration } from 'date-fns';
 import { ActionSheetController, AlertController } from '@ionic/angular';
 
-import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
+import {
+  LocalNotifications,
+  ScheduleOptions,
+} from '@capacitor/local-notifications';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
@@ -67,7 +72,8 @@ import {
 @Component({
   selector: 'app-batteries-master',
   standalone: true,
-  imports: [IonAlert,
+  imports: [
+    IonAlert,
     IonActionSheet,
     RouterLink,
     RouterOutlet,
@@ -132,7 +138,7 @@ export class BatteriesMasterComponent {
     private settings: SettingsService,
     private actionSheetCtrl: ActionSheetController,
     private modalCtrl: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
   ) {
     addIcons(ionIcons);
   }
@@ -144,7 +150,6 @@ export class BatteriesMasterComponent {
     await this.db.initService(forceLoading);
   }
 
-
   async ionViewWillEnter() {
     console.info('[PAGE]: Start');
     try {
@@ -155,20 +160,26 @@ export class BatteriesMasterComponent {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }
     try {
-      const alreadyAsked = localStorage.getItem(this.settings.getAppName() + "_requestNotificationsPermissions");
-      if(!alreadyAsked){
-        localStorage.setItem(this.settings.getAppName() + "_requestNotificationsPermissions", Date.now().toString());
+      const alreadyAsked = localStorage.getItem(
+        this.settings.getAppName() + '_requestNotificationsPermissions',
+      );
+      if (!alreadyAsked) {
+        localStorage.setItem(
+          this.settings.getAppName() + '_requestNotificationsPermissions',
+          Date.now().toString(),
+        );
         await this.presentAlert();
       } else {
         this.setupLocalNotifications();
       }
 
-
       const stored = await LocalNotifications.getPending();
-      console.info("[PAGE]: [NOTIFICATIONS]: ", stored);
-
+      console.info('[PAGE]: [NOTIFICATIONS]: ', stored);
     } catch (err) {
-      console.error('[PAGE]: [NOTIFICATIONS]: Error during initialization:', err);
+      console.error(
+        '[PAGE]: [NOTIFICATIONS]: Error during initialization:',
+        err,
+      );
     }
     await this.getItems();
   }
@@ -189,10 +200,10 @@ export class BatteriesMasterComponent {
           handler: async () => {
             const granted = await LocalNotifications.requestPermissions();
             if (granted.display === 'granted') {
-              console.info("[PAGE]: [NOTIFICATIONS]: granted", granted);
+              console.info('[PAGE]: [NOTIFICATIONS]: granted', granted);
               this.setupLocalNotifications();
             } else {
-              console.error("[PAGE]: [NOTIFICATIONS]: not granted", granted);
+              console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
             }
           },
         },
@@ -410,7 +421,7 @@ export class BatteriesMasterComponent {
         }
       }
       const stored = await LocalNotifications.getPending();
-      console.info('[PAGE]: stored notifications', stored)
+      console.info('[PAGE]: stored notifications', stored);
       this.items = expandedItems;
 
       console.info('[PAGE]: Ready');
@@ -458,38 +469,48 @@ export class BatteriesMasterComponent {
     return item.id;
   }
 
-  async setupLocalNotifications(){
+  async setupLocalNotifications() {
     const granted = await LocalNotifications.checkPermissions();
-      if (granted.display === 'granted') {
-        console.info("[PAGE]: [NOTIFICATIONS]: granted", granted);
+    if (granted.display === 'granted') {
+      console.info('[PAGE]: [NOTIFICATIONS]: granted', granted);
 
-        // TODO remove old notifications
+      // TODO remove old notifications
 
-        this.items.map(async (el) => {
-          const objectStoreStatus = dbTables['batteries-status'];
-          const lastStatus: BatteryStatusInterface | undefined =
-            await this.db.getLastStatusByDate<BatteryStatusInterface>(
-              objectStoreStatus,
-              el.anag.id!,
-            );
-          el.lastStatus = lastStatus;
-          const firstNotificationAt = new Date(
-            new Date().getTime() +
-              // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
-              batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
+      this.items.map(async (el) => {
+        const objectStoreStatus = dbTables['batteries-status'];
+        const lastStatus: BatteryStatusInterface | undefined =
+          await this.db.getLastStatusByDate<BatteryStatusInterface>(
+            objectStoreStatus,
+            el.anag.id!,
           );
-          const firstNotificationRange = 10;
-          this.setLocalNotification(el.anag, el.lastStatus!, firstNotificationAt, firstNotificationRange);
-          const secondNotificationAt = new Date(
-            new Date().getTime() +
-              batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
-          );
-          const secondNotificationRange = 20;
-          this.setLocalNotification(el.anag, el.lastStatus!, secondNotificationAt, secondNotificationRange);
-        });
-      } else {
-        console.error("[PAGE]: [NOTIFICATIONS]: not granted", granted);
-      }
+        el.lastStatus = lastStatus;
+        const firstNotificationAt = new Date(
+          new Date().getTime() +
+            // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
+            batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
+        );
+        const firstNotificationRange = 10;
+        this.setLocalNotification(
+          el.anag,
+          el.lastStatus!,
+          firstNotificationAt,
+          firstNotificationRange,
+        );
+        const secondNotificationAt = new Date(
+          new Date().getTime() +
+            batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
+        );
+        const secondNotificationRange = 20;
+        this.setLocalNotification(
+          el.anag,
+          el.lastStatus!,
+          secondNotificationAt,
+          secondNotificationRange,
+        );
+      });
+    } else {
+      console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
+    }
   }
 
   async setLocalNotification(
@@ -501,26 +522,27 @@ export class BatteriesMasterComponent {
     // Request permission for iOS or check if already granted
 
     const notification: ScheduleOptions = {
-      notifications: [{
-        title: anag.label + ' Warning',
-        body:
-          'Battery ' +
-          anag.label +
-          ' has been ' +
-          batteryStatusActionEnum[lastStatus.status!] +
-          'd '+ this.getAge(lastStatus.date) +'. Please put it in Storage to preserve battery life',
-        id: anag?.id! + range,
-        schedule: {
-          at,
+      notifications: [
+        {
+          title: anag.label + ' Warning',
+          body:
+            'Battery ' +
+            anag.label +
+            ' has been ' +
+            batteryStatusActionEnum[lastStatus.status!] +
+            'd ' +
+            this.getAge(lastStatus.date) +
+            '. Please put it in Storage to preserve battery life',
+          id: anag?.id! + range,
+          schedule: {
+            at,
+          },
+          actionTypeId: '',
+          extra: null,
         },
-        actionTypeId: '',
-        extra: null,
-      }]
+      ],
     };
-    await LocalNotifications.schedule(
-      notification
-    );
+    await LocalNotifications.schedule(notification);
     console.info('[PAGE]: notification', notification);
-
   }
 }

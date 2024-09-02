@@ -20,7 +20,7 @@ export class SettingsService {
 
   constructor() {}
 
-  public getAppName(){
+  public getAppName() {
     return this.appName;
   }
 }

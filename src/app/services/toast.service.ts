@@ -22,7 +22,7 @@ export class ToastService {
       duration: 3000,
       position: 'top',
       cssClass: 'globe',
-      color:'primary',
+      color: 'primary',
     });
     toast.present();
     await toast.onDidDismiss();
