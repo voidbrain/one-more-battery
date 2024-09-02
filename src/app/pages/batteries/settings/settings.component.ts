@@ -198,7 +198,6 @@ export class BatteriesSettingComponent {
   }
 
   public async fillDatabase() {
-    await this.resetDatabase();
     await this.fillDb.fillDb();
     await this.getItems();
   }

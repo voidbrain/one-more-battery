@@ -152,11 +152,15 @@ export class BatteriesMasterComponent {
       const forceLoading = true;
       await this.db.initService(forceLoading);
 
+      const alreadyAsked = localStorage.getItem(this.settings.getAppName() + "_requestNotificationsPermissions");
       
-      await this.presentAlert();
+      if(!alreadyAsked){
+        await this.presentAlert();
+      }
+      const stored = await LocalNotifications.getPending();
      
 
-      const stored = await LocalNotifications.getPending();
+      
 
       await this.getItems();
     } catch (err) {
@@ -165,7 +169,8 @@ export class BatteriesMasterComponent {
   }
 
   async presentAlert() {
-    console.log("presentAlert")
+    localStorage.setItem(this.settings.getAppName() + "_requestNotificationsPermissions", Date.now().toString());
+
     const alert = await this.alertController.create({
       header: 'Allow notifications',
       message: 'Do you want a reminder about your batteries status?',
