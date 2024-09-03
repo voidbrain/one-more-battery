@@ -175,6 +175,14 @@ export class BatteriesMasterComponent {
 
       const stored = await LocalNotifications.getPending();
       console.info('[PAGE]: [NOTIFICATIONS]: ', stored);
+
+      LocalNotifications.addListener('localNotificationReceived', (notification) => {
+        console.log('Notification action received', notification);
+      });
+      LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
+        console.log('Notification action received', notification);
+      });
+
     } catch (err) {
       console.error(
         '[PAGE]: [NOTIFICATIONS]: Error during initialization:',
