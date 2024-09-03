@@ -169,29 +169,37 @@ export class BatteriesMasterComponent {
           Date.now().toString(),
         );
         await this.presentAlert();
+        await this.getItems();
         console.info('[PAGE]: [NOTIFICATIONS]: presentAlert');
       } else {
+        await this.getItems();
         this.setupLocalNotifications();
-        console.info('[PAGE]: [NOTIFICATIONS]: Already granted, setupLocalNotifications');
+        console.info(
+          '[PAGE]: [NOTIFICATIONS]: Already granted, setupLocalNotifications',
+        );
       }
 
       const stored = await LocalNotifications.getPending();
       console.info('[PAGE]: [stored NOTIFICATIONS]: ', stored);
 
-      LocalNotifications.addListener('localNotificationReceived', (notification) => {
-        console.log('Notification action received', notification);
-      });
-      LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
-        console.log('Notification action received', notification);
-      });
-
+      LocalNotifications.addListener(
+        'localNotificationReceived',
+        (notification) => {
+          console.log('Notification action received', notification);
+        },
+      );
+      LocalNotifications.addListener(
+        'localNotificationActionPerformed',
+        (notification) => {
+          console.log('Notification action received', notification);
+        },
+      );
     } catch (err) {
       console.error(
         '[PAGE]: [NOTIFICATIONS initialization]: Error during initialization:',
         err,
       );
     }
-    await this.getItems();
   }
 
   async presentAlert() {
@@ -213,7 +221,10 @@ export class BatteriesMasterComponent {
               console.info('[PAGE]: [NOTIFICATIONS grant]: granted', granted);
               this.setupLocalNotifications();
             } else {
-              console.error('[PAGE]: [NOTIFICATIONS grant]: not granted', granted);
+              console.error(
+                '[PAGE]: [NOTIFICATIONS grant]: not granted',
+                granted,
+              );
             }
           },
         },
@@ -433,6 +444,7 @@ export class BatteriesMasterComponent {
       const stored = await LocalNotifications.getPending();
       console.info('[PAGE]: stored notifications', stored);
       this.items = expandedItems;
+      console.log(this.items);
 
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -483,8 +495,6 @@ export class BatteriesMasterComponent {
     console.info('[PAGE]: [setupLocalNotifications]');
     const granted = await LocalNotifications.checkPermissions();
     if (granted.display === 'granted') {
-      
-
       // TODO remove old notifications
 
       this.items.map(async (el) => {
@@ -500,7 +510,8 @@ export class BatteriesMasterComponent {
         //     // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
         //     batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
         // );
-        const firstNotificationAt = batteryStatusDaysAlertEnum.Warning * 10 * 1000;
+        const firstNotificationAt =
+          batteryStatusDaysAlertEnum.Warning * 10 * 1000;
         const firstNotificationRange = 10;
         this.setLocalNotification(
           el.anag,
@@ -512,8 +523,9 @@ export class BatteriesMasterComponent {
         //   new Date().getTime() +
         //     batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
         // );
-        const secondNotificationAt = batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
-        
+        const secondNotificationAt =
+          batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
+
         const secondNotificationRange = 20;
         this.setLocalNotification(
           el.anag,
@@ -533,23 +545,28 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async setNotification(){
+  async setNotification(at: number) {
+    console.log(this.items);
     const anag = this.items[0].anag;
     const lastStatus = this.items[0].lastStatus!;
-    const at = 60; // 10 secs from now
     const range = 90;
-    console.info('[PAGE]: [NOTIFICATIONS]: setLocalNotification', anag, lastStatus,  at, range);
-    this.setLocalNotification(anag, lastStatus,  at, range);
+    console.info(
+      '[PAGE]: [NOTIFICATIONS]: setLocalNotification',
+      anag,
+      lastStatus,
+      at,
+      range,
+    );
+    this.setLocalNotification(anag, lastStatus, at, range);
   }
 
   async setLocalNotification(
     anag: BatteryAnagraphInterface,
     lastStatus: BatteryStatusInterface,
-    at: number, 
+    at: number,
     range: number,
   ) {
-    // Request permission for iOS or check if already granted
-    const atTime = new Date(new Date().getTime() + at);
+    const atTime = new Date(new Date().getTime() + at * 1000);
     const daysDifference = differenceInDays(atTime, lastStatus.date);
 
     const notification: ScheduleOptions = {
