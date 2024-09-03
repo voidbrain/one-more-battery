@@ -9,6 +9,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+import { AngularFireModule } from '@angular/fire/compat';
+import { FirebaseConfigService } from './services/firebase.config.service';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -23,4 +26,12 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    private firebaseConfigService: FirebaseConfigService
+  ){
+    this.firebaseConfigService.getFirebaseConfig().subscribe(config => {
+      AngularFireModule.initializeApp(config);
+    });
+  }
+}
