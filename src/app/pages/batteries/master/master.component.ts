@@ -169,8 +169,10 @@ export class BatteriesMasterComponent {
           Date.now().toString(),
         );
         await this.presentAlert();
+        console.info('[PAGE]: [NOTIFICATIONS]: presentAlert');
       } else {
         this.setupLocalNotifications();
+        console.info('[PAGE]: [NOTIFICATIONS]: Already granted, setupLocalNotifications');
       }
 
       const stored = await LocalNotifications.getPending();
@@ -185,7 +187,7 @@ export class BatteriesMasterComponent {
 
     } catch (err) {
       console.error(
-        '[PAGE]: [NOTIFICATIONS]: Error during initialization:',
+        '[PAGE]: [NOTIFICATIONS initialization]: Error during initialization:',
         err,
       );
     }
@@ -208,10 +210,10 @@ export class BatteriesMasterComponent {
           handler: async () => {
             const granted = await LocalNotifications.requestPermissions();
             if (granted.display === 'granted') {
-              console.info('[PAGE]: [NOTIFICATIONS]: granted', granted);
+              console.info('[PAGE]: [NOTIFICATIONS grant]: granted', granted);
               this.setupLocalNotifications();
             } else {
-              console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
+              console.error('[PAGE]: [NOTIFICATIONS grant]: not granted', granted);
             }
           },
         },
