@@ -524,12 +524,12 @@ export class BatteriesMasterComponent {
   ) {
     // Request permission for iOS or check if already granted
     const atTime = new Date(new Date().getTime() + at);
-    const daysDifference = differenceInDays(lastStatus.date, atTime);
+    const daysDifference = differenceInDays(atTime, lastStatus.date);
 
     const notification: ScheduleOptions = {
       notifications: [
         {
-          title: anag.label + ' Warning',
+          title: 'Battery ' + anag.label + ' Warning',
           body:
             'Battery ' +
             anag.label +
@@ -537,7 +537,7 @@ export class BatteriesMasterComponent {
             batteryStatusActionEnum[lastStatus.status!] +
             'd ' +
             daysDifference +
-            '. Please put it in Storage to preserve battery life',
+            ' days ago. Please put it in Storage to preserve battery life',
           id: anag?.id! + range,
           schedule: { at: atTime },
           actionTypeId: '',
