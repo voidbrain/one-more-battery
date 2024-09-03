@@ -484,11 +484,12 @@ export class BatteriesMasterComponent {
             el.anag.id!,
           );
         el.lastStatus = lastStatus;
-        const firstNotificationAt = new Date(
-          new Date().getTime() +
-            // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
-            batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
-        );
+        // const firstNotificationAt = new Date(
+        //   new Date().getTime() +
+        //     // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
+        //     batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
+        // );
+        const firstNotificationAt = batteryStatusDaysAlertEnum.Warning * 10 * 1000;
         const firstNotificationRange = 10;
         this.setLocalNotification(
           el.anag,
@@ -496,10 +497,12 @@ export class BatteriesMasterComponent {
           firstNotificationAt,
           firstNotificationRange,
         );
-        const secondNotificationAt = new Date(
-          new Date().getTime() +
-            batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
-        );
+        // const secondNotificationAt = new Date(
+        //   new Date().getTime() +
+        //     batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
+        // );
+        const secondNotificationAt = batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
+        
         const secondNotificationRange = 20;
         this.setLocalNotification(
           el.anag,
@@ -516,10 +519,12 @@ export class BatteriesMasterComponent {
   async setLocalNotification(
     anag: BatteryAnagraphInterface,
     lastStatus: BatteryStatusInterface,
-    at: Date,
+    at: number, 
     range: number,
   ) {
     // Request permission for iOS or check if already granted
+    const atTime = new Date(new Date().getTime() + at);
+    const daysDifference = differenceInDays(lastStatus.date, atTime);
 
     const notification: ScheduleOptions = {
       notifications: [
@@ -531,12 +536,10 @@ export class BatteriesMasterComponent {
             ' has been ' +
             batteryStatusActionEnum[lastStatus.status!] +
             'd ' +
-            this.getAge(lastStatus.date) +
+            daysDifference +
             '. Please put it in Storage to preserve battery life',
           id: anag?.id! + range,
-          schedule: {
-            at,
-          },
+          schedule: { at: atTime },
           actionTypeId: '',
           extra: null,
         },
