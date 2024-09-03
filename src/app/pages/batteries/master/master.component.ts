@@ -174,7 +174,7 @@ export class BatteriesMasterComponent {
       }
 
       const stored = await LocalNotifications.getPending();
-      console.info('[PAGE]: [NOTIFICATIONS]: ', stored);
+      console.info('[PAGE]: [stored NOTIFICATIONS]: ', stored);
 
       LocalNotifications.addListener('localNotificationReceived', (notification) => {
         console.log('Notification action received', notification);
@@ -478,9 +478,10 @@ export class BatteriesMasterComponent {
   }
 
   async setupLocalNotifications() {
+    console.info('[PAGE]: [setupLocalNotifications]');
     const granted = await LocalNotifications.checkPermissions();
     if (granted.display === 'granted') {
-      console.info('[PAGE]: [NOTIFICATIONS]: granted', granted);
+      
 
       // TODO remove old notifications
 
@@ -518,6 +519,12 @@ export class BatteriesMasterComponent {
           secondNotificationAt,
           secondNotificationRange,
         );
+        console.info('[PAGE]: [NOTIFICATIONS]: set', {
+          anag: el.anag,
+          lastStatus: el.lastStatus!,
+          secondNotificationAt,
+          secondNotificationRange,
+        });
       });
     } else {
       console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
