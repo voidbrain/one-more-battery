@@ -536,7 +536,7 @@ export class BatteriesMasterComponent {
   async setNotification(){
     const anag = this.items[0].anag;
     const lastStatus = this.items[0].lastStatus!;
-    const at = 10; // 10 secs from now
+    const at = 60; // 10 secs from now
     const range = 90;
     console.info('[PAGE]: [NOTIFICATIONS]: setLocalNotification', anag, lastStatus,  at, range);
     this.setLocalNotification(anag, lastStatus,  at, range);
