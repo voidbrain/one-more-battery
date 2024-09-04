@@ -20,16 +20,16 @@ self.addEventListener('install', function(event) {
 
 // Set up background messaging after Firebase is initialized
 self.addEventListener('activate', function(event) {
-  // const messaging = firebase.messaging();
+  messaging = firebase.messaging();
 
-  // messaging.onBackgroundMessage(function(payload) {
-  //   const notificationTitle = payload.notification.title;
-  //   const notificationOptions = {
-  //     body: payload.notification.body,
-  //     icon: payload.notification.icon,
-  //   };
+  messaging.onBackgroundMessage(function(payload) {
+    notificationTitle = payload.notification.title;
+    notificationOptions = {
+      body: payload.notification.body,
+      icon: payload.notification.icon,
+    };
 
-  //   // Show notification when a background message is received
-  //   self.registration.showNotification(notificationTitle, notificationOptions);
-  // });
+    // Show notification when a background message is received
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  });
 });

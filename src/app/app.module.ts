@@ -10,6 +10,9 @@ import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { AngularFireModule } from '@angular/fire/compat';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { FirebaseConfigService } from './services/firebase.config.service';
 
 @NgModule({
@@ -19,20 +22,17 @@ import { FirebaseConfigService } from './services/firebase.config.service';
     BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+
   ],
   providers: [
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideAnimationsAsync(),
+
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(
-    private firebaseConfigService: FirebaseConfigService
-  ){
-    this.firebaseConfigService.getFirebaseConfig().subscribe(config => {
-      AngularFireModule.initializeApp(config);
-    });
-  }
+
 }
+

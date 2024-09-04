@@ -51,10 +51,10 @@ import {
 import { differenceInDays, formatDuration } from 'date-fns';
 import { ActionSheetController, AlertController } from '@ionic/angular';
 
-import {
-  LocalNotifications,
-  ScheduleOptions,
-} from '@capacitor/local-notifications';
+// import {
+//   LocalNotifications,
+//   ScheduleOptions,
+// } from '@capacitor/local-notifications';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
@@ -179,21 +179,21 @@ export class BatteriesMasterComponent {
         );
       }
 
-      const stored = await LocalNotifications.getPending();
-      console.info('[PAGE]: [stored NOTIFICATIONS]: ', stored);
+      // const stored = await LocalNotifications.getPending();
+      // console.info('[PAGE]: [stored NOTIFICATIONS]: ', stored);
 
-      LocalNotifications.addListener(
-        'localNotificationReceived',
-        (notification) => {
-          console.log('Notification action received', notification);
-        },
-      );
-      LocalNotifications.addListener(
-        'localNotificationActionPerformed',
-        (notification) => {
-          console.log('Notification action received', notification);
-        },
-      );
+      // LocalNotifications.addListener(
+      //   'localNotificationReceived',
+      //   (notification) => {
+      //     console.log('Notification action received', notification);
+      //   },
+      // );
+      // LocalNotifications.addListener(
+      //   'localNotificationActionPerformed',
+      //   (notification) => {
+      //     console.log('Notification action received', notification);
+      //   },
+      // );
     } catch (err) {
       console.error(
         '[PAGE]: [NOTIFICATIONS initialization]: Error during initialization:',
@@ -216,16 +216,16 @@ export class BatteriesMasterComponent {
           text: 'OK',
           role: 'confirm',
           handler: async () => {
-            const granted = await LocalNotifications.requestPermissions();
-            if (granted.display === 'granted') {
-              console.info('[PAGE]: [NOTIFICATIONS grant]: granted', granted);
-              this.setupLocalNotifications();
-            } else {
-              console.error(
-                '[PAGE]: [NOTIFICATIONS grant]: not granted',
-                granted,
-              );
-            }
+            // const granted = await LocalNotifications.requestPermissions();
+            // if (granted.display === 'granted') {
+            //   console.info('[PAGE]: [NOTIFICATIONS grant]: granted', granted);
+            //   this.setupLocalNotifications();
+            // } else {
+            //   console.error(
+            //     '[PAGE]: [NOTIFICATIONS grant]: not granted',
+            //     granted,
+            //   );
+            // }
           },
         },
       ],
@@ -441,10 +441,10 @@ export class BatteriesMasterComponent {
           console.error(`Error processing item with id ${anag.id}:`, error);
         }
       }
-      const stored = await LocalNotifications.getPending();
-      console.info('[PAGE]: stored notifications', stored);
-      this.items = expandedItems;
-      console.log(this.items);
+      // const stored = await LocalNotifications.getPending();
+      // console.info('[PAGE]: stored notifications', stored);
+      // this.items = expandedItems;
+      // console.log(this.items);
 
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -493,8 +493,8 @@ export class BatteriesMasterComponent {
 
   async setupLocalNotifications() {
     console.info('[PAGE]: [setupLocalNotifications]');
-    const granted = await LocalNotifications.checkPermissions();
-    if (granted.display === 'granted') {
+    // const granted = await LocalNotifications.checkPermissions();
+    // if (granted.display === 'granted') {
       // TODO remove old notifications
 
       this.items.map(async (el) => {
@@ -527,22 +527,22 @@ export class BatteriesMasterComponent {
           batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
 
         const secondNotificationRange = 20;
-        this.setLocalNotification(
-          el.anag,
-          el.lastStatus!,
-          secondNotificationAt,
-          secondNotificationRange,
-        );
-        console.info('[PAGE]: [NOTIFICATIONS]: set', {
-          anag: el.anag,
-          lastStatus: el.lastStatus!,
-          secondNotificationAt,
-          secondNotificationRange,
-        });
+        // this.setLocalNotification(
+        //   el.anag,
+        //   el.lastStatus!,
+        //   secondNotificationAt,
+        //   secondNotificationRange,
+        // );
+        // console.info('[PAGE]: [NOTIFICATIONS]: set', {
+        //   anag: el.anag,
+        //   lastStatus: el.lastStatus!,
+        //   secondNotificationAt,
+        //   secondNotificationRange,
+        // });
       });
-    } else {
-      console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
-    }
+    // } else {
+    //   console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
+    // }
   }
 
   async setNotification(at: number) {
@@ -569,26 +569,26 @@ export class BatteriesMasterComponent {
     const atTime = new Date(new Date().getTime() + at * 1000);
     const daysDifference = differenceInDays(atTime, lastStatus.date);
 
-    const notification: ScheduleOptions = {
-      notifications: [
-        {
-          title: 'Battery ' + anag.label + ' Warning',
-          body:
-            'Battery ' +
-            anag.label +
-            ' has been ' +
-            batteryStatusActionEnum[lastStatus.status!] +
-            'd ' +
-            daysDifference +
-            ' days ago. Please put it in Storage to preserve battery life',
-          id: anag?.id! + range,
-          schedule: { at: atTime },
-          actionTypeId: '',
-          extra: null,
-        },
-      ],
-    };
-    await LocalNotifications.schedule(notification);
-    console.info('[PAGE]: set notification', notification);
+    // const notification: ScheduleOptions = {
+    //   notifications: [
+    //     {
+    //       title: 'Battery ' + anag.label + ' Warning',
+    //       body:
+    //         'Battery ' +
+    //         anag.label +
+    //         ' has been ' +
+    //         batteryStatusActionEnum[lastStatus.status!] +
+    //         'd ' +
+    //         daysDifference +
+    //         ' days ago. Please put it in Storage to preserve battery life',
+    //       id: anag?.id! + range,
+    //       schedule: { at: atTime },
+    //       actionTypeId: '',
+    //       extra: null,
+    //     },
+    //   ],
+    // };
+    // await LocalNotifications.schedule(notification);
+    // console.info('[PAGE]: set notification', notification);
   }
 }
