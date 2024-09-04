@@ -5,7 +5,7 @@ importScripts('/firebase/firebase-messaging-compat.js');
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
-    fetch('/assets/firebase-config.json')
+    fetch('./../../assets/data/firebase-config.json')
       .then(function(response) {
         return response.json();
       })
@@ -20,16 +20,16 @@ self.addEventListener('install', function(event) {
 
 // Set up background messaging after Firebase is initialized
 self.addEventListener('activate', function(event) {
-  const messaging = firebase.messaging();
+  // const messaging = firebase.messaging();
 
-  messaging.onBackgroundMessage(function(payload) {
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: payload.notification.icon,
-    };
+  // messaging.onBackgroundMessage(function(payload) {
+  //   const notificationTitle = payload.notification.title;
+  //   const notificationOptions = {
+  //     body: payload.notification.body,
+  //     icon: payload.notification.icon,
+  //   };
 
-    // Show notification when a background message is received
-    self.registration.showNotification(notificationTitle, notificationOptions);
-  });
+  //   // Show notification when a background message is received
+  //   self.registration.showNotification(notificationTitle, notificationOptions);
+  // });
 });

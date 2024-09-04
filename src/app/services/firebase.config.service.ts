@@ -8,6 +8,6 @@ export class FirebaseConfigService {
   constructor(private http: HttpClient) {}
 
   getFirebaseConfig() {
-    return this.http.get('/assets/firebase-config.json');
+    return this.http.get('./../../assets/data/firebase-config.json');
   }
 }
