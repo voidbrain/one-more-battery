@@ -22,17 +22,12 @@ import { FirebaseConfigService } from './services/firebase.config.service';
     BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-
   ],
   providers: [
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideAnimationsAsync(),
-
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-
-}
-
+export class AppModule {}

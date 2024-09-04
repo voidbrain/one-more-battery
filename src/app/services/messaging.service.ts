@@ -4,18 +4,18 @@ import { FirebaseConfigService } from './firebase.config.service';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessagingService {
   private messaging = getMessaging();
 
-  constructor(
-    private firebaseConfigService: FirebaseConfigService
-  ) {}
+  constructor(private firebaseConfigService: FirebaseConfigService) {}
 
   // Request permission to send notifications and get FCM token
   async requestPermission() {
-    const config = await lastValueFrom(this.firebaseConfigService.getFirebaseConfig());
+    const config = await lastValueFrom(
+      this.firebaseConfigService.getFirebaseConfig(),
+    );
 
     return getToken(this.messaging, { vapidKey: config.vapidKey })
       .then((token) => {

@@ -7,7 +7,7 @@ interface FirebaseConfig {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FirebaseConfigService {
   constructor(private http: HttpClient) {}

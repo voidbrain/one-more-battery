@@ -495,51 +495,51 @@ export class BatteriesMasterComponent {
     console.info('[PAGE]: [setupLocalNotifications]');
     // const granted = await LocalNotifications.checkPermissions();
     // if (granted.display === 'granted') {
-      // TODO remove old notifications
+    // TODO remove old notifications
 
-      this.items.map(async (el) => {
-        const objectStoreStatus = dbTables['batteries-status'];
-        const lastStatus: BatteryStatusInterface | undefined =
-          await this.db.getLastStatusByDate<BatteryStatusInterface>(
-            objectStoreStatus,
-            el.anag.id!,
-          );
-        el.lastStatus = lastStatus;
-        // const firstNotificationAt = new Date(
-        //   new Date().getTime() +
-        //     // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
-        //     batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
-        // );
-        const firstNotificationAt =
-          batteryStatusDaysAlertEnum.Warning * 10 * 1000;
-        const firstNotificationRange = 10;
-        this.setLocalNotification(
-          el.anag,
-          el.lastStatus!,
-          firstNotificationAt,
-          firstNotificationRange,
+    this.items.map(async (el) => {
+      const objectStoreStatus = dbTables['batteries-status'];
+      const lastStatus: BatteryStatusInterface | undefined =
+        await this.db.getLastStatusByDate<BatteryStatusInterface>(
+          objectStoreStatus,
+          el.anag.id!,
         );
-        // const secondNotificationAt = new Date(
-        //   new Date().getTime() +
-        //     batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
-        // );
-        const secondNotificationAt =
-          batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
+      el.lastStatus = lastStatus;
+      // const firstNotificationAt = new Date(
+      //   new Date().getTime() +
+      //     // batteryStatusDaysAlertEnum.Warning * 86_400 * 1000, // 3 * 86_400 seconds in a day * 1000
+      //     batteryStatusDaysAlertEnum.Warning * 10 * 1000, // 30 sec
+      // );
+      const firstNotificationAt =
+        batteryStatusDaysAlertEnum.Warning * 10 * 1000;
+      const firstNotificationRange = 10;
+      this.setLocalNotification(
+        el.anag,
+        el.lastStatus!,
+        firstNotificationAt,
+        firstNotificationRange,
+      );
+      // const secondNotificationAt = new Date(
+      //   new Date().getTime() +
+      //     batteryStatusDaysAlertEnum.Danger * 86_400 * 1000, // 5 * 86_400 seconds in a day * 1000
+      // );
+      const secondNotificationAt =
+        batteryStatusDaysAlertEnum.Danger * 86_400 * 1000; // 5 * 86_400 seconds in a day * 1000
 
-        const secondNotificationRange = 20;
-        // this.setLocalNotification(
-        //   el.anag,
-        //   el.lastStatus!,
-        //   secondNotificationAt,
-        //   secondNotificationRange,
-        // );
-        // console.info('[PAGE]: [NOTIFICATIONS]: set', {
-        //   anag: el.anag,
-        //   lastStatus: el.lastStatus!,
-        //   secondNotificationAt,
-        //   secondNotificationRange,
-        // });
-      });
+      const secondNotificationRange = 20;
+      // this.setLocalNotification(
+      //   el.anag,
+      //   el.lastStatus!,
+      //   secondNotificationAt,
+      //   secondNotificationRange,
+      // );
+      // console.info('[PAGE]: [NOTIFICATIONS]: set', {
+      //   anag: el.anag,
+      //   lastStatus: el.lastStatus!,
+      //   secondNotificationAt,
+      //   secondNotificationRange,
+      // });
+    });
     // } else {
     //   console.error('[PAGE]: [NOTIFICATIONS]: not granted', granted);
     // }
