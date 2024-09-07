@@ -1,39 +1,30 @@
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { Injectable } from '@angular/core';
-import { getMessaging, getToken, onMessage } from '@angular/fire/messaging';
-import { FirebaseConfigService } from './firebase.config.service';
-import { lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagingService {
-  private messaging = getMessaging();
+  constructor(private afMessaging: AngularFireMessaging) {}
 
-  constructor(private firebaseConfigService: FirebaseConfigService) {}
-
-  // Request permission to send notifications and get FCM token
-  async requestPermission() {
-    const config = await lastValueFrom(
-      this.firebaseConfigService.getFirebaseConfig(),
-    );
-
-    return getToken(this.messaging, { vapidKey: config.vapidKey })
-      .then((token) => {
-        if (token) {
+  requestPermission(): Observable<void> {
+    return new Observable((observer) => {
+      this.afMessaging.requestToken.subscribe({
+        next: (token) => {
           console.log('FCM Token:', token);
-          // Save the token to your backend if needed
-        }
-      })
-      .catch((err) => {
-        console.error('Permission denied or error occurred:', err);
+          observer.next();
+          observer.complete();
+        },
+        error: (error) => {
+          console.error('Request permission error:', error);
+          observer.error(error);
+        },
       });
+    });
   }
 
-  // Listen to incoming messages
-  receiveMessages() {
-    onMessage(this.messaging, (payload) => {
-      console.log('Message received. ', payload);
-      // Handle the payload here (e.g., show a notification)
-    });
+  receiveMessage() {
+    return this.afMessaging.messages;
   }
 }

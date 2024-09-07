@@ -2,9 +2,12 @@
   "root": true,
   "ignorePatterns": ["projects/**/*"],
   "overrides": [
+
     {
       "files": ["*.ts"],
       "parserOptions": {
+        "ecmaVersion": 2020, // Set the ECMAScript version to 2020 or higher to support modern JS
+        "sourceType": "module", // This ensures that ESLint recognizes ES modules
         "project": ["tsconfig.json"],
         "createDefaultProgram": true
       },

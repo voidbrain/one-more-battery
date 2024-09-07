@@ -1,10 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-interface FirebaseConfig {
-  vapidKey: string;
-}
+import { FirebaseOptions } from '@angular/fire/app';  // Use FirebaseOptions directly
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +9,8 @@ interface FirebaseConfig {
 export class FirebaseConfigService {
   constructor(private http: HttpClient) {}
 
-  getFirebaseConfig(): Observable<FirebaseConfig> {
-    return this.http.get<FirebaseConfig>('/assets/firebase-config.json');
+  // Fetches the configuration from the JSON file, now ensuring it matches FirebaseOptions
+  getFirebaseConfig(): Observable<FirebaseOptions> {
+    return this.http.get<FirebaseOptions>('/assets/data/firebase-config.json');
   }
 }
