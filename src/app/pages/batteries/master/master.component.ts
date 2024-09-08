@@ -44,6 +44,8 @@ import {
   BatteryStatusInterface,
 } from 'src/app/interfaces/battery-status';
 
+
+
 import {
   BatteryAnagraphInterface,
   ExtendedBatteryAnagraphInterface,
@@ -68,6 +70,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { NotificationService } from 'src/app/services/notifications.service';
+import { TokenService } from 'src/app/services/token.service';
+
 
 @Component({
   selector: 'app-batteries-master',
@@ -139,6 +144,8 @@ export class BatteriesMasterComponent {
     private actionSheetCtrl: ActionSheetController,
     private modalCtrl: ModalController,
     private alertController: AlertController,
+    private notificationService: NotificationService,
+    private tokenService: TokenService,
   ) {
     addIcons(ionIcons);
   }
@@ -159,25 +166,25 @@ export class BatteriesMasterComponent {
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }
-    try {
-      const alreadyAsked = localStorage.getItem(
-        this.settings.getAppName() + '_requestNotificationsPermissions',
-      );
-      if (!alreadyAsked) {
-        localStorage.setItem(
-          this.settings.getAppName() + '_requestNotificationsPermissions',
-          Date.now().toString(),
-        );
-        await this.presentAlert();
-        await this.getItems();
-        console.info('[PAGE]: [NOTIFICATIONS]: presentAlert');
-      } else {
-        await this.getItems();
-        this.setupLocalNotifications();
-        console.info(
-          '[PAGE]: [NOTIFICATIONS]: Already granted, setupLocalNotifications',
-        );
-      }
+    // try {
+    //   const alreadyAsked = localStorage.getItem(
+    //     this.settings.getAppName() + '_requestNotificationsPermissions',
+    //   );
+    //   if (!alreadyAsked) {
+    //     localStorage.setItem(
+    //       this.settings.getAppName() + '_requestNotificationsPermissions',
+    //       Date.now().toString(),
+    //     );
+    //     await this.presentAlert();
+    //     await this.getItems();
+    //     console.info('[PAGE]: [NOTIFICATIONS]: presentAlert');
+    //   } else {
+    //     await this.getItems();
+    //     this.setupLocalNotifications();
+    //     console.info(
+    //       '[PAGE]: [NOTIFICATIONS]: Already granted, setupLocalNotifications',
+    //     );
+    //   }
 
       // const stored = await LocalNotifications.getPending();
       // console.info('[PAGE]: [stored NOTIFICATIONS]: ', stored);
@@ -194,11 +201,23 @@ export class BatteriesMasterComponent {
       //     console.log('Notification action received', notification);
       //   },
       // );
-    } catch (err) {
-      console.error(
-        '[PAGE]: [NOTIFICATIONS initialization]: Error during initialization:',
-        err,
-      );
+    // } catch (err) {
+    //   console.error(
+    //     '[PAGE]: [NOTIFICATIONS initialization]: Error during initialization:',
+    //     err,
+    //   );
+    // }
+
+    // this.sendNotification();
+  }
+
+  sendNotification() {
+    const fcmToken = this.tokenService.getToken();  // Retrieve the token
+
+    if (fcmToken) {
+      this.notificationService.sendNotificationToUser(fcmToken);
+    } else {
+      console.error('No FCM token available');
     }
   }
 

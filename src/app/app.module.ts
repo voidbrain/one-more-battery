@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,6 +11,9 @@ import { FirebaseInitializationService } from './services/firebase.initializatio
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,12 +24,18 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     AppRoutingModule,
     AngularFireModule,
     AngularFireMessagingModule,  // Import Firebase Messaging Module
-    AngularFirestoreModule,  // Import Firestore Module
+    AngularFirestoreModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+}),  // Import Firestore Module
   ],
   providers: [
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    FirebaseInitializationService // Ensure this service initializes Firebase
+    FirebaseInitializationService, // Ensure this service initializes Firebase
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase }
   ],
   bootstrap: [AppComponent],
 })

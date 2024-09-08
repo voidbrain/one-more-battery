@@ -9,7 +9,7 @@ platformBrowserDynamic()
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register('./assets/data/firebase-messaging-sw.js')
+    .register('assets/data/firebase-messaging-sw.js')
     .then((registration) => {
       console.info('[SW]: Service Worker registered with scope:', registration.scope);
     })
