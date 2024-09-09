@@ -1,5 +1,5 @@
-import { Auth, authState, signInWithPopup, GoogleAuthProvider, signOut } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
+import { Auth, authState, signInWithPopup, GoogleAuthProvider, signOut } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,11 +10,11 @@ export class AuthService {
 
   // Method to get the authenticated user
   getUser(): Observable<any> {
-    return authState(this.auth); // Use `authState` to get the user's authentication state as an observable
+    return authState(this.auth);
   }
 
-  // Method to sign in with Google
-  signInWithGoogle() {
+  // Method to sign in (Example: Google auth)
+  signIn() {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(this.auth, provider);
   }

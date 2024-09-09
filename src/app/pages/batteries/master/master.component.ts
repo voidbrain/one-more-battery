@@ -252,7 +252,7 @@ export class BatteriesMasterComponent {
 
       } else {
         // Prompt user to sign in
-        this.authService.signInWithGoogle().then(() => {
+        this.authService.signIn().then(() => {
           // Once signed in, retrieve the FCM token
           const fcmToken = this.tokenService.getToken();
             if (fcmToken) {
