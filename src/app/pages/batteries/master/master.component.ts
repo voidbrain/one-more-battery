@@ -211,8 +211,9 @@ export class BatteriesMasterComponent {
     // this.sendNotification();
   }
 
-  sendNotification() {
-    const fcmToken = this.tokenService.getToken();  // Retrieve the token
+  async sendNotification() {
+
+    const fcmToken = await this.tokenService.getToken();  // Retrieve the token
 
     if (fcmToken) {
       this.notificationService.sendNotificationToUser(fcmToken);

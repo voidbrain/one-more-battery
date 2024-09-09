@@ -20,9 +20,9 @@ export class AppComponent implements OnInit {
     private tokenService: TokenService
   ) {}
   ngOnInit(){
-    console.log("initss1")
+
     // this.requestPermission();
-    console.log("initss2")
+
     // this.messagingService.requestPermission().subscribe(() => {
     //   console.log('Notification permission granted.');
     // });
@@ -44,34 +44,27 @@ export class AppComponent implements OnInit {
 
   requestPermission() {
     try{
-    this.messaging.requestPermission.subscribe({
-      next: () => {
-        console.log('Notification permission granted.');
+      this.messaging.requestPermission.subscribe({
+        next: () => {
+          console.info('Notification permission granted.');
 
-        this.messaging.getToken.subscribe({
-          next: (token) => {
-            console.log('FCM Token:', token);
-            this.tokenService.setToken(token!);
-          },
-          error: (error) => {
-            console.error('Error getting token:', error);
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Notification permission denied:', error);
-      }
-    });
-    this.messaging.getToken.subscribe({
-      next: (token) => {
-        console.log('FCM Token:', token);
-        this.tokenService.setToken(token!);
-      },
-      error: (error) => {
-        console.error('Error getting token:', error);
-      }
-    });
-  }catch(e){console.log(e)}
+          this.messaging.getToken.subscribe({
+            next: (token) => {
+              console.info('FCM Token:', token);
+              this.tokenService.setToken(token!);
+            },
+            error: (error) => {
+              console.error('Error getting token:', error);
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Notification permission denied:', error);
+        }
+      });
+    }catch(e){
+      console.error(e)
+    }
   }
 
 }
