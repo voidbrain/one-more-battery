@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagingService } from './services/messaging.service';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
@@ -14,7 +13,6 @@ import { TokenService } from './services/token.service';  // Import the service
 export class AppComponent implements OnInit {
 
   constructor(
-    private messagingService: MessagingService,
     private messaging: AngularFireMessaging,
     private swUpdate: SwUpdate,
     private tokenService: TokenService

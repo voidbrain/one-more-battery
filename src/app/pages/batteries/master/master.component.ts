@@ -72,7 +72,8 @@ import {
 } from '@angular/animations';
 import { NotificationService } from 'src/app/services/notifications.service';
 import { TokenService } from 'src/app/services/token.service';
-
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-batteries-master',
@@ -146,6 +147,8 @@ export class BatteriesMasterComponent {
     private alertController: AlertController,
     private notificationService: NotificationService,
     private tokenService: TokenService,
+    private messaging: AngularFireMessaging,
+    private authService: AuthService
   ) {
     addIcons(ionIcons);
   }
@@ -211,15 +214,58 @@ export class BatteriesMasterComponent {
     // this.sendNotification();
   }
 
-  async sendNotification() {
+  requestPermission() {
+    try{
+      this.messaging.requestPermission.subscribe({
+        next: () => {
+          console.info('Notification permission granted.');
 
-    const fcmToken = await this.tokenService.getToken();  // Retrieve the token
-
-    if (fcmToken) {
-      this.notificationService.sendNotificationToUser(fcmToken);
-    } else {
-      console.error('No FCM token available');
+          this.messaging.getToken.subscribe({
+            next: (token) => {
+              console.info('FCM Token:', token);
+              this.tokenService.setToken(token!);
+            },
+            error: (error) => {
+              console.error('Error getting token:', error);
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Notification permission denied:', error);
+        }
+      });
+    }catch(e){
+      console.error(e)
     }
+  }
+
+  sendNotification() {
+
+    this.authService.getUser().subscribe(user => {
+      if (user) {
+        const fcmToken = this.tokenService.getToken();
+          if (fcmToken) {
+            this.notificationService.sendNotificationToUser(fcmToken);
+          } else {
+            console.error('No FCM token available');
+          }
+
+      } else {
+        // Prompt user to sign in
+        this.authService.signInWithGoogle().then(() => {
+          // Once signed in, retrieve the FCM token
+          const fcmToken = this.tokenService.getToken();
+            if (fcmToken) {
+              this.notificationService.sendNotificationToUser(fcmToken);
+            } else {
+              console.error('No FCM token available');
+            }
+
+        }).catch(error => {
+          console.error('Authentication failed', error);
+        });
+      }
+    });
   }
 
   async presentAlert() {
