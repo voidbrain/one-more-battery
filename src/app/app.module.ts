@@ -16,6 +16,9 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { environment } from 'src/environments/environment';
+import { provideAuth, getAuth } from '@angular/fire/auth'; // Ensure Auth is provided
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,11 +31,13 @@ import { environment } from 'src/environments/environment';
     AngularFireModule.initializeApp(environment.firebase), // Initialize Firebase here
     AngularFireMessagingModule,  // Import Firebase Messaging Module
     AngularFirestoreModule, // Import Firestore Module
+    AngularFireAuthModule,
 
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+
   ],
   providers: [
     provideHttpClient(),

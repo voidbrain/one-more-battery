@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service'; // A service that provides the Firebase token
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,10 +9,14 @@ import { AuthService } from './auth.service'; // A service that provides the Fir
 export class NotificationService {
   private fcmUrl = 'https://fcm.googleapis.com/v1/projects/more-aa0d7/messages:send';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private tokenService: TokenService
+  ) {}
 
   async sendNotificationToUser(deviceToken: string) {
-    const firebaseToken = await this.authService.getFirebaseToken();
+    const firebaseToken = await this.tokenService.getToken();
 
     if (!firebaseToken) {
       console.error('User not authenticated!');
