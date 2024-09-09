@@ -12,8 +12,8 @@ import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
-import { environment } from 'src/environments/environment';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],

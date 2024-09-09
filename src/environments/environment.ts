@@ -2,7 +2,23 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+export interface FirebaseConfig {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+  vapidKey: string;
+}
+
+export interface Environment {
+  production: boolean;
+  firebase: FirebaseConfig;
+  backendUrl: string;
+}
+
+export const environment: Environment = {
   production: false,
   firebase: {
     "apiKey": "AIzaSyBmy0V78f60G3llqJBoRwWUzkOVi_RU3A4",

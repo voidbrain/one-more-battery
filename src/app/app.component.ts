@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   ) {}
   ngOnInit(){
     console.log("initss1")
-    this.requestPermission();
+    // this.requestPermission();
     console.log("initss2")
     // this.messagingService.requestPermission().subscribe(() => {
     //   console.log('Notification permission granted.');
