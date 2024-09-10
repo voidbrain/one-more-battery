@@ -51,7 +51,7 @@ import {
   ExtendedBatteryAnagraphInterface,
 } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays, formatDuration } from 'date-fns';
-import { ActionSheetController, AlertController } from '@ionic/angular';
+import { ActionSheetController, AlertController } from '@ionic/angular/standalone';
 
 // import {
 //   LocalNotifications,
@@ -60,7 +60,7 @@ import { ActionSheetController, AlertController } from '@ionic/angular';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
 import { ModalCyclesLogsComponent } from '../modal/cycles-logs.component';
 import {

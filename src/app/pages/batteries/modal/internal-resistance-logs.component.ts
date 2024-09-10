@@ -1,6 +1,6 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import {
   IonToggle,
