@@ -78,6 +78,7 @@ import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-batteries-master',
   standalone: true,
+
   imports: [
     IonAlert,
     IonActionSheet,

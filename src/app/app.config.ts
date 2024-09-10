@@ -7,6 +7,7 @@ import { environment } from '../environments/environment';
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
+import { AngularDelegate } from '@ionic/angular';
 
 export function initializeFirebaseApp() {
   return initializeApp(environment.firebase);
@@ -14,6 +15,7 @@ export function initializeFirebaseApp() {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    AngularDelegate,
     provideRouter(routes),
     provideZoneChangeDetection({ eventCoalescing: true }),
 
