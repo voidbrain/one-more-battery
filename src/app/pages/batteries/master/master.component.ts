@@ -118,6 +118,9 @@ import { AuthService } from 'src/app/services/auth.service';
   ],
   templateUrl: './master.component.html',
   styleUrl: './master.component.scss',
+  providers: [
+    ModalController
+  ],
   animations: [
     trigger('bodyExpansion', [
       state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
@@ -146,10 +149,10 @@ export class BatteriesMasterComponent {
     private actionSheetCtrl: ActionSheetController,
     private modalCtrl: ModalController,
     private alertController: AlertController,
-    private notificationService: NotificationService,
-    private tokenService: TokenService,
-    private messaging: AngularFireMessaging,
-    private authService: AuthService
+    // private notificationService: NotificationService,
+    // private tokenService: TokenService,
+    // private messaging: AngularFireMessaging,
+    // private authService: AuthService
   ) {
     addIcons(ionIcons);
   }
@@ -215,59 +218,59 @@ export class BatteriesMasterComponent {
     // this.sendNotification();
   }
 
-  requestPermission() {
-    try{
-      this.messaging.requestPermission.subscribe({
-        next: () => {
-          console.info('Notification permission granted.');
+  // requestPermission() {
+  //   try{
+  //     this.messaging.requestPermission.subscribe({
+  //       next: () => {
+  //         console.info('Notification permission granted.');
 
-          this.messaging.getToken.subscribe({
-            next: (token) => {
-              console.info('FCM Token:', token);
-              this.tokenService.setToken(token!);
-            },
-            error: (error) => {
-              console.error('Error getting token:', error);
-            }
-          });
-        },
-        error: (error) => {
-          console.error('Notification permission denied:', error);
-        }
-      });
-    }catch(e){
-      console.error(e)
-    }
-  }
+  //         this.messaging.getToken.subscribe({
+  //           next: (token) => {
+  //             console.info('FCM Token:', token);
+  //             this.tokenService.setToken(token!);
+  //           },
+  //           error: (error) => {
+  //             console.error('Error getting token:', error);
+  //           }
+  //         });
+  //       },
+  //       error: (error) => {
+  //         console.error('Notification permission denied:', error);
+  //       }
+  //     });
+  //   }catch(e){
+  //     console.error(e)
+  //   }
+  // }
 
-  sendNotification() {
+  // sendNotification() {
 
-    this.authService.getUser().subscribe(user => {
-      if (user) {
-        const fcmToken = this.tokenService.getToken();
-          if (fcmToken) {
-            this.notificationService.sendNotificationToUser(fcmToken);
-          } else {
-            console.error('No FCM token available');
-          }
+  //   this.authService.getUser().subscribe(user => {
+  //     if (user) {
+  //       const fcmToken = this.tokenService.getToken();
+  //         if (fcmToken) {
+  //           this.notificationService.sendNotificationToUser(fcmToken);
+  //         } else {
+  //           console.error('No FCM token available');
+  //         }
 
-      } else {
-        // Prompt user to sign in
-        this.authService.signIn().then(() => {
-          // Once signed in, retrieve the FCM token
-          const fcmToken = this.tokenService.getToken();
-            if (fcmToken) {
-              this.notificationService.sendNotificationToUser(fcmToken);
-            } else {
-              console.error('No FCM token available');
-            }
+  //     } else {
+  //       // Prompt user to sign in
+  //       this.authService.signIn().then(() => {
+  //         // Once signed in, retrieve the FCM token
+  //         const fcmToken = this.tokenService.getToken();
+  //           if (fcmToken) {
+  //             this.notificationService.sendNotificationToUser(fcmToken);
+  //           } else {
+  //             console.error('No FCM token available');
+  //           }
 
-        }).catch(error => {
-          console.error('Authentication failed', error);
-        });
-      }
-    });
-  }
+  //       }).catch(error => {
+  //         console.error('Authentication failed', error);
+  //       });
+  //     }
+  //   });
+  // }
 
   async presentAlert() {
     const alert = await this.alertController.create({
