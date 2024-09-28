@@ -173,6 +173,8 @@ export class BatteriesMasterComponent {
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }
+
+    await this.getItems();
     // try {
     //   const alreadyAsked = localStorage.getItem(
     //     this.settings.getAppName() + '_requestNotificationsPermissions',
@@ -513,8 +515,8 @@ export class BatteriesMasterComponent {
       }
       // const stored = await LocalNotifications.getPending();
       // console.info('[PAGE]: stored notifications', stored);
-      // this.items = expandedItems;
-      // console.log(this.items);
+      this.items = expandedItems;
+      console.log(this.items);
 
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -616,7 +618,6 @@ export class BatteriesMasterComponent {
   }
 
   async setNotification(at: number) {
-    console.log(this.items);
     const anag = this.items[0].anag;
     const lastStatus = this.items[0].lastStatus!;
     const range = 90;
