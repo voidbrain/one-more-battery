@@ -12,9 +12,9 @@ import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import {provideHttpClient} from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-export function initializeFirebaseApp() {
-  return initializeApp(environment.firebase);
-}
+// export function initializeFirebaseApp() {
+//   return initializeApp(environment.firebase);
+// }
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,10 +25,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
 
-    provideAuth(() => getAuth()),
+    // provideAuth(() => getAuth()),
 
-    provideFirestore(() => getFirestore()),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    // provideFirestore(() => getFirestore()),
+    // provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideNoopAnimations(),
 
   ],
