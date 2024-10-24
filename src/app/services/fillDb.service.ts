@@ -2146,6 +2146,7 @@ export class FillDbService {
       enabled: +true,
       deleted: +false,
     };
+    this.db.putItem(dbTables['batteries-status'], itemStatus4);
 
     // last update 2024-10-20
 
