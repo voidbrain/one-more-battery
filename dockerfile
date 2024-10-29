@@ -22,6 +22,9 @@ FROM nginx:alpine
 # Copy the built app from the builder stage
 COPY --from=builder /app/www /usr/share/nginx/html
 
+# Copy your site configuration file to /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80
 EXPOSE 80
 
