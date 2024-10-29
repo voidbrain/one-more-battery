@@ -1,0 +1,50 @@
+{
+  "short_name": "1More",
+  "name": "1More battery",
+  "icons": [
+    {
+      "src": "/images/icons-vector.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/images/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "/en",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6",
+  "shortcuts": [
+    {
+      "name": "Battery status?",
+      "short_name": "Battery",
+      "description": "Show the battery status",
+      "url": "/en/tabs/batteries"
+    }
+  ],
+  "description": "Weather forecast information",
+  "screenshots": [
+    {
+      "src": "/images/screenshot1.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/images/screenshot2.jpg",
+      "type": "image/jpg",
+      "sizes": "720x540",
+      "form_factor": "wide"
+    }
+  ]
+}
