@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install  --unsafe-perm  --legacy-peer-deps
+RUN npm install --unsafe-perm --legacy-peer-deps
 
 # Copy the entire project
 COPY . .
@@ -19,14 +19,21 @@ RUN npm run build --prod
 # Stage 2: Serve the app with Nginx
 FROM nginx:alpine
 
+# Create directories for nginx configuration and certificates
+RUN mkdir -p /etc/nginx/conf /etc/nginx/certs
+
 # Copy the built app from the builder stage
 COPY --from=builder /app/www /usr/share/nginx/html
 
 # Copy your site configuration file to /etc/nginx/conf.d
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Copy SSL certificates (if you have any)
+COPY cert.pem /etc/nginx/certs/
+COPY key.pem /etc/nginx/certs/
+
 # Expose port 80
-EXPOSE 80
+EXPOSE 80 443
 
 # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
