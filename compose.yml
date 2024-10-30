@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "81:81"
+      - "80:80"
     environment:
       VIRTUAL_HOST: example.com
     volumes:
@@ -19,7 +19,7 @@ services:
       - '80:80'
       - '443:443'
     environment:
-      DOMAINS: 'foucault.local -> http://foucault.local:81'
+      DOMAINS: 'foucault.local -> http://foucault.local:80/'
       # STAGE: 'production' # Don't use production until staging works
 
 volumes:
