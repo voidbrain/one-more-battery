@@ -1,13 +1,15 @@
-
 services:
   angular-app:
     build:
       context: .
       dockerfile: Dockerfile
-    network_mode: host  # Use host network mode
+    ports:
+      - "80:80"
     volumes:
-      - .:/app  # Mount the current directory to /app in the container
-      - npm-cache:/root/.npm  # Cache npm packages to avoid reinstalling
+      - .:/app
+      - npm-cache:/root/.npm
 
 volumes:
   npm-cache:
+
+
