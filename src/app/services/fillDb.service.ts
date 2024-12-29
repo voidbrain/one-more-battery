@@ -107,8 +107,8 @@ export class FillDbService {
     itemBatterySeries = {
       enabled: +true,
       deleted: +false,
-      label: 'Purple',
-      color: '#e0d',
+      label: 'Blue',
+      color: '#00f',
     };
     this.db.putItem(dbTables['batteries-series'], itemBatterySeries);
 
