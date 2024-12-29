@@ -11,16 +11,16 @@ services:
       - .:/app
       - npm-cache:/root/.npm
 
-  https-portal:
-    image: steveltn/https-portal:1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # DANGEROUS, see the warning above
-    ports:
-      - '80:80'
-      - '443:443'
-    environment:
-      DOMAINS: 'foucault.local -> http://foucault.local:80/'
-      # STAGE: 'production' # Don't use production until staging works
+  # https-portal:
+  #   image: steveltn/https-portal:1
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro # DANGEROUS, see the warning above
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   environment:
+  #     DOMAINS: 'foucault.local -> http://foucault.local:80/'
+  #     # STAGE: 'production' # Don't use production until staging works
 
 volumes:
   npm-cache:
