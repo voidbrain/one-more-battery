@@ -3202,8 +3202,6 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus6);
 
-    // last update 2024-12-31
-
     itemStatus1 = {
       idBattery: 1,
       date: new Date('2025-01-02'),
