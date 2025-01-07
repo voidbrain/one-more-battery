@@ -84,19 +84,36 @@ export class FillDbService {
       itemBatteryResistanceLogs4,
     );
 
+    // const itemBatteryResistanceLogs5: BatteryResistanceLogInterface = {
+    //   idBattery: 5,
+    //   enabled: +true,
+    //   deleted: +false,
+    //   date: new Date('2025-01-06'),
+    //   values: [4.3, 3.5, 4.3, 5.0, 4.3, 4.3],
+    // };
+    // this.db.putItem(
+    //   dbTables['batteries-resistance-logs'],
+    //   itemBatteryResistanceLogs5,
+    // );
+
+    // const itemBatteryResistanceLogs6: BatteryResistanceLogInterface = {
+    //   idBattery: 6,
+    //   enabled: +true,
+    //   deleted: +false,
+    //   date: new Date('2025-01-06'),
+    //   values: [11, 11, 11, 14, 9.4, 11],
+    // };
+    // this.db.putItem(
+    //   dbTables['batteries-resistance-logs'],
+    //   itemBatteryResistanceLogs6,
+    // );
+
     /**
      * Series anag
      */
 
     let itemBatterySeries: BatterySeriesAnagraphInterface = {
-      enabled: +true,
-      deleted: +false,
-      label: '',
-      color: '',
-    };
-    this.db.putItem(dbTables['batteries-series'], itemBatterySeries);
-
-    itemBatterySeries = {
+      id: 1,
       enabled: +true,
       deleted: +false,
       label: 'Yellow',
@@ -105,6 +122,7 @@ export class FillDbService {
     this.db.putItem(dbTables['batteries-series'], itemBatterySeries);
 
     itemBatterySeries = {
+      id:2,
       enabled: +true,
       deleted: +false,
       label: 'Blue',
