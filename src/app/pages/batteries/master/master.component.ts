@@ -148,7 +148,7 @@ export class BatteriesMasterComponent {
   toggle(id: number): void {
     this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
-  showDismissedBatteries = true;
+  showDismissedBatteries!: boolean;
 
   constructor(
     private db: DbService,
@@ -182,8 +182,9 @@ export class BatteriesMasterComponent {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }
 
-    await this.getItems();
     await this.getSettings();
+    await this.getItems();
+
     this.setupLocalNotifications();
     // try {
     //   const alreadyAsked = localStorage.getItem(
@@ -447,10 +448,7 @@ export class BatteriesMasterComponent {
 
   async getSettings() {
     try {
-      const column = 'id';
-      const query = [1];
-      const settings = await this.db.getItems<SettingsInterface>('settings', column, query);
-      console.log(settings)
+      const settings = await this.db.getItems<SettingsInterface>('settings');
       this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? true);
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
@@ -469,6 +467,7 @@ export class BatteriesMasterComponent {
         column = 'enabled, deleted';
         query = [+true, +false];
       }
+      console.log(this.showDismissedBatteries)
       items = await this.db.getItems<BatteryAnagraphInterface>('batteries-anag',
         column,
         query,

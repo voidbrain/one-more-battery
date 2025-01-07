@@ -15,7 +15,7 @@ export enum dbTables {
 })
 export class SettingsService {
   public appName = '1More';
-  public dbVersion = 2;
+  public dbVersion = 1;
   public resetDb = false;
   public fillDb = false;
 

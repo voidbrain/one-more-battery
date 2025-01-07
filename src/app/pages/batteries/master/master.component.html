@@ -21,14 +21,18 @@
 </ion-header>
 
 <ion-content padding>
+
+
+
   <ion-card>
     <ion-card-content>
-      <ion-toggle
+      <p class="ion-text-right"><ion-toggle
         name="showDismissedBatteries"
-        [(ngModel)]="showDismissedBatteries"
-        (ionChange)="toggleShowDismissedBatteries()"
+        [checked]=" showDismissedBatteries === true "
+        (click)="toggleShowDismissedBatteries()"
         >Show Dismissed</ion-toggle
-      >
+      ></p>
+
       @for (battery of items; track battery.anag.id) {
         <mat-card [class]="'card ' + (battery?.anag?.enabled === 0 ? ' disabled ' : ' ') ">
           <mat-card-header>
