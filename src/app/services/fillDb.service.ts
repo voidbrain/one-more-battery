@@ -12,6 +12,7 @@ import {
 import { BrandsAnagraphInterface } from '../interfaces/brands-anagraph';
 import { DbService } from './db.service';
 import { dbTables } from './settings.service';
+import { SettingsInterface } from '../interfaces/settings';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,18 @@ export class FillDbService {
 
   public fillDb() {
     console.info('[DB]: fill Db');
+
+    const settings: SettingsInterface = {
+      id: 1,
+      enabled: +true,
+      deleted: +false,
+      showDismissedBatteries: true
+    };
+    this.db.putItem(
+      dbTables['settings'],
+      settings,
+    );
+
     const itemBatteryTypeLipo: BatteryTypeInterface = {
       enabled: +true,
       deleted: +false,
@@ -167,6 +180,7 @@ export class FillDbService {
       label: '1',
     };
     this.db.putItem(dbTables['batteries-anag'], b1);
+
     const b2: BatteryAnagraphInterface = {
       enabled: +true,
       deleted: +false,
@@ -180,11 +194,13 @@ export class FillDbService {
       label: '2',
     };
     this.db.putItem(dbTables['batteries-anag'], b2);
+
     const b3: BatteryAnagraphInterface = {
-      enabled: +true,
+      enabled: +false,
       deleted: +false,
       cellsNumber: 6,
       date: new Date('2024-08-15'),
+      disabledDate: new Date('2024-11-30'),
       typeId: 1,
       model: 'R-line',
       mA: 1400,
@@ -193,11 +209,13 @@ export class FillDbService {
       label: '3',
     };
     this.db.putItem(dbTables['batteries-anag'], b3);
+
     const b4: BatteryAnagraphInterface = {
       enabled: +true,
       deleted: +false,
       cellsNumber: 6,
       date: new Date('2024-08-15'),
+
       typeId: 1,
       model: 'R-line',
       mA: 1400,
@@ -206,7 +224,6 @@ export class FillDbService {
       label: '4',
     };
     this.db.putItem(dbTables['batteries-anag'], b4);
-
 
     ////
 

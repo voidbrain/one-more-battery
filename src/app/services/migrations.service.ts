@@ -14,6 +14,10 @@ export class MigrationsService {
     this.createBatteriesResistanceLogs(db);
   }
 
+  private migration2(db: IDBDatabase) {
+    this.createSettings(db);
+  }
+
   private createBrandsAnag(db: IDBDatabase) {
     const objectStore = dbTables['brands-anag'];
     if (!db.objectStoreNames.contains(objectStore)) {
@@ -113,12 +117,28 @@ export class MigrationsService {
     }
   }
 
+  private createSettings(db: IDBDatabase) {
+    const objectStore = dbTables['settings'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
+        keyPath: 'id',
+        autoIncrement: true,
+      });
+      store.createIndex('id', 'id', { unique: false });
+      store.createIndex('enabled, deleted', ['enabled', 'deleted']);
+      store.createIndex('deleted', ['deleted'], { unique: false });
+    }
+  }
+
   public async addMigration(
     db: IDBDatabase,
     currentVersion: number,
   ): Promise<void> {
     // Define migrations
-    const migrations = [{ version: 1, method: this.migration1 }];
+    const migrations = [
+      { version: 1, method: this.migration1 },
+      { version: 2, method: this.migration2 }
+    ];
 
     // Apply migrations
     for (const migration of migrations) {

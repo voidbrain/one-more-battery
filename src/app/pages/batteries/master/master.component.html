@@ -23,8 +23,14 @@
 <ion-content padding>
   <ion-card>
     <ion-card-content>
+      <ion-toggle
+        name="showDismissedBatteries"
+        [(ngModel)]="showDismissedBatteries"
+        (ionChange)="toggleShowDismissedBatteries()"
+        >Show Dismissed</ion-toggle
+      >
       @for (battery of items; track battery.anag.id) {
-        <mat-card class="card">
+        <mat-card [class]="'card ' + (battery?.anag?.enabled === 0 ? ' disabled ' : ' ') ">
           <mat-card-header>
             <mat-card-title>{{
               "Battery " + battery?.anag?.label
@@ -41,27 +47,36 @@
           <mat-card-content>
             <p>
               @if (
-                battery.alertStatus !== "" &&
-                battery?.lastStatus?.status !== batteryStatusActionEnum.Store
-              ) {
-                <ion-icon
-                  size="medium"
-                  [color]="battery.alertStatus"
-                  aria-hidden="true"
-                  name="warning"
-                >
-                </ion-icon>
+                battery?.anag?.enabled === 0 && battery?.anag?.disabledDate !== null
+              ){
+                Dismissed {{ getBatteryDisabledTimeAgo(battery?.anag?.disabledDate) }}
               } @else {
-                <ion-icon
-                  size="medium"
-                  [color]="battery.alertStatus"
-                  aria-hidden="true"
-                  name="battery-full"
-                >
-                </ion-icon>
+                @if (
+                  (
+                    battery.alertStatus !== "" &&
+                    battery?.lastStatus?.status !== batteryStatusActionEnum.Store
+                  )
+                ) {
+                  <ion-icon
+                    size="medium"
+                    [color]="battery.alertStatus"
+                    aria-hidden="true"
+                    name="warning"
+                  >
+                  </ion-icon>
+                } @else {
+                  <ion-icon
+                    size="medium"
+                    [color]="battery.alertStatus"
+                    aria-hidden="true"
+                    name="battery-full"
+                  >
+                  </ion-icon>
+                }
+                  {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }}
+                  {{ battery.lastStatusTimeAgo }}
+
               }
-              {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }}
-              {{ battery.timeAgo }}
             </p>
 
             <div
@@ -76,7 +91,7 @@
 
                 <br />
                 {{ "Total cycles: " + battery.totalCycles }} |
-                {{ "Age: " + getAge(battery?.anag?.date!) }}
+                {{ "Age: " + getAge(battery?.anag?.date!, true) }}
               </p>
             </div>
             <mat-divider> </mat-divider>

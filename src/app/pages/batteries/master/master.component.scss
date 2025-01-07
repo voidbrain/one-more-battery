@@ -35,3 +35,9 @@ ion-col.text-center {
 .mat-mdc-card-actions {
   justify-content: space-between;
 }
+
+.mat-mdc-card.disabled {
+  background-color: #b1b1b1; /* Light grey background */
+  pointer-events: none;     /* Prevent interactions */
+  opacity: 0.6;             /* Slight transparency for disabled effect */
+}

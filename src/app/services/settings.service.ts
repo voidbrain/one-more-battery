@@ -7,6 +7,7 @@ export enum dbTables {
   'batteries-types' = 'batteries-types',
   'batteries-resistance-logs' = 'batteries-resistance-logs',
   'batteries-anag' = 'batteries-anag',
+  'settings' = 'settings'
 }
 
 @Injectable({

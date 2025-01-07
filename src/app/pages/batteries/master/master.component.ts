@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonButtons,
@@ -25,6 +27,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonTitle,
+  IonToggle,
   IonToolbar,
   IonActionSheet,
   IonAlert,
@@ -59,6 +62,7 @@ import { ActionSheetController, AlertController } from '@ionic/angular/standalon
 // } from '@capacitor/local-notifications';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
+import { SettingsInterface } from 'src/app/interfaces/settings';
 
 import { ModalController } from '@ionic/angular/standalone';
 import { ModalResistanceLogsComponent } from '../modal/internal-resistance-logs.component';
@@ -80,6 +84,8 @@ import { AuthService } from 'src/app/services/auth.service';
   standalone: true,
 
   imports: [
+    ReactiveFormsModule, FormsModule,
+    JsonPipe,
     IonAlert,
     IonActionSheet,
     RouterLink,
@@ -114,6 +120,7 @@ import { AuthService } from 'src/app/services/auth.service';
     IonRefresher,
     IonRefresherContent,
     IonTitle,
+    IonToggle,
     IonToolbar,
   ],
   templateUrl: './master.component.html',
@@ -141,6 +148,7 @@ export class BatteriesMasterComponent {
   toggle(id: number): void {
     this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
+  showDismissedBatteries = true;
 
   constructor(
     private db: DbService,
@@ -175,6 +183,8 @@ export class BatteriesMasterComponent {
     }
 
     await this.getItems();
+    await this.getSettings();
+    this.setupLocalNotifications();
     // try {
     //   const alreadyAsked = localStorage.getItem(
     //     this.settings.getAppName() + '_requestNotificationsPermissions',
@@ -403,7 +413,19 @@ export class BatteriesMasterComponent {
     await actionSheet.present();
   }
 
-  getAge(age: Date) {
+  async toggleShowDismissedBatteries() {
+    this.showDismissedBatteries = !this.showDismissedBatteries;
+    const dbItem: SettingsInterface = {
+      id: 1,
+      showDismissedBatteries: this.showDismissedBatteries,
+      enabled: +true,
+      deleted: +false,
+    };
+    await this.db.putItem<SettingsInterface>('settings', dbItem);
+    this.getItems();
+  }
+
+  getAge(age: Date, skipPostfix = false) {
     const differenceDays: number = differenceInDays(
       Date.now(),
       age?.getTime() as number,
@@ -412,13 +434,45 @@ export class BatteriesMasterComponent {
       { days: differenceDays },
       { format: ['years', 'months', 'weeks', 'days'] },
     );
-    return format + (format.length ? ' ago' : '');
+    return format + (format.length ?
+      skipPostfix === false ? ' ago' : ''
+      : '');
+  }
+
+  getBatteryDisabledTimeAgo(disabledDate: Date | null | undefined) {
+    if(disabledDate){
+      return this.getAge(disabledDate);
+    } else return;
+  }
+
+  async getSettings() {
+    try {
+      const column = 'id';
+      const query = [1];
+      const settings = await this.db.getItems<SettingsInterface>('settings', column, query);
+      console.log(settings)
+      this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? true);
+    } catch (err) {
+      console.error('[PAGE]: [DB]: Error during initialization:', err);
+    }
   }
 
   async getItems() {
     try {
-      const items: BatteryAnagraphInterface[] =
-        await this.db.getItems<BatteryAnagraphInterface>('batteries-anag');
+      let items: BatteryAnagraphInterface[];
+      let column: string;
+      let query;
+      if(this.showDismissedBatteries) {
+        column = 'deleted';
+        query = [+false];
+      } else {
+        column = 'enabled, deleted';
+        query = [+true, +false];
+      }
+      items = await this.db.getItems<BatteryAnagraphInterface>('batteries-anag',
+        column,
+        query,
+      );
 
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
@@ -463,17 +517,17 @@ export class BatteriesMasterComponent {
           );
 
           // Calculate timerange as the difference between the last status date and the current date
-          const timeRange = differenceInDays(
+          const lastStatusTimeRange = differenceInDays(
             Date.now(),
             lastStatus?.date?.getTime() as number,
           );
-          const timeAgo = this.getAge(lastStatus?.date!);
+          const lastStatusTimeAgo = this.getAge(lastStatus?.date!);
           const lessThanWarningRange =
-            timeRange <= batteryStatusDaysAlertEnum.Warning;
+            lastStatusTimeRange <= batteryStatusDaysAlertEnum.Warning;
           const lessThanDangergRange =
-            timeRange <= batteryStatusDaysAlertEnum.Danger;
+            lastStatusTimeRange <= batteryStatusDaysAlertEnum.Danger;
           const moreThanDangerRange =
-            timeRange > batteryStatusDaysAlertEnum.Danger;
+            lastStatusTimeRange > batteryStatusDaysAlertEnum.Danger;
           const alertStatus =
             lastStatus?.status !== batteryStatusActionEnum.Store &&
             lessThanWarningRange
@@ -499,8 +553,8 @@ export class BatteriesMasterComponent {
             lastStatus,
             series,
             totalCycles,
-            timeAgo,
-            timeRange,
+            lastStatusTimeAgo,
+            lastStatusTimeRange,
             alertStatus,
             type,
             brand,

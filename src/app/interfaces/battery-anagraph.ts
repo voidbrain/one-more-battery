@@ -24,14 +24,16 @@ export interface BatteryAnagraphInterface {
   seriesId: number;
   date: Date;
   dateString?: string;
+  deletedDate?: Date | null;
+  disabledDate?: Date | null;
 }
 export interface ExtendedBatteryAnagraphInterface {
   anag: BatteryAnagraphInterface;
   series?: BatterySeriesAnagraphInterface;
   lastStatus?: BatteryStatusInterface;
   totalCycles?: number;
-  timeRange?: number;
-  timeAgo?: string;
+  lastStatusTimeRange?: number;
+  lastStatusTimeAgo?: string;
   alertStatus?: string;
   brand?: BrandsAnagraphInterface;
   type?: BatteryTypeInterface;
