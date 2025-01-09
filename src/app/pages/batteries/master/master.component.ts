@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { Platform } from '@ionic/angular';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
   IonButton,
@@ -52,6 +53,7 @@ import {
 import {
   BatteryAnagraphInterface,
   ExtendedBatteryAnagraphInterface,
+  ExtendedSeriesAnagraph,
 } from 'src/app/interfaces/battery-anagraph';
 import { differenceInDays, formatDuration } from 'date-fns';
 import { ActionSheetController, AlertController } from '@ionic/angular/standalone';
@@ -145,6 +147,8 @@ export class BatteriesMasterComponent {
   debug = true;
   batteryStatusActionEnum = batteryStatusActionEnum;
   state: string[] = [];
+
+  extendedSeries: ExtendedSeriesAnagraph[] = [];
   toggle(id: number): void {
     this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
@@ -161,6 +165,7 @@ export class BatteriesMasterComponent {
     // private tokenService: TokenService,
     // private messaging: AngularFireMessaging,
     // private authService: AuthService
+    private platform: Platform
   ) {
     addIcons(ionIcons);
   }
@@ -467,11 +472,16 @@ export class BatteriesMasterComponent {
         column = 'enabled, deleted';
         query = [+true, +false];
       }
-      console.log(this.showDismissedBatteries)
       items = await this.db.getItems<BatteryAnagraphInterface>('batteries-anag',
         column,
         query,
       );
+
+      const extendedSeries = await this.db.getItems<BatteryAnagraphInterface>('batteries-series');
+      this.extendedSeries = extendedSeries;
+      this.extendedSeries.forEach((series: ExtendedSeriesAnagraph) => {
+        series.batteries = [];
+      })
 
       // Sort items by id
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
@@ -481,95 +491,112 @@ export class BatteriesMasterComponent {
       const objectStoreBrands = dbTables['brands-anag'];
       const objectStoreType = dbTables['batteries-types'];
 
-      const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
+      //const expandedItems: ExtendedBatteryAnagraphInterface[] = [];
+      let platformWidth: number;
+      let showExpand = false;
+      this.platform.ready().then(async () => {
+        platformWidth = this.platform.width();
 
-      for (const anag of items) {
-        try {
-          // Fetching related data for each item
 
-          const lastStatus: BatteryStatusInterface | undefined =
-            await this.db.getLastStatusByDate<BatteryStatusInterface>(
-              objectStoreStatus,
-              anag.id!,
-            );
-          const series: BatteryAnagraphInterface | undefined =
-            await this.db.getItem<BatteryAnagraphInterface>(
-              objectStoreSeries,
-              anag.seriesId,
-              'id',
-            );
-          const type: BatteryTypeInterface | undefined =
-            await this.db.getItem<BatteryTypeInterface>(
-              objectStoreType,
-              anag.typeId!,
-              'id',
-            );
-          const brand: BrandsAnagraphInterface | undefined =
-            await this.db.getItem<BrandsAnagraphInterface>(
-              objectStoreBrands,
-              anag.brandId!,
-              'id',
-            );
-          const totalCycles: number | undefined = await this.db.getTotalCycles(
-            objectStoreStatus,
-            anag.id!,
-          );
 
-          // Calculate timerange as the difference between the last status date and the current date
-          const lastStatusTimeRange = differenceInDays(
-            Date.now(),
-            lastStatus?.date?.getTime() as number,
-          );
-          const lastStatusTimeAgo = this.getAge(lastStatus?.date!);
-          const lessThanWarningRange =
-            lastStatusTimeRange <= batteryStatusDaysAlertEnum.Warning;
-          const lessThanDangergRange =
-            lastStatusTimeRange <= batteryStatusDaysAlertEnum.Danger;
-          const moreThanDangerRange =
-            lastStatusTimeRange > batteryStatusDaysAlertEnum.Danger;
-          const alertStatus =
-            lastStatus?.status !== batteryStatusActionEnum.Store &&
-            lessThanWarningRange
-              ? 'warning'
-              : lastStatus?.status !== batteryStatusActionEnum.Store &&
-                  lessThanDangergRange
-                ? 'danger'
-                : lastStatus?.status !== batteryStatusActionEnum.Store &&
-                    moreThanDangerRange
-                  ? 'danger'
-                  : 'success';
 
-          // if (lastStatus?.status !== batteryStatusActionEnum.Store) {
-          //   this.setupLocalNotification(anag, lastStatus!);
-          // } else {
-          //   LocalNotifications.cancel({
-          //     notifications: [{ id: anag?.id! + 10 }, { id: anag?.id! + 20 }],
-          //   });
-          // }
+          for (const anag of items) {
+            try {
+              // Fetching related data for each item
 
-          const expandedItem: ExtendedBatteryAnagraphInterface = {
-            anag,
-            lastStatus,
-            series,
-            totalCycles,
-            lastStatusTimeAgo,
-            lastStatusTimeRange,
-            alertStatus,
-            type,
-            brand,
-          };
+              const lastStatus: BatteryStatusInterface | undefined =
+                await this.db.getLastStatusByDate<BatteryStatusInterface>(
+                  objectStoreStatus,
+                  anag.id!,
+                );
+              const series: BatteryAnagraphInterface | undefined =
+                await this.db.getItem<BatteryAnagraphInterface>(
+                  objectStoreSeries,
+                  anag.seriesId,
+                  'id',
+                );
+              const type: BatteryTypeInterface | undefined =
+                await this.db.getItem<BatteryTypeInterface>(
+                  objectStoreType,
+                  anag.typeId!,
+                  'id',
+                );
+              const brand: BrandsAnagraphInterface | undefined =
+                await this.db.getItem<BrandsAnagraphInterface>(
+                  objectStoreBrands,
+                  anag.brandId!,
+                  'id',
+                );
+              const totalCycles: number | undefined = await this.db.getTotalCycles(
+                objectStoreStatus,
+                anag.id!,
+              );
 
-          // Add the expanded item to the array
-          expandedItems.push(expandedItem);
-          this.state[anag?.id!] = 'collapsed';
-        } catch (error) {
-          console.error(`Error processing item with id ${anag.id}:`, error);
-        }
-      }
+              // Calculate timerange as the difference between the last status date and the current date
+              const lastStatusTimeRange = differenceInDays(
+                Date.now(),
+                lastStatus?.date?.getTime() as number,
+              );
+              const lastStatusTimeAgo = this.getAge(lastStatus?.date!);
+              const lessThanWarningRange =
+                lastStatusTimeRange <= batteryStatusDaysAlertEnum.Warning;
+              const lessThanDangergRange =
+                lastStatusTimeRange <= batteryStatusDaysAlertEnum.Danger;
+              const moreThanDangerRange =
+                lastStatusTimeRange > batteryStatusDaysAlertEnum.Danger;
+              const alertStatus =
+                lastStatus?.status !== batteryStatusActionEnum.Store &&
+                lessThanWarningRange
+                  ? 'warning'
+                  : (lastStatus?.status !== batteryStatusActionEnum.Store &&
+                      lessThanDangergRange) || anag.enabled === 0
+                    ? 'danger'
+                    : lastStatus?.status !== batteryStatusActionEnum.Store &&
+                        moreThanDangerRange
+                      ? 'danger'
+                      : 'success';
+
+              // if (lastStatus?.status !== batteryStatusActionEnum.Store) {
+              //   this.setupLocalNotification(anag, lastStatus!);
+              // } else {
+              //   LocalNotifications.cancel({
+              //     notifications: [{ id: anag?.id! + 10 }, { id: anag?.id! + 20 }],
+              //   });
+              // }
+
+              const expandedItem: ExtendedBatteryAnagraphInterface = {
+                anag,
+                lastStatus,
+                series,
+                totalCycles,
+                lastStatusTimeAgo,
+                lastStatusTimeRange,
+                alertStatus,
+                type,
+                brand,
+              };
+              this.extendedSeries.find(el=>el.id === anag.seriesId)?.batteries?.push(expandedItem);
+
+              // Add the expanded item to the array
+              // expandedItems.push(expandedItem);
+
+
+              if(platformWidth < 440){
+                this.state[anag?.id!] = 'collapsed';
+              }
+
+            } catch (error) {
+              console.error(`Error processing item with id ${anag.id}:`, error);
+            }
+          }
+
+      });
+
+
+
+      console.log(this.extendedSeries)
       // const stored = await LocalNotifications.getPending();
       // console.info('[PAGE]: stored notifications', stored);
-      this.items = expandedItems;
-      console.log(this.items);
 
       console.info('[PAGE]: Ready');
     } catch (error) {
@@ -589,11 +616,11 @@ export class BatteriesMasterComponent {
     await modal.onWillDismiss();
   }
 
-  async showLogs(anag: BatteryAnagraphInterface) {
+  async showLogs(battery: ExtendedBatteryAnagraphInterface) {
     const modal = await this.modalCtrl.create({
       component: ModalResistanceLogsComponent,
       componentProps: {
-        anag,
+        battery,
       },
     });
     modal.present();

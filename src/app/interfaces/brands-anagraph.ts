@@ -4,3 +4,4 @@ export interface BrandsAnagraphInterface {
   deleted: number;
   label: string;
 }
+

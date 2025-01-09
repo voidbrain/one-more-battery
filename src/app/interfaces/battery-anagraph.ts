@@ -39,3 +39,7 @@ export interface ExtendedBatteryAnagraphInterface {
   type?: BatteryTypeInterface;
   resistanceLogs?: BatteryResistanceLogInterface[];
 }
+
+export interface ExtendedSeriesAnagraph extends BatterySeriesAnagraphInterface {
+  batteries?: ExtendedBatteryAnagraphInterface[];
+}
