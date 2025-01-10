@@ -349,18 +349,17 @@ export class BatteriesSettingComponent {
       const objectStoreTypes = dbTables['batteries-types'];
       const objectStoreBrands = dbTables['brands-anag'];
       const objectStoreBatteries = dbTables['batteries-anag'];
-
+      const column = 'deleted';
+      const query = [+false];
       // Fetch the data
       const anagArr: BatteryAnagraphInterface[] =
-        await this.db.getItems<BatteryAnagraphInterface>(objectStoreBatteries);
+        await this.db.getItems<BatteryAnagraphInterface>(objectStoreBatteries, column, query);
       const series: BatterySeriesAnagraphInterface[] =
-        await this.db.getItems<BatterySeriesAnagraphInterface>(
-          objectStoreSeries,
-        );
+        await this.db.getItems<BatterySeriesAnagraphInterface>(objectStoreSeries, column, query);
       const types: BatteryTypeInterface[] =
-        await this.db.getItems<BatteryTypeInterface>(objectStoreTypes);
+        await this.db.getItems<BatteryTypeInterface>(objectStoreTypes, column, query);
       const brands: BrandsAnagraphInterface[] =
-        await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands);
+        await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands, column, query);
 
       // Create a map to keep track of batteries by ID for faster lookup
       const batteryMap: Map<number, ExtendedBatteryAnagraphInterface> =

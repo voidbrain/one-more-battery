@@ -58,7 +58,7 @@
                         <ion-grid>
                           <ion-row>
 
-                            <ion-col size="6" size-md="6" size-xs="12">
+                            <ion-col size="6" size-md="6" size-xs="6">
                               <div
                                 class="battery"
                                 (click)="presentActionSheet(battery)"
@@ -81,7 +81,7 @@
                                 </div>
                               </div>
                             </ion-col>
-                            <ion-col size="6" size-md="6" size-xs="12">
+                            <ion-col size="6" size-md="6" size-xs="6">
                               <p>
                                 @if (
                                   battery?.anag?.enabled === 0 &&
@@ -149,50 +149,58 @@
                                 </p>
                               </div>
                               <mat-card-actions>
-                              <ion-button
-                                  shape="round"
-                                  color="medium"
-                                  [class]=" ' ion-hide-md-up ' "
-                                  (click)="toggle(battery.anag.id!)"
-                                >
-                                  @if (
-                                    state[battery.anag.id!] === "collapsed"
-                                  ) {
+
+                                <div>
+                                      <ion-button
+                                      shape="round"
+                                      color="medium"
+                                      [class]=" ' ion-hide-md-up ' "
+                                      (click)="toggle(battery.anag.id!)"
+                                    >
+                                      @if (
+                                        state[battery.anag.id!] === "collapsed"
+                                      ) {
+                                        <ion-icon
+                                          slot="icon-only"
+                                          name="expand"
+                                        ></ion-icon>
+                                      } @else {
+                                        <ion-icon
+                                          slot="icon-only"
+                                          name="contract"
+                                        ></ion-icon>
+                                      }
+                                    </ion-button>
+
+                                  <ion-button
+                                    color="medium"
+                                    shape="round"
+                                    (click)="showCycles(battery.anag)"
+                                  >
                                     <ion-icon
                                       slot="icon-only"
-                                      name="expand"
+                                      name="time-outline"
                                     ></ion-icon>
-                                  } @else {
+                                  </ion-button>
+
+                                  <ion-button
+                                    color="medium"
+                                    shape="round"
+                                    (click)="showLogs(battery)"
+                                  >
                                     <ion-icon
                                       slot="icon-only"
-                                      name="contract"
+                                      name="list-outline"
                                     ></ion-icon>
-                                  }
-                                </ion-button>
+                                  </ion-button>
+                                  </div>
 
-                              <ion-button
-                                item-right
-                                color="medium"
-                                shape="round"
-                                (click)="showCycles(battery.anag)"
-                              >
-                                <ion-icon
-                                  slot="icon-only"
-                                  name="time-outline"
-                                ></ion-icon>
-                              </ion-button>
+                                  <div>
+                                    <ion-button shape="round" (click)="presentActionSheet(battery)">
+                                      <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
+                                    </ion-button>
+                              </div>
 
-                              <ion-button
-                                item-right
-                                color="medium"
-                                shape="round"
-                                (click)="showLogs(battery)"
-                              >
-                                <ion-icon
-                                  slot="icon-only"
-                                  name="list-outline"
-                                ></ion-icon>
-                              </ion-button>
                             </mat-card-actions>
                             </ion-col>
                           </ion-row>
@@ -207,110 +215,5 @@
         </ion-card>
       }
 
-      <!-- @for (battery of items; track battery.anag.id) {
-        <ion-card [class]="'card ' + (battery?.anag?.enabled === 0 ? ' disabled ' : ' ') ">
-          <ion-card-header>
-            <ion-card-title>{{
-              "Battery " + battery?.anag?.label
-            }}</ion-card-title>
-            @if (battery?.series?.label && battery?.series?.label !== "") {
-              <ion-card-subtitle [style]="'color: ' + battery?.series?.color">
-                {{ battery?.series?.label + " series" }}
-              </ion-card-subtitle>
-            }
-            <ion-button shape="round" (click)="presentActionSheet(battery)">
-              <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
-            </ion-button>
-          </ion-card-header>
-          <ion-card-content>
-            <p>
-              @if (
-                battery?.anag?.enabled === 0 && battery?.anag?.disabledDate !== null
-              ){
-                Dismissed {{ getBatteryDisabledTimeAgo(battery?.anag?.disabledDate) }}
-              } @else {
-                @if (
-                  (
-                    battery.alertStatus !== "" &&
-                    battery?.lastStatus?.status !== batteryStatusActionEnum.Store
-                  )
-                ) {
-                  <ion-icon
-                    size="medium"
-                    [color]="battery.alertStatus"
-                    aria-hidden="true"
-                    name="warning"
-                  >
-                  </ion-icon>
-                } @else {
-                  <ion-icon
-                    size="medium"
-                    [color]="battery.alertStatus"
-                    aria-hidden="true"
-                    name="battery-full"
-                  >
-                  </ion-icon>
-                }
-                  {{ getBatteryStatus(battery?.lastStatus?.status) + "d" }}
-                  {{ battery.lastStatusTimeAgo }}
-
-              }
-            </p>
-
-            <div
-              [@bodyExpansion]="state[battery.anag.id!]"
-              class="expandable-content"
-            >
-              <p>
-                {{ battery?.brand?.label }} {{ battery?.anag?.model }}
-                {{ battery?.type?.label }}
-                {{ battery?.anag?.cellsNumber + "S" }}
-                {{ battery?.anag?.mA + "mA" }}
-
-                <br />
-                {{ "Total cycles: " + battery.totalCycles }} |
-                {{ "Age: " + getAge(battery?.anag?.date!, true) }}
-              </p>
-            </div>
-            <mat-divider> </mat-divider>
-          </ion-card-content>
-
-          <ion-card-actions>
-            <ion-button
-              shape="round"
-              color="light"
-              item-right
-              (click)="toggle(battery.anag.id!)"
-            >
-              @if (state[battery.anag.id!] === "collapsed") {
-                <ion-icon name="expand"></ion-icon>
-              } @else {
-                <ion-icon name="contract"></ion-icon>
-              }
-            </ion-button>
-
-            <div>
-              <ion-button
-                color="light"
-                shape="round"
-                (click)="showCycles(battery.anag)"
-              >
-                <ion-icon slot="icon-only" name="time-outline"></ion-icon>
-              </ion-button>
-
-              <ion-button
-                color="light"
-                shape="round"
-                (click)="showLogs(battery.anag)"
-              >
-                <ion-icon slot="icon-only" name="list-outline"></ion-icon>
-              </ion-button>
-            </div>
-          </ion-card-actions>
-        </ion-card>
-        <br />
-      } -->
-      <!-- <ion-button (click)="requestPermission()"></ion-button>
-      <ion-button (click)="sendNotification()">Fire </ion-button> -->
 
 </ion-content>

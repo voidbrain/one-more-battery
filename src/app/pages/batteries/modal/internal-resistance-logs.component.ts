@@ -1,4 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { CommonModule } from '@angular/common'
 import 'chartjs-adapter-date-fns';
 import { format } from 'date-fns';
 import { DatePipe } from '@angular/common';
@@ -23,6 +24,7 @@ import {
   IonToolbar,
   IonCard,
   IonCardContent,
+  IonCardTitle,
   IonDatetimeButton,
   IonModal,
   IonDatetime,
@@ -57,6 +59,7 @@ import {
     IonModal,
     IonDatetimeButton,
     IonCardContent,
+    IonCardTitle,
     IonCard,
     IonToggle,
     IonButton,
@@ -74,6 +77,7 @@ import {
     IonTitle,
     IonToolbar,
     DatePipe,
+    CommonModule,
     FormsModule,
   ],
 })
@@ -90,7 +94,11 @@ export class ModalResistanceLogsComponent {
     values: [],
   };
 
+  exceededValues = '';
+  exceededValuesSpec = '';
+
   logs: BatteryResistanceLogInterface[] = [];
+  refLogs: BatteryResistanceLogInterface[] = [];
   objectStore = dbTables['batteries-resistance-logs'];
 
   dateTimeFormatOptions = {
@@ -101,6 +109,7 @@ export class ModalResistanceLogsComponent {
   };
 
   lastRead!: Date;
+  chart!: any;
 
   constructor(
     private modalCtrl: ModalController,
@@ -122,6 +131,14 @@ export class ModalResistanceLogsComponent {
     }
   }
 
+  getAverage(values: Array<number>){
+    const av = values.length
+    ? (values.reduce((acc: number, val: number) => +acc + +val, 0) / values.length)
+    : 'No Data';
+    return (av && typeof av !== 'string' ? av.toFixed(1) : null);
+  }
+
+
   deleteRow(el: BatteryResistanceLogInterface) {
     el.deleted = +true;
     this.updateRow(el);
@@ -134,6 +151,29 @@ export class ModalResistanceLogsComponent {
     await this.getItems();
   }
 
+  checkForExceededValues(logs: any[]) {
+    if (logs.length === 0) return;
+
+    const baselineValues = logs[0].values;
+
+    logs.forEach((log, logIndex) => {
+      if (logIndex === 0) return; // Skip the first record
+
+      log.values.forEach((value: number, index: number) => {
+        const threshold = baselineValues[index] + 15;
+        if (value > threshold) {
+          this.exceededValues = (
+            `Value exceeded for Cell ${index + 1}.`
+          );
+          this.exceededValuesSpec = (
+
+            `Value: ${value}, Threshold: ${threshold}`
+          );
+        }
+      });
+    });
+  }
+
   async getItems() {
     if (this.battery?.anag?.id) {
       this.newRowForm.idBattery = this.battery.anag.id;
@@ -142,7 +182,10 @@ export class ModalResistanceLogsComponent {
         'idBattery, enabled, deleted',
         [this.battery.anag.id, +true, +false],
       );
-      console.log(this.logs)
+      this.refLogs = [this.logs[0]];
+      if(this.logs.length > 1) { this.refLogs.push(this.logs[this.logs.length - 1]) }
+
+      this.checkForExceededValues(this.logs);
 
       const generateChartData = (data: any[]) => {
         // Extract the unique dates as ISO strings
@@ -182,18 +225,8 @@ export class ModalResistanceLogsComponent {
         return { labels, datasets, averageDataset };
       };
 
-      const data = [
-        {
-          idBattery: 1,
-          enabled: 1,
-          deleted: 0,
-          date: '2024-08-15T00:00:00.000Z',
-          values: [4.3, 3.5, 4.3, 5, 4.3, 4.3],
-          id: 1,
-        },
-      ];
 
-      const { labels, datasets, averageDataset } = generateChartData(data);
+      const { labels, datasets, averageDataset } = generateChartData(this.logs);
 
       this.lastRead = new Date(labels[labels.length - 1]);
 
@@ -251,7 +284,11 @@ export class ModalResistanceLogsComponent {
         },
       };
 
-      const chart = new Chart('myChart', {
+      if (this.chart) {
+        this.destroyChart();
+      }
+
+      this.chart = new Chart('myChart', {
         type: 'line',
         data: chartData,
         options,
@@ -259,8 +296,8 @@ export class ModalResistanceLogsComponent {
 
       // Add toggle functionality
       const showMedia = (show: boolean) => {
-        chart.data.datasets = show ? [averageDataset] : datasets;
-        chart.update();
+        this.chart.data.datasets = show ? [averageDataset] : datasets;
+        this.chart.update();
       };
 
       // Example: Add toggle buttons
@@ -270,6 +307,13 @@ export class ModalResistanceLogsComponent {
       document
         .getElementById('showCells')
         ?.addEventListener('click', () => showMedia(false));
+    }
+  }
+
+  destroyChart() {
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
     }
   }
 
@@ -297,7 +341,7 @@ export class ModalResistanceLogsComponent {
       );
       return format + (format.length ?
         skipPostfix === false ? ' ago' : ''
-        : '');
+        : ' Today');
     }
 
     getBatteryDisabledTimeAgo(disabledDate: Date | null | undefined) {
@@ -329,4 +373,6 @@ export class ModalResistanceLogsComponent {
     const value = event.detail.value;
     this.newRowForm.values[index] = value;
   }
+
+
 }

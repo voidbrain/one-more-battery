@@ -121,7 +121,7 @@ export class ModalCyclesLogsComponent {
       const forceLoading = false;
       await this.db.initService(forceLoading);
 
-      // const data = await this.getItems();
+       const itemsData: BatteryStatusInterface[] | null = await this.getItems();
       // // Extracting chart data
       // const labels = data?.map((item) =>
       //   new Intl.DateTimeFormat('it-IT').format(item.date)
@@ -162,31 +162,24 @@ export class ModalCyclesLogsComponent {
       let timeIncrement = 0;
       let lastDate: string  | null = null;
 
-      const originalLabels = [
-        "14/08/2024", "14/08/2024", "14/08/2024", "17/08/2024", "18/08/2024", "18/08/2024", "24/08/2024", "24/08/2024",
-        "24/08/2024", "25/08/2024", "25/08/2024", "25/08/2024", "28/08/2024", "29/08/2024", "29/08/2024", "30/08/2024",
-        "31/08/2024", "31/08/2024", "01/09/2024", "01/09/2024", "01/09/2024", "07/09/2024", "07/09/2024", "07/09/2024",
-        "08/09/2024", "08/09/2024", "14/09/2024", "14/09/2024", "14/09/2024", "15/09/2024", "15/09/2024", "20/09/2024",
-        "20/09/2024", "20/09/2024", "21/09/2024", "21/09/2024", "21/09/2024", "24/09/2024", "28/09/2024", "28/09/2024",
-        "28/09/2024", "29/09/2024", "29/09/2024", "29/09/2024", "30/09/2024", "30/09/2024", "30/09/2024", "05/10/2024",
-        "05/10/2024", "05/10/2024", "06/10/2024", "06/10/2024", "06/10/2024", "12/10/2024", "13/10/2024", "13/10/2024",
-        "17/10/2024", "20/10/2024", "20/10/2024", "27/10/2024", "27/10/2024", "27/10/2024", "03/11/2024", "04/11/2024",
-        "09/11/2024", "09/11/2024", "10/11/2024", "10/11/2024", "10/11/2024", "11/11/2024", "11/11/2024", "11/11/2024",
-        "17/11/2024", "21/11/2024", "21/11/2024", "21/11/2024", "23/11/2024", "23/11/2024", "23/11/2024", "24/11/2024",
-        "24/11/2024", "30/11/2024", "30/11/2024", "30/11/2024", "24/12/2024", "24/12/2024", "24/12/2024", "29/12/2024",
-        "29/12/2024", "31/12/2024", "31/12/2024", "31/12/2024", "02/01/2025", "02/01/2025", "02/01/2025", "04/01/2025",
-        "04/01/2025", "04/01/2025"
-      ];
+      const originalLabels = itemsData ? itemsData.map(el=> el.date) : [];
 
       let sortedLabels = originalLabels
         .map(dateStr => {
           // Convert string to Date object by parsing the format dd/MM/yyyy
-          const [day, month, year] = dateStr.split('/').map(num => parseInt(num, 10));
+          console.log(dateStr)
+          const [day, month, year] = [
+            new Date(dateStr).getDate(),
+            new Date(dateStr).getMonth(),
+            new Date(dateStr).getFullYear()
+          ];
+
           return new Date(year, month - 1, day);  // Month is 0-indexed in Date constructor
         })
         .sort((a: Date, b: Date): number => a.getTime() - b.getTime())
         .map(date => {
           // Convert back to the original string format dd/MM/yyyy
+          console.log(date)
           const day = String(date.getDate()).padStart(2, '0');
           const month = String(date.getMonth() + 1).padStart(2, '0');
           const year = date.getFullYear();
@@ -212,6 +205,7 @@ export class ModalCyclesLogsComponent {
           lastDate = date;
         });
 
+        console.log(labelsWithTime);
 
       const data = {
         labels: labelsWithTime,
