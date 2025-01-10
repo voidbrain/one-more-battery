@@ -163,59 +163,61 @@ export class ModalCyclesLogsComponent {
         charge: [],
       };
 
-      const datasets =  [
-        ... itemsData!.map((value, index) => {
+      const datasets =
+         itemsData!.map((value, index) => {
 
           return {
               label: value.status === 2 ? 'stored' : value.status === 1 ? 'discharged' : 'charged',
-              //data: [{status: value.status, date: value.date}],
+              // data: [{status: value.status, date: value.date}],
               data: value,
               backgroundColor: value.status === 2 ? '#0f0' : value.status === 1 ? '#f00' : '#f00',
               hoverBackgroundColor: value.status === 2 ? '#0f0' : value.status === 1 ? '#f00' : '#f00',
             };
         })
-      ];
-      console.log(datasets)
+
+
+
+      const transformedData = datasets.reduce((acc: any[], item: any) => {
+        const existingDataset: any = acc.find((dataset: any) => dataset.data.date === item.data.date);
+        const point = {
+          x: item.data.date, // X-axis is the date
+          y: "Battery Status", // Single Y-axis category
+        };
+
+        if (existingDataset) {
+          existingDataset.data.push(point);
+        } else {
+          acc.push({
+            label: item.label,
+            data: [point],
+            backgroundColor: item.backgroundColor,
+            hoverBackgroundColor: item.hoverBackgroundColor,
+          });
+        }
+
+        return acc;
+      }, []);
+
+      console.log(transformedData)
 
       new Chart(ctx, {
         type: 'bar',
         data: {
           // Use a single label for the Y-axis, since we only have one row
           labels: ['Battery Status'],
-
-          datasets: datasets,
-
-            // {
-            //   label: 'Discharge',
-            //   data: [datasetData.discharge.reduce((acc, val) => acc + val, 0)],
-            //   backgroundColor: 'rgba(63,103,126,1)',
-            //   hoverBackgroundColor: 'rgba(50,90,100,1)',
-            // },
-            // {
-            //   label: 'Store',
-            //   data: [datasetData.store.reduce((acc, val) => acc + val, 0)],
-            //   backgroundColor: 'rgba(163,103,126,1)',
-            //   hoverBackgroundColor: 'rgba(140,85,100,1)',
-            // },
-            // {
-            //   label: 'Charge',
-            //   data: [datasetData.charge.reduce((acc, val) => acc + val, 0)],
-            //   backgroundColor: 'rgba(63,203,226,1)',
-            //   hoverBackgroundColor: 'rgba(46,185,235,1)',
-            // },
-
+          datasets: transformedData
         },
         options: {
           indexAxis: 'y', // Stacked bars should be horizontal
           scales: {
             x: {
-              // type: 'time',
-              // time: {
-              //   unit: 'day',
-              //   displayFormats: {
-              //     day: 'dd/MM/yyyy',
-              //   },
-              // },
+              type: 'time',
+              time: {
+                unit: 'day',
+                displayFormats: {
+                  day: 'dd/MM/yyyy',
+                },
+              },
               title: {
                 display: true,
                 text: 'Date',
@@ -235,14 +237,16 @@ export class ModalCyclesLogsComponent {
               callbacks: {
                 title: (tooltipItem: any) => {
                   console.log(tooltipItem)
-                  return `Date: ${tooltipItem[0].dataset.data.date}`;
+                  const d = new Date(tooltipItem[0].dataset.data.date);
+                  return `Date: ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
                 },
                 label: (tooltipItem: any) => {
+                  console.log(tooltipItem.dataset.data.status)
                   const value = tooltipItem.dataset.data.status;
                   let statusText = '';
-                  if (value[0] === 1) statusText = 'Discharge';
-                  if (value[0] === 2) statusText = 'Store';
-                  if (value[0] === 3) statusText = 'Charge';
+                  if (value === 1) statusText = 'Discharge';
+                  if (value === 2) statusText = 'Store';
+                  if (value === 3) statusText = 'Charge';
                   return `Status: ${statusText}`;
                 },
               },
