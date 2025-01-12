@@ -58,7 +58,7 @@
                         <ion-grid>
                           <ion-row>
 
-                            <ion-col size="6" size-md="6" size-xs="6">
+                            <ion-col size="4" size-md="4" size-xs="4">
                               <div
                                 class="battery"
                                 (click)="presentActionSheet(battery)"
@@ -81,7 +81,7 @@
                                 </div>
                               </div>
                             </ion-col>
-                            <ion-col size="6" size-md="6" size-xs="6">
+                            <ion-col size="8" size-md="8" size-xs="8">
                               <p>
                                 @if (
                                   battery?.anag?.enabled === 0 &&
@@ -121,9 +121,9 @@
                                     </ion-icon>
                                   }
                                   {{
-                                    getBatteryStatus(
+                                    battery?.lastStatus?.status ? getBatteryStatus(
                                       battery?.lastStatus?.status
-                                    ) + "d"
+                                    ) + "d" : 'New'
                                   }}<br />
                                   {{ battery.lastStatusTimeAgo }}
                                 }
@@ -169,9 +169,7 @@
                                       name="list-outline"
                                     ></ion-icon>
                                   </ion-button>
-                                  </div>
 
-                                  <div>
                                     <ion-button shape="round" (click)="presentActionSheet(battery)">
                                       <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
                                     </ion-button>

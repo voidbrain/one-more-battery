@@ -26,6 +26,8 @@
               {{ "Total cycles: " + battery?.totalCycles }}
               <br />
               {{ "Age: " + getAge(battery?.anag?.date!, true) }}
+              <br />
+              {{ "Storage time: " + getBatteryStats() + "%" }}
             </p>
           </ion-col>
           <ion-col size="6" size-md="6" size-sm="12" size-xs="12">

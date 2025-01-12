@@ -21,7 +21,7 @@ import {
   IonCard,
   IonCardContent,
 } from '@ionic/angular/standalone';
-import { ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
+import { BatteryAnagraphInterface, ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { DbService } from '../../../services/db.service';
 import {
   batteryStatusActionEnum,
@@ -62,7 +62,11 @@ export class ModalCyclesLogsComponent {
     deleted: +false,
     status: 0,
   };
-
+  percentages = {
+    1: 0,
+    2: 0,
+    3: 0,
+  };
   cycles: BatteryStatusInterface[] = [];
   objectStore = dbTables['batteries-status'];
   public batteryStatusActionEnum = batteryStatusActionEnum;
@@ -83,8 +87,18 @@ export class ModalCyclesLogsComponent {
     Chart.register(...registerables);
   }
 
+  getBatteryStats(){
+    const {
+      statusCounts,
+        percentages,
+        averageDays
+    } = this.calculateStatusStats();
+    this.percentages = percentages;
+    return percentages["3"].toFixed(1);
+  }
+
   getAge(age: Date, skipPostfix = false) {
-    console.log(this.calculateStatusStats());
+
 
     const differenceDays: number = differenceInDays(
       Date.now(),

@@ -82,13 +82,6 @@
             </p>
           </ion-col>
           <ion-col size="6" size-md="6" size-sm="12" size-xs="12">
-            <ion-radio-group value="showCells">
-              <ion-radio checked id="showCells" value="showCells"
-                >Show Cells</ion-radio
-              ><br />
-              <ion-radio id="showMedia" value="showMedia">Show Media</ion-radio
-              ><br />
-            </ion-radio-group>
 
             <div class="exceededValues ion-alert" [hidden]="exceededValues === ''"><br />
               {{ exceededValues }}<br />
@@ -101,7 +94,11 @@
     </ion-card-content>
   </ion-card>
 
-  <canvas id="myChart" width="400" height="200"></canvas>
+  <ion-card>
+    <ion-card-content style="position: relative; height:30vh; width:90vw; margin: auto">
+      <canvas id="myChart"></canvas>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card>
     <ion-card-content>
