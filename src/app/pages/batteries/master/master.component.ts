@@ -604,11 +604,11 @@ export class BatteriesMasterComponent {
     }
   }
 
-  async showCycles(anag: BatteryAnagraphInterface) {
+  async showCycles(battery: ExtendedBatteryAnagraphInterface) {
     const modal = await this.modalCtrl.create({
       component: ModalCyclesLogsComponent,
       componentProps: {
-        anag,
+        battery,
       },
     });
     modal.present();

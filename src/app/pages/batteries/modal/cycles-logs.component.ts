@@ -1,21 +1,14 @@
-import {
-  Component,
-  Input,
-  SimpleChanges,
-  OnChanges,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ModalController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
-import { Chart, registerables, TooltipItem } from 'chart.js';
+import { Chart, ChartOptions, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
-import { format } from 'date-fns';
+import { differenceInDays, formatDuration } from 'date-fns';
 
 import {
   IonButton,
   IonButtons,
-  IonToggle,
   IonContent,
   IonGrid,
   IonCol,
@@ -23,21 +16,15 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
-  IonLabel,
   IonTitle,
   IonToolbar,
   IonCard,
   IonCardContent,
-  IonDatetimeButton,
-  IonModal,
-  IonDatetime,
-  IonInput,
 } from '@ionic/angular/standalone';
-import { BatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
+import { ExtendedBatteryAnagraphInterface } from 'src/app/interfaces/battery-anagraph';
 import { DbService } from '../../../services/db.service';
 import {
   batteryStatusActionEnum,
-  batteryStatusDaysAlertEnum,
   BatteryStatusInterface,
 } from 'src/app/interfaces/battery-status';
 import { dbTables } from 'src/app/services/settings.service';
@@ -54,6 +41,8 @@ import { dbTables } from 'src/app/services/settings.service';
     IonButtons,
     IonContent,
     IonGrid,
+    IonCol,
+    IonRow,
     IonItem,
     IonHeader,
     IonIcon,
@@ -64,7 +53,7 @@ import { dbTables } from 'src/app/services/settings.service';
   ],
 })
 export class ModalCyclesLogsComponent {
-  @Input() anag: BatteryAnagraphInterface | undefined = undefined;
+  @Input() battery: ExtendedBatteryAnagraphInterface | undefined = undefined;
 
   newRowForm: BatteryStatusInterface = {
     date: new Date(),
@@ -92,6 +81,23 @@ export class ModalCyclesLogsComponent {
     private db: DbService,
   ) {
     Chart.register(...registerables);
+  }
+
+  getAge(age: Date, skipPostfix = false) {
+    console.log(this.calculateStatusStats());
+
+    const differenceDays: number = differenceInDays(
+      Date.now(),
+      age?.getTime() as number,
+    );
+    const format = formatDuration(
+      { days: differenceDays },
+      { format: ['years', 'months', 'weeks', 'days'] },
+    );
+    return (
+      format +
+      (format.length ? (skipPostfix === false ? ' ago' : '') : ' Today')
+    );
   }
 
   getBatteryStatus(status: number | undefined) {
@@ -122,153 +128,208 @@ export class ModalCyclesLogsComponent {
         'batteryStatusChart',
       ) as HTMLCanvasElement;
 
-      // Prepare labels and data
-      const labelsWithTime: string[] = [];
-      let timeIncrement = 0;
-      let lastDate: string | null = null;
-
       const originalLabels = itemsData ? itemsData.map((el) => el.date) : [];
 
-      const sortedLabels = originalLabels
 
-        .sort((a, b) => a.getTime() - b.getTime()) // Sort by date
-        .map((date) => {
-          const day = String(date.getDate()).padStart(2, '0');
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const year = date.getFullYear();
-          return `${day}/${month}/${year}`;
-        });
-
-      sortedLabels.forEach((date) => {
-        if (lastDate === date) {
-          timeIncrement += 4; // Increment every 4 hours
-        } else {
-          timeIncrement = 0; // Reset to 00:00 for new date
-        }
-        const time = `${timeIncrement.toString().padStart(2, '0')}:00`;
-        labelsWithTime.push(`${date} ${time}`);
-        lastDate = date;
-      });
-
-      const logData = itemsData ? itemsData.map((el) => el.status) : [];
-
-      const backgroundColors = [];
-      const datasetData: {
-        discharge: number[];
-        store: number[];
-        charge: number[];
-      } = {
-        discharge: [],
-        store: [],
-        charge: [],
+      const convertToShortDate = (dateString: string): any => {
+        const [month, day, year, time, period] = dateString.split(/[, ]+/);
+        return (`${day} ${month} ${year}`);
       };
 
-      const datasets =
-         itemsData!.map((value, index) => {
+      const plugins = {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (tooltipItem: any) => {
+              const date = convertToShortDate(tooltipItem[0].label);
+              return date;
+            },
+            label: (tooltipItem: any) => {
 
-          return {
-              label: value.status === 2 ? 'stored' : value.status === 1 ? 'discharged' : 'charged',
-              // data: [{status: value.status, date: value.date}],
-              data: value,
-              backgroundColor: value.status === 2 ? '#0f0' : value.status === 1 ? '#f00' : '#f00',
-              hoverBackgroundColor: value.status === 2 ? '#0f0' : value.status === 1 ? '#f00' : '#f00',
-            };
-        })
+              return "Status: " +
+              (itemsData ?
+                itemsData[tooltipItem.dataIndex].status === 3 ? "Stored" :
+                itemsData[tooltipItem.dataIndex].status === 1 ? "Charged" : "Discharged"
+                : '');
 
+            },
+            labelColor: function(tooltipItem: any) {
+              return {
+                borderColor:
+                (itemsData ? itemsData[tooltipItem.dataIndex].status === 3
+                      ? '#0f0'
+                      : '#f00':'#000'),
+                backgroundColor:
+                (itemsData ? itemsData[tooltipItem.dataIndex].status === 3
+                      ? '#0f0'
+                      : '#f00':'#000'),
+              }
+            },
+          },
+        },
+      };
 
+      const genericOptions: ChartOptions = {
+        interaction: {
+          intersect: false,
+        },
 
-      const transformedData = datasets.reduce((acc: any[], item: any) => {
-        const existingDataset: any = acc.find((dataset: any) => dataset.data.date === item.data.date);
-        const point = {
-          x: item.data.date, // X-axis is the date
-          y: "Battery Status", // Single Y-axis category
-        };
-
-        if (existingDataset) {
-          existingDataset.data.push(point);
-        } else {
-          acc.push({
-            label: item.label,
-            data: [point],
-            backgroundColor: item.backgroundColor,
-            hoverBackgroundColor: item.hoverBackgroundColor,
-          });
-        }
-
-        return acc;
-      }, []);
-
-      console.log(transformedData)
+        plugins: plugins,
+        scales: {
+          x: {
+            type: 'time',
+          },
+          y: {
+            display: false,
+          },
+        },
+        maintainAspectRatio: false,
+      };
 
       new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
-          // Use a single label for the Y-axis, since we only have one row
-          labels: ['Battery Status'],
-          datasets: transformedData
-        },
-        options: {
-          indexAxis: 'y', // Stacked bars should be horizontal
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: 'day',
-                displayFormats: {
-                  day: 'dd/MM/yyyy',
-                },
-              },
-              title: {
-                display: true,
-                text: 'Date',
-              },
-              stacked: true,
-            },
-            y: {
-              display: false, // Hide the Y-axis
-              stacked: true,
-            },
-          },
-          plugins: {
-            legend: {
-              display: false, // Hide legend if not needed
-            },
-            tooltip: {
-              callbacks: {
-                title: (tooltipItem: any) => {
-                  console.log(tooltipItem)
-                  const d = new Date(tooltipItem[0].dataset.data.date);
-                  return `Date: ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-                },
-                label: (tooltipItem: any) => {
-                  console.log(tooltipItem.dataset.data.status)
-                  const value = tooltipItem.dataset.data.status;
-                  let statusText = '';
-                  if (value === 1) statusText = 'Discharge';
-                  if (value === 2) statusText = 'Store';
-                  if (value === 3) statusText = 'Charge';
-                  return `Status: ${statusText}`;
-                },
-              },
-            },
-          },
-        },
-      });
+          labels: originalLabels,
+          datasets: [
+            {
+              data: itemsData!.map((el) => {
+                return el.status === 3 ? 10 :
+                el.status === 1 ? 20 : 0;
+              }),
+              pointBackgroundColor: (ctx: any) => {
 
+                return itemsData && itemsData[ctx.dataIndex].status
+                  ? itemsData[ctx.dataIndex].status === 3
+                    ? '#0f0'
+                    : '#f00'
+                  : '#000';
+              },
+              pointBorderColor: (ctx: any) => {
+                return itemsData && itemsData[ctx.dataIndex].status
+                  ? itemsData[ctx.dataIndex].status === 3
+                    ? '#0f0'
+                    : '#f00'
+                  : '#000';
+              },
+
+              segment: {
+                borderColor: (ctx) => {
+                  return itemsData && itemsData[ctx.p0DataIndex].status
+                    ? itemsData[ctx.p0DataIndex].status === 3
+                      ? '#0f0'
+                      : '#f00'
+                    : '#000';
+                },
+              },
+              spanGaps: true,
+              fill: true,
+              backgroundColor: (ctx:any) => {
+
+                return itemsData && ctx.dataIndex && itemsData[ctx.dataIndex].status
+                  ? itemsData[ctx.dataIndex].status === 3
+                    ? '#0f0'
+                    : '#f00'
+                  : '#000';
+              },
+            },
+          ],
+        },
+        options: genericOptions,
+      });
     } catch (err) {
       console.error('Error during initialization:', err);
     }
-
   }
 
+  calculateStatusStats() {
+    // Initialize variables for status counts
+    const statusCounts: {
+        [key: number]: number,
+    } = {
+        1: 0, // Discharge
+        2: 0, // Store
+        3: 0, // Charge
+    };
+
+    // Initialize an array for date differences (in days) between statuses
+    const statusDateDiffs: any[] = [];
+
+    // Sort data by date to calculate differences between statuses
+    const data = this.cycles
+
+
+    // Loop through the data to count statuses and calculate the date differences
+    data.forEach((item: BatteryStatusInterface, index: number) => {
+        // Count the status
+        if (statusCounts[item.status] !== undefined) {
+            statusCounts[item.status]++;
+        }
+
+        // Calculate the difference between current and next status
+        if (index < data.length - 1) {
+            const currentDate = new Date(item.date);
+            const nextDate = new Date(data[index + 1].date);
+            // const dateDiff: number = Math.abs((nextDate - currentDate) / (1000 * 60 * 60 * 24)); // Difference in days
+            const dateDiff: number = Math.abs((nextDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+            statusDateDiffs.push(dateDiff);
+        }
+    });
+
+    // Calculate percentages
+    //const totalCount = data.length;
+    // const percentages = {
+    //     1: (statusCounts[1] / totalCount) * 100,
+    //     2: (statusCounts[2] / totalCount) * 100,
+    //     3: (statusCounts[3] / totalCount) * 100,
+    // };
+
+    // // Calculate average days between statuses
+    // const averageDays = statusDateDiffs.length > 0 ? statusDateDiffs.reduce((sum, diff) => sum + diff, 0) / statusDateDiffs.length : 0;
+
+    const totalTime = (data[data.length - 1].date.getTime() - data[0].date.getTime()) / (1000 * 60 * 60 * 24); // Total days
+
+// Initialize an object to store the time spent on each status
+const statusTimes:any = { 1: 0, 2: 0, 3: 0 };
+
+// Loop through the statuses and calculate time spent on each status
+for (let i = 1; i < data.length; i++) {
+    const startStatus = data[i - 1];
+    const endStatus = data[i];
+
+    const timeSpent = (endStatus.date.getTime() - startStatus.date.getTime()) / (1000 * 60 * 60 * 24); // Time in days
+    statusTimes[startStatus.status] += timeSpent;
+}
+
+// Calculate the percentage of time spent in each status
+const percentages = {
+    1: (statusTimes[1] / totalTime) * 100,
+    2: (statusTimes[2] / totalTime) * 100,
+    3: (statusTimes[3] / totalTime) * 100,
+};
+
+// Calculate the average days between statuses
+const averageDays = totalTime / (data.length - 1); // Average days between status changes
+
+
+    return {
+        statusCounts,
+        percentages,
+        averageDays
+    };
+}
+
+
+
+
   async getItems(): Promise<BatteryStatusInterface[] | null> {
-    if (this.anag?.id) {
-      this.newRowForm.idBattery = this.anag.id;
+    if (this.battery?.anag?.id) {
+      this.newRowForm.idBattery = this.battery?.anag.id;
       const cycles: BatteryStatusInterface[] = await this.db.getItems(
         this.objectStore,
         'idBattery, enabled, deleted',
-        [this.anag.id, +true, +false],
+        [this.battery?.anag.id, +true, +false],
       );
+
       cycles.map((row) => {
         const alertStatus =
           row.status !== batteryStatusActionEnum.Store
@@ -305,9 +366,5 @@ export class ModalCyclesLogsComponent {
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
-  }
-
-  getArray(size: number): number[] {
-    return Array.from({ length: size });
   }
 }

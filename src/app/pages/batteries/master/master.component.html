@@ -128,10 +128,7 @@
                                   {{ battery.lastStatusTimeAgo }}
                                 }
                               </p>
-                              <div
-                                [@bodyExpansion]="state[battery.anag.id!]"
-                                class="expandable-content"
-                              >
+                              <div>
                                 <p>
                                   {{ battery?.brand?.label }}
                                   {{ battery?.anag?.model }}<br />
@@ -151,31 +148,10 @@
                               <mat-card-actions>
 
                                 <div>
-                                      <ion-button
-                                      shape="round"
-                                      color="medium"
-                                      [class]=" ' ion-hide-md-up ' "
-                                      (click)="toggle(battery.anag.id!)"
-                                    >
-                                      @if (
-                                        state[battery.anag.id!] === "collapsed"
-                                      ) {
-                                        <ion-icon
-                                          slot="icon-only"
-                                          name="expand"
-                                        ></ion-icon>
-                                      } @else {
-                                        <ion-icon
-                                          slot="icon-only"
-                                          name="contract"
-                                        ></ion-icon>
-                                      }
-                                    </ion-button>
-
                                   <ion-button
                                     color="medium"
                                     shape="round"
-                                    (click)="showCycles(battery.anag)"
+                                    (click)="showCycles(battery)"
                                   >
                                     <ion-icon
                                       slot="icon-only"

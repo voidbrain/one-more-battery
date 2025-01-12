@@ -150,26 +150,29 @@
                 <ion-grid>
                   <ion-row>
                     <ion-col size="2" size-md="2" size-sm="12" size-xs="12" class="title">Date</ion-col>
-                    <ion-col size="2" size-md="2" size-sm="12" size-xs="12">
+                    <ion-col size="12" size-md="12" size-sm="12" size-xs="12">
                       <ion-item>
-                        <ion-datetime-button
-                          color="secondary"
-                          [datetime]="'datetimeLogNewRow'"
-                        ></ion-datetime-button>
+                        <div *ngIf="isDatetimeReady">
+                          <ion-datetime-button
+                          id="datetimeLogNewRowButton"
+                            color="secondary"
+                            [datetime]="'datetimeLogNewRow'"
+                          ></ion-datetime-button>
 
-                        <ion-modal [keepContentsMounted]="true">
-                          <ng-template>
-                            <ion-datetime
-                              #datetimeLogNewRow
-                              (ionChange)="datetimeLogNewRow.cancel(true)"
-                              presentation="date"
-                              [formatOptions]="dateTimeFormatOptions"
-                              [id]="'datetimeLogNewRow'"
-                              [name]="'datetimeLogNewRow'"
-                            >
-                            </ion-datetime>
-                          </ng-template>
-                        </ion-modal>
+                          <ion-modal keepContentsMounted="true">
+                            <ng-template>
+                              <ion-datetime
+                                #datetimeLogNewRow
+                                (ionChange)="datetimeLogNewRow.cancel(true)"
+                                presentation="date"
+                                [formatOptions]="dateTimeFormatOptions"
+                                id="datetimeLogNewRow"
+                                name="datetimeLogNewRow"
+                              >
+                              </ion-datetime>
+                            </ng-template>
+                          </ion-modal>
+                        </div>
                       </ion-item>
                     </ion-col>
                   </ion-row>

@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common'
 import 'chartjs-adapter-date-fns';
 import { format } from 'date-fns';
@@ -81,7 +81,7 @@ import {
     FormsModule,
   ],
 })
-export class ModalResistanceLogsComponent {
+export class ModalResistanceLogsComponent implements AfterViewInit {
   // @Input() anag: BatteryAnagraphInterface | undefined = undefined;
   @Input() battery: ExtendedBatteryAnagraphInterface | undefined = undefined;
 
@@ -110,6 +110,7 @@ export class ModalResistanceLogsComponent {
 
   lastRead!: Date;
   chart!: any;
+  isDatetimeReady = false;
 
   constructor(
     private modalCtrl: ModalController,
@@ -129,6 +130,12 @@ export class ModalResistanceLogsComponent {
     } catch (err) {
       console.error('Error during initialization:', err);
     }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.isDatetimeReady = true;
+    }, 0); // Ensures initialization after the view is stable
   }
 
   getAverage(values: Array<number>){
@@ -195,12 +202,6 @@ export class ModalResistanceLogsComponent {
           (value: number, index: number) => ({
             label: `Cell ${index + 1}`,
             data: data.map((item) => item.values[index]),
-            borderColor: `hsl(${index * 60}, 100%, 50%)`,
-            fill: false,
-            borderWidth: 2,
-            pointRadius: 5,
-            pointBorderColor: `hsl(${index * 60}, 100%, 50%)`,
-            pointBackgroundColor: `hsl(${index * 60}, 100%, 50%)`,
           }),
         );
 
@@ -237,7 +238,6 @@ export class ModalResistanceLogsComponent {
 
       const convertToShortDate = (dateString: string): any => {
         const [month, day, year, time, period] = dateString.split(/[, ]+/);
-        console.log(month, day, year, time, period)
         return (`${day} ${month} ${year}`);
       };
 

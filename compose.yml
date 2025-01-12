@@ -1,5 +1,6 @@
 services:
   angular-app:
+    image: voidbrainvx/one-more-battery
     build:
       context: .
       dockerfile: Dockerfile
