@@ -51,8 +51,8 @@
                 @for (battery of serie.batteries; track battery.anag.id) {
                   <ion-col class="ion-no-padding" size="3" size-md="3" size-sm="6" size-xs="12">
                     <ion-card
-                      color="light"
-                      [disabled]=" (battery?.anag?.enabled === 0 ? 'true' : 'false') "
+                      [color]=" battery?.anag?.enabled === 0 ? '' : 'light'"
+
                     >
                       <ion-card-content>
                         <ion-grid>
@@ -61,7 +61,7 @@
                             <ion-col size="4" size-md="4" size-xs="4">
                               <div
                                 class="battery"
-                                (click)="presentActionSheet(battery)"
+                                (click)=" (  battery?.anag?.enabled === 0 ? null : presentActionSheet(battery) )"
                               >
                                 <div class="battery-head"></div>
                                 <div class="battery-body">
@@ -124,7 +124,7 @@
                                     battery?.lastStatus?.status ? getBatteryStatus(
                                       battery?.lastStatus?.status
                                     ) + "d" : 'New'
-                                  }}<br />
+                                  }}
                                   {{ battery.lastStatusTimeAgo }}
                                 }
                               </p>
@@ -170,7 +170,7 @@
                                     ></ion-icon>
                                   </ion-button>
 
-                                    <ion-button shape="round" (click)="presentActionSheet(battery)">
+                                    <ion-button [disabled]=" battery?.anag?.enabled === 0 " shape="round" (click)="presentActionSheet(battery)">
                                       <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
                                     </ion-button>
                               </div>

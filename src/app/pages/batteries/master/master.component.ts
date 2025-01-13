@@ -55,7 +55,7 @@ import {
   ExtendedBatteryAnagraphInterface,
   ExtendedSeriesAnagraph,
 } from 'src/app/interfaces/battery-anagraph';
-import { differenceInDays, formatDuration } from 'date-fns';
+import { differenceInDays, formatDuration, intervalToDuration } from 'date-fns';
 import { ActionSheetController, AlertController } from '@ionic/angular/standalone';
 
 // import {
@@ -436,8 +436,11 @@ export class BatteriesMasterComponent {
       Date.now(),
       age?.getTime() as number,
     );
+
+    const duration = intervalToDuration({ start: age, end: Date.now() });
+
     const format = formatDuration(
-      { days: differenceDays },
+      duration ,
       { format: ['years', 'months', 'weeks', 'days'] },
     );
     return format + (format.length ?
