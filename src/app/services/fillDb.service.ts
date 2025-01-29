@@ -3853,6 +3853,7 @@ export class FillDbService {
     this.db.putItem(dbTables['batteries-status'], itemStatus4);
 
     console.info('[DB]: fill Db finish');
-
     // last update 2025-01-26
+
+  }
 }

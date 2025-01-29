@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { Platform } from '@ionic/angular';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CameraComponent } from 'src/app/components/camera.component';
 import {
   IonButton,
   IonButtons,
@@ -87,6 +88,7 @@ import { AuthService } from 'src/app/services/auth.service';
 
   imports: [
     ReactiveFormsModule, FormsModule,
+    CameraComponent,
     JsonPipe,
     IonAlert,
     IonActionSheet,
