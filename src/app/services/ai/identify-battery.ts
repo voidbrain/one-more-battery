@@ -12,8 +12,10 @@ export class IdentifyBatteryService {
 
   async processPhoto(imageElement: HTMLImageElement) {
     // Step 1: Load and preprocess the image
-    const tensor = tf.browser.fromPixels(imageElement).resizeBilinear([224, 224]).toFloat().div(255).expandDims();
+    console.log("process");
 
+    const tensor = tf.browser.fromPixels(imageElement).resizeBilinear([224, 224]).toFloat().div(255).expandDims();
+    console.log("process1");
     // Step 2: Detect the colored band
     const colorBand = this.detectColorBand(tensor); // Custom function to process the tensor for color segmentation
 
@@ -22,6 +24,7 @@ export class IdentifyBatteryService {
 
     console.log('Detected Colored Band:', colorBand);
     console.log('Handwritten Number:', number);
+    return
   }
 
   // Function to detect a colored band

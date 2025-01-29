@@ -12,8 +12,9 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
       <h1>Take a Photo</h1>
       <button (click)="takePhoto()">Capture Photo</button>
       <div *ngIf="photo">
-        <h2>Photo Preview:</h2>
-        <img [src]="photo" alt="Captured photo" />
+        <!-- <h2>Photo Preview:</h2>
+        <img [src]="photo" alt="Captured photo" /> -->
+        Photo found
       </div>
     </div>
   `,
@@ -47,6 +48,12 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
 export class CameraComponent {
   photo: string | undefined | null = null;
 
+  constructor(
+    private identifyBatteryService: IdentifyBatteryService,
+  ){
+
+  }
+
   async takePhoto() {
     try {
       const image = await Camera.getPhoto({
@@ -56,7 +63,10 @@ export class CameraComponent {
         source: CameraSource.Camera,
       });
 
-      this.photo = image.dataUrl; // Save the captured photo's base64 data URL.
+      const myImage = new Image(224,224);
+      myImage.src = image.webPath ?? '';
+
+      this.identifyBatteryService.processPhoto(myImage);
     } catch (error) {
       console.error('Error taking photo:', error);
     }
