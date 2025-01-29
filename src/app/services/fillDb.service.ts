@@ -3852,8 +3852,26 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus4);
 
-    console.info('[DB]: fill Db finish');
-    // last update 2025-01-26
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-01-29'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
 
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-01-29'),
+      status: batteryStatusActionEnum.Store,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
+    console.info('[DB]: fill Db finish');
+
+    // last update 2025-01-29
   }
 }
