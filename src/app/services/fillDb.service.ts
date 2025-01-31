@@ -3,6 +3,9 @@ import {
   BatteryAnagraphInterface,
   BatterySeriesAnagraphInterface,
 } from '../interfaces/battery-anagraph';
+import {
+  DroneAnagraphInterface
+} from '../interfaces/drone-anagraph';
 import { BatteryResistanceLogInterface } from '../interfaces/battery-resistance';
 import { BatteryTypeInterface } from '../interfaces/battery-type';
 import {
@@ -47,6 +50,49 @@ export class FillDbService {
       label: 'LiHV',
     };
     this.db.putItem(dbTables['batteries-types'], itemBatteryTypeLiHv);
+
+
+    /**
+     * Drones anag
+     */
+    const drone1: DroneAnagraphInterface = {
+      enabled: +true,
+      deleted: +false,
+      name: 'Hot',
+      description: 'AOS Evo v1.2',
+      size: '5 inch',
+      power: '6S',
+      id: 1,
+      components: {
+      }
+    };
+    this.db.putItem(dbTables['drones-anag'], drone1);
+
+    const drone2: DroneAnagraphInterface = {
+      enabled: +true,
+      deleted: +false,
+      name: '2Cool',
+      description: 'AOS Evo v1.2',
+      size: '5 inch',
+      power: '6S',
+      id: 2,
+      components: {
+      }
+    };
+    this.db.putItem(dbTables['drones-anag'], drone2);
+
+    const drone3: DroneAnagraphInterface = {
+      enabled: +true,
+      deleted: +false,
+      name: 'Supernova',
+      description: 'AOS v5',
+      size: '5 inch',
+      power: '6S',
+      id: 3,
+      components: {
+      }
+    };
+    this.db.putItem(dbTables['drones-anag'], drone3);
 
     /**
      * Resistance Logs

@@ -57,7 +57,7 @@ import { DroneAnagraphInterface } from 'src/app/interfaces/drone-anagraph';
 })
 export class IncidentsMasterComponent {
   items: DroneAnagraphInterface[] = [];
-  page = 'Garage';
+  page = 'incidents';
   debug = true;
 
   constructor(
@@ -83,7 +83,7 @@ export class IncidentsMasterComponent {
   async getItems() {
     try {
       const items: DroneAnagraphInterface[] =
-        await this.db.getItems<DroneAnagraphInterface>('drones-anagraph');
+        await this.db.getItems<DroneAnagraphInterface>('drones-anag');
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {});
       this.items = items;
