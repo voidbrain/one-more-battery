@@ -50,6 +50,7 @@ import {
   ExtendedBatteryAnagraphInterface,
 } from 'src/app/interfaces/battery-anagraph';
 import { BrandsAnagraphInterface } from 'src/app/interfaces/brands-anagraph';
+import { DroneAnagraphInterface } from 'src/app/interfaces/drone-anagraph';
 import { BatteryTypeInterface } from 'src/app/interfaces/battery-type';
 import { dbTables, SettingsService } from 'src/app/services/settings.service';
 import { FillDbService } from 'src/app/services/fillDb.service';
@@ -349,6 +350,7 @@ export class BatteriesSettingComponent {
       const objectStoreTypes = dbTables['batteries-types'];
       const objectStoreBrands = dbTables['brands-anag'];
       const objectStoreBatteries = dbTables['batteries-anag'];
+      const objectStoreDrones = dbTables['drones-anag'];
       const column = 'deleted';
       const query = [+false];
       // Fetch the data
@@ -360,6 +362,8 @@ export class BatteriesSettingComponent {
         await this.db.getItems<BatteryTypeInterface>(objectStoreTypes, column, query);
       const brands: BrandsAnagraphInterface[] =
         await this.db.getItems<BrandsAnagraphInterface>(objectStoreBrands, column, query);
+      const dronesAnagArr: DroneAnagraphInterface[] =
+        await this.db.getItems<DroneAnagraphInterface>(objectStoreDrones, column, query);
 
       // Create a map to keep track of batteries by ID for faster lookup
       const batteryMap: Map<number, ExtendedBatteryAnagraphInterface> =

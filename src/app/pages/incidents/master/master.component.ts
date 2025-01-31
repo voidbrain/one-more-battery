@@ -24,7 +24,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import * as ionIcons from 'ionicons/icons';
-import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
+import { DroneAnagraphInterface } from 'src/app/interfaces/drone-anagraph';
 
 @Component({
   selector: 'app-incidents-master',
@@ -56,8 +56,8 @@ import { BatteryStatusInterface } from 'src/app/interfaces/battery-status';
   styleUrl: './master.component.scss',
 })
 export class IncidentsMasterComponent {
-  items: BatteryStatusInterface[] = [];
-  page = 'incidents';
+  items: DroneAnagraphInterface[] = [];
+  page = 'Garage';
   debug = true;
 
   constructor(
@@ -82,8 +82,8 @@ export class IncidentsMasterComponent {
 
   async getItems() {
     try {
-      const items: BatteryStatusInterface[] =
-        await this.db.getItems<BatteryStatusInterface>('batteries-status');
+      const items: DroneAnagraphInterface[] =
+        await this.db.getItems<DroneAnagraphInterface>('drones-anagraph');
       items.sort((a, b) => (a.id! > b.id! ? 1 : b.id! > a.id! ? -1 : 0));
       items.forEach((item) => {});
       this.items = items;
@@ -93,16 +93,16 @@ export class IncidentsMasterComponent {
     }
   }
 
-  async deleteItem(item: BatteryStatusInterface) {
+  async deleteItem(item: DroneAnagraphInterface) {
     try {
-      await this.db.deleteItem<BatteryStatusInterface>(this.page, item);
+      await this.db.deleteItem<DroneAnagraphInterface>(this.page, item);
       await this.getItems(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
     }
   }
 
-  showDetail(item: BatteryStatusInterface) {
+  showDetail(item: DroneAnagraphInterface) {
     this.router.navigate([`tabs/${this.page}/edit`, JSON.stringify(item.id)]);
   }
 
@@ -118,7 +118,7 @@ export class IncidentsMasterComponent {
     }
   }
 
-  trackById(index: number, item: BatteryStatusInterface) {
+  trackById(index: number, item: DroneAnagraphInterface) {
     return item.id;
   }
 }
