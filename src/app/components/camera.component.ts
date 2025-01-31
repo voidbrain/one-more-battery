@@ -12,9 +12,8 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
       <h1>Take a Photo</h1>
       <button (click)="takePhoto()">Capture Photo</button>
       <div *ngIf="photo">
-        <!-- <h2>Photo Preview:</h2>
-        <img [src]="photo" alt="Captured photo" /> -->
-        Photo found
+        <h2>Photo Preview:</h2>
+        <img [src]="photo" alt="Captured photo" />
       </div>
     </div>
   `,
@@ -47,12 +46,11 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
 })
 export class CameraComponent {
   photo: string | undefined | null = null;
+  recognizedDigit: number | undefined | null = null;
+  colorBand: string | undefined | null = null;
+  recognizedDigitConfidence: number | undefined | null = null;
 
-  constructor(
-    private identifyBatteryService: IdentifyBatteryService,
-  ){
-
-  }
+  constructor(private identifyBatteryService: IdentifyBatteryService) {}
 
   async takePhoto() {
     try {
@@ -63,10 +61,17 @@ export class CameraComponent {
         source: CameraSource.Camera,
       });
 
-      const myImage = new Image(224,224);
-      myImage.src = image.webPath ?? '';
+      this.photo = image.dataUrl; // Store photo preview
 
-      this.identifyBatteryService.processPhoto(myImage);
+      const myImage = new Image(224, 224);
+      myImage.src = image.webPath ?? image.dataUrl ?? '';
+
+      myImage.onload = async () => {
+        const result = await this.identifyBatteryService.processPhoto(myImage);
+        this.recognizedDigit = result?.digit;
+        this.colorBand = result?.color;
+        this.recognizedDigitConfidence = result?.confidence;
+      };
     } catch (error) {
       console.error('Error taking photo:', error);
     }

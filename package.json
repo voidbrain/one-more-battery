@@ -42,6 +42,7 @@
     "@tensorflow/tfjs-backend-cpu": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-node": "^4.22.0",
+    "@tensorflow/tfjs-vis": "^1.5.1",
     "canvas": "^3.0.1",
     "chart.js": "^4.4.7",
     "chartjs-adapter-date-fns": "^3.0.0",

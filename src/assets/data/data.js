@@ -27,9 +27,9 @@ const NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
 const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
 const MNIST_IMAGES_SPRITE_PATH =
-    './mnist_images.png';
+    './assets/data/mnist_images.png';
 const MNIST_LABELS_PATH =
-    './mnist_labels_uint8';
+    './assets/data/mnist_labels_uint8';
 
 /**
  * A class that fetches the sprited MNIST dataset and returns shuffled batches.
