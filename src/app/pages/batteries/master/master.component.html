@@ -25,16 +25,16 @@
     <ion-card-content>
       <app-camera></app-camera>
 
-        <ion-toggle
+        <!-- <ion-toggle
           name="showDismissedBatteries"
           [checked]="showDismissedBatteries === true"
           (click)="toggleShowDismissedBatteries()"
           >Show Dismissed</ion-toggle
-        >
+        > -->
       </ion-card-content>
     </ion-card>
 
-      @for (serie of extendedSeries; track serie.id) {
+      <!-- @for (serie of extendedSeries; track serie.id) {
         <ion-card color=""
           [class]="' ' + (serie.enabled === 0 ? ' disabled ' : ' ')"
         >
@@ -189,7 +189,5 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      }
-
-
+      } -->
 </ion-content>

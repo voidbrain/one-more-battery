@@ -50,7 +50,14 @@ export class CameraComponent {
   colorBand: string | undefined | null = null;
   recognizedDigitConfidence: number | undefined | null = null;
 
-  constructor(private identifyBatteryService: IdentifyBatteryService) {}
+  constructor(private identifyBatteryService: IdentifyBatteryService) {
+
+    this.initializeAi();
+  }
+
+  async initializeAi() {
+    const result = await this.identifyBatteryService.initialize();
+  }
 
   async takePhoto() {
     try {
@@ -67,6 +74,7 @@ export class CameraComponent {
       myImage.src = image.webPath ?? image.dataUrl ?? '';
 
       myImage.onload = async () => {
+
         // const result = await this.identifyBatteryService.processPhoto(myImage);
         // this.recognizedDigit = result?.digit;
         // this.colorBand = result?.color;
