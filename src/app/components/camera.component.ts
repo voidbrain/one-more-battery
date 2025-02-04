@@ -67,10 +67,10 @@ export class CameraComponent {
       myImage.src = image.webPath ?? image.dataUrl ?? '';
 
       myImage.onload = async () => {
-        const result = await this.identifyBatteryService.processPhoto(myImage);
-        this.recognizedDigit = result?.digit;
-        this.colorBand = result?.color;
-        this.recognizedDigitConfidence = result?.confidence;
+        // const result = await this.identifyBatteryService.processPhoto(myImage);
+        // this.recognizedDigit = result?.digit;
+        // this.colorBand = result?.color;
+        // this.recognizedDigitConfidence = result?.confidence;
       };
     } catch (error) {
       console.error('Error taking photo:', error);
