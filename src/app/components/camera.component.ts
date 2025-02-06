@@ -13,7 +13,7 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
       <button (click)="takePhoto()">Capture Photo</button>
       <div *ngIf="photo">
         <h2>Photo Preview:</h2>
-        <img [src]="photo" alt="Captured photo" />
+        <!-- <img [src]="photo" alt="Captured photo" /> -->
       </div>
     </div>
   `,
