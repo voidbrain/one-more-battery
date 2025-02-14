@@ -1,5 +1,5 @@
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { Injectable } from '@angular/core';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { Observable } from 'rxjs';
 
 @Injectable({
