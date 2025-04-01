@@ -97,8 +97,9 @@ export class CameraComponent {
 
       // const result = await this.identifyBatteryService.predictNumber(imgElement, boundingBox, threshold, erosion, dilation);
       const result = await this.identifyBatteryService.processPhoto(imgElement);
-      this.recognizedDigit = result?.digit;
-      this.recognizedDigitConfidence = result?.confidence;
+      console.log(result)
+      this.recognizedDigit = result[0].digit;
+      this.recognizedDigitConfidence = result[0].confidence;
     };
   }
 
