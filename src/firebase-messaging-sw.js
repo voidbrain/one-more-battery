@@ -17,17 +17,17 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // Handle background messages
-// messaging.onBackgroundMessage((payload) => {
-//   console.log('Received background message ', payload);
+messaging.onBackgroundMessage((payload) => {
+  console.log('Received background message ', payload);
 
-//   const notificationTitle = payload.notification.title;
-//   const notificationOptions = {
-//     body: payload.notification.body,
-//     icon: payload.notification.icon,
-//   };
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/firebase-logo.png',
+  };
 
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(
@@ -42,7 +42,7 @@ self.addEventListener('activate', function (event) {
           const notificationTitle = payload.notification.title;
           const notificationOptions = {
             body: payload.notification.body,
-            icon: payload.notification.icon,
+            icon: '/firebase-logo.png',
           };
 
           // Show the notification
