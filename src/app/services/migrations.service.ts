@@ -12,6 +12,7 @@ export class MigrationsService {
     this.createBatteriesStatus(db);
     this.createBatteriesTypes(db);
     this.createBatteriesResistanceLogs(db);
+    this.createDronesAnag(db);
   }
 
   private migration2(db: IDBDatabase) {
@@ -33,6 +34,19 @@ export class MigrationsService {
 
   private createBatteriesSeriesAnag(db: IDBDatabase) {
     const objectStore = dbTables['batteries-series'];
+    if (!db.objectStoreNames.contains(objectStore)) {
+      const store = db.createObjectStore(objectStore, {
+        keyPath: 'id',
+        autoIncrement: true,
+      });
+      store.createIndex('id', 'id', { unique: false });
+      store.createIndex('enabled, deleted', ['enabled', 'deleted']);
+      store.createIndex('deleted', ['deleted'], { unique: false });
+    }
+  }
+
+  private createDronesAnag(db: IDBDatabase) {
+    const objectStore = dbTables['drones-anag'];
     if (!db.objectStoreNames.contains(objectStore)) {
       const store = db.createObjectStore(objectStore, {
         keyPath: 'id',

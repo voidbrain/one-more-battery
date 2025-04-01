@@ -11,7 +11,6 @@ defineCustomElements(window);
 bootstrapApplication(AppComponent, appConfig)
   .catch(err => console.error(err));
 
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./firebase-messaging-sw.js')

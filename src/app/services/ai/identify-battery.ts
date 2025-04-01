@@ -71,12 +71,14 @@ export class IdentifyBatteryService {
   //   try {
   //     await tf.setBackend('cpu');
   //     console.log('Loading model...');
+  async loadModel() {
+    try {
+      await tf.setBackend('webgl');
+      console.log('Loading model...');
 
-  //     // Dispose of old model before loading a new one
-  //     if (this.model) {
-  //       this.model.dispose();
-  //       this.model = null;
-  //     }
+      if (this.model) {
+        this.model.dispose();
+      }
 
   //     this.model = await tf.loadLayersModel('/assets/data/tfjs_files/model.json');
   //     console.log('Model loaded successfully');
@@ -85,92 +87,117 @@ export class IdentifyBatteryService {
   //   }
   // }
 
-  // async processPhoto(image: HTMLImageElement): Promise<{ digit: number | null; color: string | null;  confidence: number | null  } | null> {
+  async predictNumber(imageTensor: tf.Tensor3D): Promise<{ digit: number | null; confidence: number | null }> {
+    if (!this.model) {
+      console.error('Model is not loaded');
+      return { digit: null, confidence: null };
+    }
 
-  //   if (!this.model) {
-  //     console.error('Model not loaded');
-  //     return null;
-  //   }
+    const processedTensor = tf.tidy(() => {
+      let tensor = imageTensor;
 
-  //   console.log("Processing photo...");
+      // Ensure correct shape: Convert to grayscale if needed
+      if (tensor.shape.length === 3 && tensor.shape[2] === 3) {
+        tensor = tensor.mean(2).expandDims(-1); // Convert RGB to grayscale
+      }
 
-  //   // Convert the image into a tensor for digit recognition
-  //   const digitTensor = tf.browser
-  //     .fromPixels(image, 1) // Convert image to grayscale
-  //     .resizeBilinear([28, 28]) // Resize to 28x28 (MNIST input size)
-  //     .toFloat()
-  //     .div(tf.scalar(255)) // Normalize pixel values between 0 and 1
-  //     .expandDims(0); // Add batch dimension
+      // Resize, normalize, and reshape for model input
+      tensor = tf.image.resizeBilinear(tensor, [28, 28]).div(255.0).reshape([1, 28, 28, 1]);
 
-  //   // Predict digit
-  //   const predictions = this.model!.predict(digitTensor) as tf.Tensor;
-  //   const probabilities = predictions.dataSync(); // Get confidence scores
-  //   const digit = predictions.argMax(1).dataSync()[0]; // Get predicted digit
-  //   const confidence = probabilities[digit];
+      return tensor;
+    });
 
-  //   // Extract color from the band
-  //   const color = this.extractColorBand(image);
+    const predictions = this.model.predict(processedTensor) as tf.Tensor;
+    const probabilities = await predictions.data();
+    const digit = probabilities.indexOf(Math.max(...probabilities));
+    const confidence = probabilities[digit];
 
-  //   digitTensor.dispose(); // Free memory
+    processedTensor.dispose();
+    predictions.dispose();
 
-  //   console.log("Processing completed:", { digit, confidence, color });
-  //   return { digit, confidence, color };
-  // }
+    return { digit, confidence };
+  }
 
-  // private extractColorBand(image: HTMLImageElement): string | null {
-  //   const canvas = document.createElement('canvas');
-  //   const ctx = canvas.getContext('2d');
+  async extractDigits(image: HTMLImageElement): Promise<tf.Tensor3D[]> {
+    return tf.tidy(() => {
+      const imgTensor = tf.browser.fromPixels(image);
+      const grayscale = imgTensor.mean(2).expandDims(-1);
 
-  //   if (!ctx) {
-  //     console.error('Canvas context not supported');
-  //     return null;
-  //   }
+      // Normalize image
+      const normalized = grayscale.div(255.0);
 
-  //   canvas.width = image.width;
-  //   canvas.height = image.height;
-  //   ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Apply thresholding
+      const thresholded = normalized.greater(tf.scalar(0.5)).toFloat();
 
-  //   // Define the area where the color band is expected (e.g., bottom of the image)
-  //   const bandYStart = Math.floor(image.height * 0.75); // Bottom 25% of the image
-  //   const bandHeight = Math.floor(image.height * 0.2); // 20% of height
+      // Visualize the original image
+      tf.browser.toPixels(imgTensor).then((pixels) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = imgTensor.shape[1];
+        canvas.height = imgTensor.shape[0];
+        canvas.getContext('2d')?.putImageData(new ImageData(pixels, canvas.width, canvas.height), 0, 0);
+        document.body.appendChild(canvas); // Append canvas to body
+      });
 
-  //   // Get pixel data from the selected area
-  //   const imageData = ctx.getImageData(0, bandYStart, image.width, bandHeight).data;
+      // Visualize the thresholded image
+      tf.browser.toPixels(thresholded as tf.Tensor3D).then((pixels) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = thresholded.shape[1] as number;
+        canvas.height = thresholded.shape[0];
+        canvas.getContext('2d')?.putImageData(new ImageData(pixels, canvas.width, canvas.height), 0, 0);
+        document.body.appendChild(canvas); // Append canvas to body
+      });
 
-  //   // Extract dominant color
-  //   const { r, g, b } = this.getDominantColor(imageData);
+      // Get image dimensions
+      const [height, width] = thresholded.shape;
+      const step = Math.floor(height / 10); // Estimate digit size dynamically
 
-  //   return this.getColorName(r, g, b);
-  // }
+      const boxes: tf.Tensor3D[] = [];
+      for (let y = 0; y < height - step; y += step) {
+        for (let x = 0; x < width - step; x += step) {
+          let region = thresholded.slice([y, x, 1], [step, step]); // Extract region
 
-  // private getDominantColor(data: Uint8ClampedArray): { r: number; g: number; b: number } {
-  //   let rSum = 0, gSum = 0, bSum = 0, count = 0;
+          if (region.rank === 2) {
+            region = region.expandDims(-1) as tf.Tensor3D; // Ensure Tensor3D format
+          }
 
-  //   for (let i = 0; i < data.length; i += 4) {
-  //     rSum += data[i];     // Red
-  //     gSum += data[i + 1]; // Green
-  //     bSum += data[i + 2]; // Blue
-  //     count++;
-  //   }
+          // Convert scalar max to JavaScript number
+          const maxVal = region.max();
+          const maxValArray = maxVal.arraySync() as number; // Get max pixel value
 
-  //   return {
-  //     r: Math.floor(rSum / count),
-  //     g: Math.floor(gSum / count),
-  //     b: Math.floor(bSum / count),
-  //   };
-  // }
+          console.log(`Region at (${x}, ${y}) - Max Value:`, maxValArray); // Log max value
 
-  // private getColorName(r: number, g: number, b: number): string {
-  //   if (r > 200 && g < 100 && b < 100) return 'Red';
-  //   if (r < 100 && g > 200 && b < 100) return 'Green';
-  //   if (r < 100 && g < 100 && b > 200) return 'Blue';
-  //   if (r > 200 && g > 200 && b < 100) return 'Yellow';
-  //   if (r > 200 && g < 100 && b > 200) return 'Magenta';
-  //   if (r < 100 && g > 200 && b > 200) return 'Cyan';
-  //   if (r > 150 && g > 150 && b > 150) return 'White';
-  //   if (r < 50 && g < 50 && b < 50) return 'Black';
-  //   return 'Unknown Color';
-  // }
+          if (maxValArray > 0) {
+            boxes.push(region as tf.Tensor3D);
+          } else {
+            region.dispose(); // Dispose if not used
+          }
+
+          maxVal.dispose();
+        }
+      }
+
+      imgTensor.dispose();
+      grayscale.dispose();
+      normalized.dispose();
+      thresholded.dispose();
+
+      return boxes;
+    });
+  }
+
+
+
+  async processPhoto(image: HTMLImageElement): Promise<{ digit: number | null; confidence: number | null }[]> {
+    const digits = await this.extractDigits(image);
+    const results: { digit: number | null; confidence: number | null }[] = [];
+
+    for (const digitTensor of digits) {
+      results.push(await this.predictNumber(digitTensor));
+      digitTensor.dispose();
+    }
+
+    return results;
+  }
 
   // disposeModel() {
   //   if (this.model) {

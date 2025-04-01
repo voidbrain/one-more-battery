@@ -18,5 +18,9 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container"></div>
+  <div id="container">
+    <!-- <canvas #droneCanvas width="400" height="400" (click)="onCanvasClick($event)"></canvas> -->
+    <canvas #droneCanvas2D d="droneCanvas2D"></canvas>
+    <canvas #droneCanvas3D id="droneCanvas3D"></canvas>
+  </div>
 </ion-content>
