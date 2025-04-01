@@ -4,10 +4,12 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
+defineCustomElements(window);
 
 bootstrapApplication(AppComponent, appConfig)
   .catch(err => console.error(err));
-
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
