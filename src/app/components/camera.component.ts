@@ -15,7 +15,7 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
         <h2>Photo Preview:</h2>
         <canvas id="canvas" width="500" height="500"></canvas>
         <div class="controls">
-          <label for="threshold">Threshold:</label>
+          <!-- <label for="threshold">Threshold:</label>
           <input type="range" id="threshold" name="threshold" min="0" max="255" value="127">
           <span id="thresholdValue">127</span>
           <br>
@@ -25,7 +25,7 @@ import { IdentifyBatteryService } from '../services/ai/identify-battery';
           <br>
           <label for="dilation">Dilation:</label>
           <input type="range" id="dilation" name="dilation" min="0" max="10" value="0.5" step="0.1">
-          <span id="dilationValue">0.5</span>
+          <span id="dilationValue">0.5</span> -->
           <br>
           <button (click)="predictNumber()">Predict Number</button>
         </div>
@@ -90,10 +90,10 @@ export class CameraComponent {
     const imgElement = new Image();
     imgElement.src = canvas.toDataURL();
     imgElement.onload = async () => {
-      const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
-      const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
-      const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
-      const boundingBox = this.getBoundingBox(canvas);
+      // const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
+      // const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
+      // const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
+      // const boundingBox = this.getBoundingBox(canvas);
 
       // const result = await this.identifyBatteryService.predictNumber(imgElement, boundingBox, threshold, erosion, dilation);
       const result = await this.identifyBatteryService.processPhoto(imgElement);
