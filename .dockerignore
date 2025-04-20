@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+package-lock.json
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+README.md
+LICENSE
+.vscode
+.angular
+.github
+.prettierrc
+.prettierignore
