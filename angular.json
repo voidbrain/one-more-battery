@@ -53,7 +53,8 @@
             ],
             "scripts": [],
             "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json"
+            "ngswConfigPath": "ngsw-config.json",
+            "baseHref": "/one-more-battery/"
           },
           "configurations": {
             "production": {
