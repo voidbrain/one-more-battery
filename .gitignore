@@ -69,5 +69,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-package-lock.json
+# package-lock.json
 .vscode/settings.json
