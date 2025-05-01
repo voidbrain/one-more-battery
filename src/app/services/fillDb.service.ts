@@ -74,6 +74,17 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs1,
     );
+    itemBatteryResistanceLogs1 = {
+      idBattery: 1,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-01'),
+      values: [4.4, 4.4, 4.9, 4.9, 5.4, 5.8],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs1,
+    );
     let itemBatteryResistanceLogs2: BatteryResistanceLogInterface = {
       idBattery: 2,
       enabled: +true,
@@ -91,6 +102,17 @@ export class FillDbService {
       deleted: +false,
       date: new Date('2025-01-12'),
       values: [4.9, 4.9, 4.9, 5.4, 5.4, 5.9],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs2,
+    );
+    itemBatteryResistanceLogs2 = {
+      idBattery: 2,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-01'),
+      values: [4.9, 5.4, 4.9, 5.4, 5.4, 6.4],
     };
     this.db.putItem(
       dbTables['batteries-resistance-logs'],
@@ -129,6 +151,17 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs4,
     );
+    itemBatteryResistanceLogs4 = {
+      idBattery: 4,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-01'),
+      values: [5.9, 5.9, 5.9, 4.9, 5.4, 5.4],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs4,
+    );
 
     const itemBatteryResistanceLogs5: BatteryResistanceLogInterface = {
       idBattery: 5,
@@ -142,12 +175,23 @@ export class FillDbService {
       itemBatteryResistanceLogs5,
     );
 
-    const itemBatteryResistanceLogs6: BatteryResistanceLogInterface = {
+    let itemBatteryResistanceLogs6: BatteryResistanceLogInterface = {
       idBattery: 6,
       enabled: +true,
       deleted: +false,
       date: new Date('2025-01-12'),
       values: [12, 12, 12, 12, 12, 12],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs6,
+    );
+    itemBatteryResistanceLogs6 = {
+      idBattery: 6,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-01'),
+      values: [10, 9.3, 9.8, 10, 10, 10],
     };
     this.db.putItem(
       dbTables['batteries-resistance-logs'],
@@ -5310,9 +5354,81 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus6);
 
+    itemStatus1 = {
+      idBattery: 1,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus1);
+
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
+    itemStatus4 = {
+      idBattery: 4,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus4);
+
+    itemStatus6 = {
+      idBattery: 6,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus6);
+
+    itemStatus1 = {
+      idBattery: 1,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus1);
+
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
+    itemStatus1 = {
+      idBattery: 1,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus1);
+
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-05-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
     console.info('[DB]: fill Db finish');
 
-    // last update 2025-04-28
+    // last update 2025-05-01
 
   }
 }
