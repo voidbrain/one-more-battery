@@ -22,7 +22,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "www",
+            "outputPath": "dist/one-more-battery",
+            "baseHref": "/one-more-battery/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
@@ -53,8 +54,7 @@
             ],
             "scripts": [],
             "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json",
-            "baseHref": "/temp/1more/"
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
