@@ -25,6 +25,9 @@ jobs:
     - run: npm ci --legacy-peer-deps
     - run: npm run build -- --output-path=dist/one-more-battery --base-href="/one-more-battery/"
 
+    - name: Add Redirect for Default Locale
+      run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/one-more-battery/en/" /></head><body><p>If you are not redirected, <a href="/one-more-battery/en/">click here</a>.</p></body></html>' > dist/one-more-battery/404.html
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
