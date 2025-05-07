@@ -58,7 +58,7 @@
           },
           "configurations": {
             "production": {
-              "localize": true,
+
               "budgets": [
                 {
                   "type": "initial",
@@ -88,12 +88,7 @@
               "sourceMap": true,
               "namedChunks": true
             },
-            "en": {
-              "localize": ["en"]
-            },
-            "it": {
-              "localize": ["it"]
-            },
+
             "ci": {
               "progress": false
             }
