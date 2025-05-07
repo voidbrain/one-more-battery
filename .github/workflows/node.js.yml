@@ -27,5 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci --legacy-peer-deps
-    - run: npm run build --if-present  --output-path=www --base-href="/one-more-battery/"
+    - run: npm run build --if-present  --output-path=www --base-href="/temp/1more/"
 
