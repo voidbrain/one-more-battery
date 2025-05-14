@@ -197,6 +197,28 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs6,
     );
+    let itemBatteryResistanceLogs11: BatteryResistanceLogInterface = {
+      idBattery: 11,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-14'),
+      values: [18, 18, 17],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs11,
+    );
+    let itemBatteryResistanceLogs12: BatteryResistanceLogInterface = {
+      idBattery: 12,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-05-14'),
+      values: [17, 17, 17],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs12,
+    );
 
     /**
      * Series anag
@@ -220,6 +242,15 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-series'], itemBatterySeries);
 
+    itemBatterySeries = {
+      id:3,
+      enabled: +true,
+      deleted: +false,
+      label: 'Red',
+      color: '#f00',
+    };
+    this.db.putItem(dbTables['batteries-series'], itemBatterySeries);
+
     /**
      * Brands anag
      */
@@ -239,6 +270,14 @@ export class FillDbService {
       label: 'Gaoneng',
     };
     this.db.putItem(dbTables['brands-anag'], itemBrandGaoneng);
+
+    const itemBrandLava: BrandsAnagraphInterface = {
+      id: 3,
+      enabled: +true,
+      deleted: +false,
+      label: 'Lava',
+    };
+    this.db.putItem(dbTables['brands-anag'], itemBrandLava);
 
     /**
      * Batteries anag
@@ -391,6 +430,36 @@ export class FillDbService {
       label: '8',
     };
     this.db.putItem(dbTables['batteries-anag'], b10);
+
+    const b11: BatteryAnagraphInterface = {
+      enabled: +true,
+      deleted: +false,
+      cellsNumber: 3,
+      date: new Date('2025-05-14'),
+
+      typeId: 1,
+      model: 'Lava',
+      mA: 550,
+      brandId: 3,
+      seriesId: 3,
+      label: '1',
+    };
+    this.db.putItem(dbTables['batteries-anag'], b11);
+
+    const b12: BatteryAnagraphInterface = {
+      enabled: +true,
+      deleted: +false,
+      cellsNumber: 3,
+      date: new Date('2025-05-14'),
+
+      typeId: 1,
+      model: 'Lava',
+      mA: 550,
+      brandId: 3,
+      seriesId: 3,
+      label: '2',
+    };
+    this.db.putItem(dbTables['batteries-anag'], b12);
 
     /**
      * Brands status logs
@@ -5696,9 +5765,27 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus6);
 
+    let itemStatus11 = {
+      idBattery: 11,
+      date: new Date('2025-05-11'),
+      status: batteryStatusActionEnum.Store,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus11);
+
+    let itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-05-11'),
+      status: batteryStatusActionEnum.Store,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus12);
+
     console.info('[DB]: fill Db finish');
 
-    // last update 2025-05-12
+    // last update 2025-05-14
 
   }
 }
