@@ -5768,7 +5768,7 @@ export class FillDbService {
     let itemStatus11 = {
       idBattery: 11,
       date: new Date('2025-05-11'),
-      status: batteryStatusActionEnum.Store,
+      status: batteryStatusActionEnum.Charge,
       enabled: +true,
       deleted: +false,
     };
@@ -5777,15 +5777,24 @@ export class FillDbService {
     let itemStatus12 = {
       idBattery: 12,
       date: new Date('2025-05-11'),
-      status: batteryStatusActionEnum.Store,
+      status: batteryStatusActionEnum.Charge,
       enabled: +true,
       deleted: +false,
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus12);
 
+    itemStatus11 = {
+      idBattery: 11,
+      date: new Date('2025-05-15'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus11);
+
     console.info('[DB]: fill Db finish');
 
-    // last update 2025-05-14
+    // last update 2025-05-15
 
   }
 }
