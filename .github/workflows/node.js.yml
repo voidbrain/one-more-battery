@@ -20,14 +20,14 @@ jobs:
         cache: 'npm'
 
     - run: npm ci --legacy-peer-deps
-    - run: npm run build -- --output-path=dist/one-more-battery --base-href="/one-more-battery/"
+    - run: npm run build -- --output-path=dist/ --base-href="/"
 
     - name: Add Redirect for Angular Routing
-      run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/one-more-battery/index.html" /></head><body><p>If you are not redirected, <a href="/one-more-battery/index.html">click here</a>.</p></body></html>' > dist/one-more-battery/404.html
+      run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/index.html" /></head><body><p>If you are not redirected, <a href="/one-more-battery/index.html">click here</a>.</p></body></html>' > dist/one-more-battery/404.html
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist/one-more-battery
+        publish_dir: ./dist/
 
