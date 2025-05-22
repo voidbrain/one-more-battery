@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1747895919847,
+  "timestamp": 1747920086582,
   "index": "/one-more-battery/index.html",
   "assetGroups": [
     {
@@ -76,7 +76,7 @@
         "/one-more-battery/9977.710c61d12b2880a2.js",
         "/one-more-battery/common.40fbfd2ee65a5b65.js",
         "/one-more-battery/index.html",
-        "/one-more-battery/main.b989d01bb6408ed1.js",
+        "/one-more-battery/main.d70d952b6f8475be.js",
         "/one-more-battery/polyfills-core-js.9b17e8c75eeccf74.js",
         "/one-more-battery/polyfills-dom.bf542500b6fca113.js",
         "/one-more-battery/polyfills.e7c66142a18648d4.js",
@@ -93,6 +93,8 @@
         "ignoreVary": true
       },
       "urls": [
+        "/one-more-battery/assets/a18b.zip",
+        "/one-more-battery/assets/data/firebase-config.json",
         "/one-more-battery/assets/icon/favicon.png",
         "/one-more-battery/assets/shapes.svg"
       ],
@@ -164,11 +166,13 @@
     "/one-more-battery/9809.ca502f512963c391.js": "cace25a5751ebe298c9aff80e15c38c0c4ee181b",
     "/one-more-battery/9952.0be63a42259d4313.js": "28da59dc29bd9c2214ee2a34e74fe9c1460cba3f",
     "/one-more-battery/9977.710c61d12b2880a2.js": "0089229e1b53be7214183af57d6025808f17467b",
+    "/one-more-battery/assets/a18b.zip": "482bfe3c95b7b0039ab23003ef49919752e66073",
+    "/one-more-battery/assets/data/firebase-config.json": "f6e770f5639959242b6fae73cf582edcde8d5822",
     "/one-more-battery/assets/icon/favicon.png": "7798b8e0eb61d7375c245af78bbf5c916932bf13",
     "/one-more-battery/assets/shapes.svg": "5413e95adabcb2cb639970051f55e0ddb64ace53",
     "/one-more-battery/common.40fbfd2ee65a5b65.js": "faa01c53567fb0366932e9ffffbb763f92a41c8d",
-    "/one-more-battery/index.html": "a6e9090cf5bf78cfd73bd8b8025e27a7bfb64d23",
-    "/one-more-battery/main.b989d01bb6408ed1.js": "fbe12f284fa055ccc3892d8c6f39c5284570e1d3",
+    "/one-more-battery/index.html": "2a68b754d898bf93034892985d5b76ceb7244ba1",
+    "/one-more-battery/main.d70d952b6f8475be.js": "f9334f876e717ef920b3c9136bb9c42f0429cb9a",
     "/one-more-battery/polyfills-core-js.9b17e8c75eeccf74.js": "79c38229b37c1b018dc0427b03319da272d1c3bf",
     "/one-more-battery/polyfills-dom.bf542500b6fca113.js": "3fa333db66c8050f12e99d977f5098a6de8dd593",
     "/one-more-battery/polyfills.e7c66142a18648d4.js": "7759bfd76af47764509f6ec04767eb3f0c4e4bc1",
