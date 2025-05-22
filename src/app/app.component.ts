@@ -18,7 +18,7 @@ export class AppComponent {
       // Listen for version updates
       this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
         if (event.type === 'VERSION_READY') {
-          this.promptUserForUpdate()
+          this.promptUserForUpdate();
         }
       });
     }
@@ -26,7 +26,7 @@ export class AppComponent {
 
   promptUserForUpdate() {
     if (confirm('A new version of the app is available. Would you like to update?')) {
-      window.location.reload()
+      window.location.reload();
     }
   }
 }
