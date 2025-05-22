@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { IonRouterOutlet, IonApp } from "@ionic/angular/standalone";
-import { SwUpdate } from '@angular/service-worker';
+import { SwUpdate, VersionEvent } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +15,11 @@ export class AppComponent {
 
   constructor(private swUpdate: SwUpdate) {
     if (this.swUpdate.isEnabled) {
-      // Check for updates explicitly
-      this.swUpdate.checkForUpdate().then((hasUpdate) => {
-        if (hasUpdate) {
+      // Listen for version updates
+      this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
+        if (event.type === 'VERSION_READY') {
           this.promptUserForUpdate();
         }
-      });
-
-      // Listen for version updates
-      this.swUpdate.versionUpdates.subscribe(() => {
-        this.promptUserForUpdate();
       });
     }
   }
