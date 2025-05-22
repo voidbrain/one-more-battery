@@ -15,12 +15,23 @@ export class AppComponent {
 
   constructor(private swUpdate: SwUpdate) {
     if (this.swUpdate.isEnabled) {
-      this.swUpdate.versionUpdates.subscribe(() => {
-        // Prompt the user to reload the app
-        if (confirm('A new version of the app is available. Would you like to update?')) {
-          window.location.reload();
+      // Check for updates explicitly
+      this.swUpdate.checkForUpdate().then((hasUpdate) => {
+        if (hasUpdate) {
+          this.promptUserForUpdate();
         }
       });
+
+      // Listen for version updates
+      this.swUpdate.versionUpdates.subscribe(() => {
+        this.promptUserForUpdate();
+      });
+    }
+  }
+
+  promptUserForUpdate() {
+    if (confirm('A new version of the app is available. Would you like to update?')) {
+      window.location.reload();
     }
   }
 }
