@@ -6150,8 +6150,8 @@ export class FillDbService {
   }
 
   public async exportBatteriesStatusToCSV() {
-    const columns = '';
-    const query: number[] = [];
+    const columns = 'enabled';
+    const query = [+true];
     const data = await this.db.getItems('batteries-status', columns, query); // Replace with your actual method to fetch all items
     const csvRows = [];
 
