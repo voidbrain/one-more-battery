@@ -22,34 +22,21 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "www",
+            "outputPath": "dist",
+            "baseHref": "/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              },
-              {
-                "glob": ".htaccess",
-                "input": "src/",
-                "output": "/1more"
-              },
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
               "src/firebase-messaging-sw.js"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/cyan-orange.css",
-              "src/global.scss",
-              "src/theme/variables.scss"
+              "src/global.scss"
             ],
             "scripts": [],
             "serviceWorker": true,
@@ -57,7 +44,7 @@
           },
           "configurations": {
             "production": {
-              "localize": true,
+              "localize": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -87,12 +74,7 @@
               "sourceMap": true,
               "namedChunks": true
             },
-            "en": {
-              "localize": ["en"]
-            },
-            "it": {
-              "localize": ["it"]
-            },
+
             "ci": {
               "progress": false
             }

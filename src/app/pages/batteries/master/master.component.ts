@@ -463,7 +463,7 @@ export class BatteriesMasterComponent implements OnInit {
   async getSettings() {
     try {
       const settings = await this.db.getItems<SettingsInterface>('settings');
-      this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? true);
+      this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? false);
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }
