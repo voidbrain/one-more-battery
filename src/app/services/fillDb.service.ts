@@ -18,7 +18,7 @@ import { SettingsInterface } from '../interfaces/settings';
   providedIn: 'root',
 })
 export class FillDbService {
-  constructor(private db: any) {} // Replace `any` with the actual type of your database service
+  constructor(private db: DbService) {} // Replace `any` with the actual type of your database service
 
   public fillDb() {
     console.info('[DB]: fill Db');
@@ -6150,7 +6150,9 @@ export class FillDbService {
   }
 
   public async exportBatteriesStatusToCSV() {
-    const data = await this.db.getAllItems('batteries-status'); // Replace with your actual method to fetch all items
+    const columns = '';
+    const query: number[] = [];
+    const data = await this.db.getItems('batteries-status', columns, query); // Replace with your actual method to fetch all items
     const csvRows = [];
 
     // Add headers
