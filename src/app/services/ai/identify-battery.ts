@@ -64,7 +64,7 @@ export class IdentifyBatteryService {
       const grayscale = imgTensor.mean(2).toFloat().expandDims(-1) as tf.Tensor3D;
 
       // Normalize and threshold
-      const normalized = grayscale.div(255.0);
+      const normalized = grayscale.div(255.0) as tf.Tensor3D;
 
       // Adaptive thresholding
       const localMeanImage = tf.avgPool(normalized, [5, 5], [1, 1], 'same');
