@@ -22,6 +22,7 @@ export class IdentifyBatteryService {
 
       this.model = await tf.loadLayersModel('/assets/data/tfjs_files/model.json');
       console.log('Model loaded successfully');
+      console.log('Model input shape:', this.model.inputs[0].shape);
     } catch (error) {
       console.error('Error loading model:', error);
     }
@@ -36,13 +37,12 @@ export class IdentifyBatteryService {
     const processedTensor = tf.tidy(() => {
       let tensor = imageTensor;
 
-      // Ensure correct shape: Convert to grayscale if needed
       if (tensor.shape.length === 3 && tensor.shape[2] === 3) {
         tensor = tensor.mean(2).expandDims(-1); // Convert RGB to grayscale
       }
 
-      // Resize, normalize, and reshape for model input
-      tensor = tf.image.resizeBilinear(tensor, [28, 28]).div(255.0).reshape([1, 28, 28, 1]);
+      // Resize, normalize, and reshape to [1, 28, 28, 1]
+      tensor = tf.image.resizeBilinear(tensor, [28, 28]).div(255.0).reshape([1, 28, 28]);
 
       return tensor;
     });
@@ -61,58 +61,50 @@ export class IdentifyBatteryService {
   async extractDigits(image: HTMLImageElement): Promise<tf.Tensor3D[]> {
     return tf.tidy(() => {
       const imgTensor = tf.browser.fromPixels(image);
-      const grayscale = imgTensor.mean(2).expandDims(-1);
+      const grayscale = imgTensor.mean(2).toFloat().expandDims(-1) as tf.Tensor3D;
 
-      // Normalize image
+      // Normalize and threshold
       const normalized = grayscale.div(255.0);
+      const thresholded = normalized.greater(tf.scalar(0.5)).toFloat(); // Binary
 
-      // Apply thresholding
-      const thresholded = normalized.greater(tf.scalar(0.5)).toFloat();
-
-      // Visualize the original image
-      tf.browser.toPixels(imgTensor).then((pixels) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = imgTensor.shape[1];
-        canvas.height = imgTensor.shape[0];
-        canvas.getContext('2d')?.putImageData(new ImageData(pixels, canvas.width, canvas.height), 0, 0);
-        document.body.appendChild(canvas); // Append canvas to body
-      });
-
-      // Visualize the thresholded image
-      tf.browser.toPixels(thresholded as tf.Tensor3D).then((pixels) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = thresholded.shape[1] as number;
-        canvas.height = thresholded.shape[0];
-        canvas.getContext('2d')?.putImageData(new ImageData(pixels, canvas.width, canvas.height), 0, 0);
-        document.body.appendChild(canvas); // Append canvas to body
-      });
-
-      // Get image dimensions
       const [height, width] = thresholded.shape;
-      const step = Math.floor(height / 10); // Estimate digit size dynamically
 
-      const boxes: tf.Tensor3D[] = [];
-      for (let y = 0; y < height - step; y += step) {
-        for (let x = 0; x < width - step; x += step) {
-          let region = thresholded.slice([y, x, 1], [step, step]); // Extract region
+      // Sum along the vertical axis to detect digit regions
+      const projection = thresholded.sum(0).squeeze() as tf.Tensor1D;
+      const projectionData = projection.arraySync() as number[];
 
-          if (region.rank === 2) {
-            region = region.expandDims(-1) as tf.Tensor3D; // Ensure Tensor3D format
-          }
+      const digitBoxes: [number, number][] = [];
+      let inBox = false;
+      let start = 0;
 
-          // Convert scalar max to JavaScript number
-          const maxVal = region.max();
-          const maxValArray = maxVal.arraySync() as number; // Get max pixel value
+      for (let x = 0; x < projectionData.length; x++) {
+        if (projectionData[x] > 0 && !inBox) {
+          start = x;
+          inBox = true;
+        } else if (projectionData[x] === 0 && inBox) {
+          digitBoxes.push([start, x]);
+          inBox = false;
+        }
+      }
 
-          console.log(`Region at (${x}, ${y}) - Max Value:`, maxValArray); // Log max value
+      if (inBox) {
+        digitBoxes.push([start, projectionData.length]);
+      }
 
-          if (maxValArray > 0) {
-            boxes.push(region as tf.Tensor3D);
-          } else {
-            region.dispose(); // Dispose if not used
-          }
+      const digitTensors: tf.Tensor3D[] = [];
 
-          maxVal.dispose();
+      for (const [xStart, xEnd] of digitBoxes) {
+        const digitWidth = xEnd - xStart;
+        if (digitWidth > 2) {
+          const cropped = thresholded.slice([0, xStart, 0], [height, digitWidth, 1]) as tf.Tensor3D;
+
+          // Ensure the tensor has rank 3 before resizing
+          const resized = tf.image.resizeBilinear(cropped, [28, 28]) as tf.Tensor3D;
+
+          digitTensors.push(resized);
+
+          // Optional: visual debug
+          this.renderTensorToCanvas(resized.squeeze() as tf.Tensor2D, `Digit from x=${xStart}`);
         }
       }
 
@@ -120,12 +112,11 @@ export class IdentifyBatteryService {
       grayscale.dispose();
       normalized.dispose();
       thresholded.dispose();
+      projection.dispose();
 
-      return boxes;
+      return digitTensors;
     });
   }
-
-
 
   async processPhoto(image: HTMLImageElement): Promise<{ digit: number | null; confidence: number | null }[]> {
     const digits = await this.extractDigits(image);
@@ -145,5 +136,23 @@ export class IdentifyBatteryService {
       this.model = null;
       console.log('Model disposed.');
     }
+  }
+
+  private renderTensorToCanvas(tensor: tf.Tensor2D, title = 'Digit') {
+    tf.browser.toPixels(tensor).then((pixels) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = tensor.shape[1];
+      canvas.height = tensor.shape[0];
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const imgData = new ImageData(pixels, canvas.width, canvas.height);
+        ctx.putImageData(imgData, 0, 0);
+        document.body.appendChild(document.createElement('hr'));
+        const label = document.createElement('div');
+        label.textContent = title;
+        document.body.appendChild(label);
+        document.body.appendChild(canvas);
+      }
+    });
   }
 }
