@@ -20,7 +20,7 @@ export class IdentifyBatteryService {
         this.model.dispose();
       }
 
-      this.model = await tf.loadLayersModel('/assets/data/tfjs_files/model.json');
+      this.model = await tf.loadLayersModel('/assets/data/model.json');
       console.log('Model loaded successfully');
       console.log('Model input shape:', this.model.inputs[0].shape);
     } catch (error) {
@@ -37,19 +37,42 @@ export class IdentifyBatteryService {
     const processedTensor = tf.tidy(() => {
       let tensor = imageTensor;
 
+      // Convert RGB to grayscale if necessary
       if (tensor.shape.length === 3 && tensor.shape[2] === 3) {
-        tensor = tensor.mean(2).expandDims(-1); // Convert RGB to grayscale
+        tensor = tensor.mean(2); // Convert RGB to grayscale
       }
 
-      // Resize, normalize, and reshape to [1, 28, 28, 1]
-      tensor = tf.image.resizeBilinear(tensor, [28, 28]).div(255.0).reshape([1, 28, 28]);
+      // Resize to 28x28
+      tensor = tf.image.resizeBilinear(tensor, [28, 28]);
 
-      return tensor;
+      // Normalize to [0, 1]
+      tensor = tensor.div(255.0);
+
+      // Reshape to [1, 1, 28, 28] (batch size of 1, 1 channel, 28x28 image)
+      return tensor.reshape([1, 1, 28, 28]);
     });
 
     const predictions = this.model.predict(processedTensor) as tf.Tensor;
     const probabilities = await predictions.data();
-    const digit = probabilities.indexOf(Math.max(...probabilities));
+
+    // Log probabilities for each digit (0–9)
+    console.log('Probabilities for each digit:');
+    probabilities.forEach((probability, index) => {
+      console.log(`Digit ${index}: ${probability.toFixed(4)}`);
+    });
+
+    // Visualize the preprocessed input
+    this.renderTensorToCanvas(processedTensor.squeeze() as tf.Tensor2D, 'Preprocessed Input');
+
+    const maxProbability = Math.max(...probabilities);
+    const digit = probabilities.indexOf(maxProbability);
+
+    if (maxProbability < 0.5) {
+      console.warn('Low confidence in prediction');
+    }
+
+    console.log(`Predicted digit: ${digit}, confidence: ${maxProbability.toFixed(4)}`);
+
     const confidence = probabilities[digit];
 
     processedTensor.dispose();
