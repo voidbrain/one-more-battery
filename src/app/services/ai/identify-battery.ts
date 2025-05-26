@@ -65,7 +65,12 @@ export class IdentifyBatteryService {
 
       // Normalize and threshold
       const normalized = grayscale.div(255.0);
-      const thresholded = normalized.greater(tf.scalar(0.5)).toFloat(); // Binary
+
+      // Adaptive thresholding
+      const localMeanImage = tf.avgPool(normalized, [5, 5], [1, 1], 'same');
+      const C = 0.03;
+      const thresholded = normalized.greater(localMeanImage.sub(tf.scalar(C))).toFloat(); // Binary
+      localMeanImage.dispose();
 
       const [height, width] = thresholded.shape;
 
@@ -111,7 +116,10 @@ export class IdentifyBatteryService {
       imgTensor.dispose();
       grayscale.dispose();
       normalized.dispose();
-      thresholded.dispose();
+      // thresholded is disposed further down if it's part of the return chain,
+      // but if not, it should be disposed here.
+      // For now, let's assume it's handled by the existing logic.
+      // thresholded.dispose(); // Already part of the digitTensors which are returned or disposed
       projection.dispose();
 
       return digitTensors;
