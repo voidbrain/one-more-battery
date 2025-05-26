@@ -18,7 +18,7 @@ import { SettingsInterface } from '../interfaces/settings';
   providedIn: 'root',
 })
 export class FillDbService {
-  constructor(private db: any) {} // Replace `any` with the actual type of your database service
+  constructor(private db: DbService) {} // Replace `any` with the actual type of your database service
 
   public fillDb() {
     console.info('[DB]: fill Db');
