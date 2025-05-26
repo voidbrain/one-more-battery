@@ -18,7 +18,7 @@ import { SettingsInterface } from '../interfaces/settings';
   providedIn: 'root',
 })
 export class FillDbService {
-  constructor(private db: DbService) {} // Replace `any` with the actual type of your database service
+  constructor(private db: any) {} // Replace `any` with the actual type of your database service
 
   public fillDb() {
     console.info('[DB]: fill Db');
@@ -6147,40 +6147,5 @@ export class FillDbService {
 
     // last update 2025-05-25
 
-  }
-
-  public async exportBatteriesStatusToCSV() {
-    const columns = 'enabled';
-    const query = [+true];
-    const data = await this.db.getItems('batteries-status', columns, query); // Replace with your actual method to fetch all items
-    const csvRows = [];
-
-    // Add headers
-    csvRows.push('idBattery,date,status,enabled,deleted');
-
-    // Add data rows
-    data.forEach((item: any) => {
-      const row = [
-        item.idBattery,
-        item.date.toISOString(),
-        item.status,
-        item.enabled,
-        item.deleted,
-      ].join(',');
-      csvRows.push(row);
-    });
-
-    // Convert to CSV string
-    const csvString = csvRows.join('\n');
-
-    // Trigger download
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'batteries-status.csv');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   }
 }
