@@ -197,10 +197,6 @@ export class BatteriesSettingComponent {
     await this.db.initService(forceLoading);
   }
 
-  public async downloadCSV() {
-    this.fillDb.exportBatteriesStatusToCSV();
-  }
-
   public async fillDatabase() {
     await this.fillDb.fillDb();
     await this.getItems();
