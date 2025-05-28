@@ -275,7 +275,7 @@ export class FillDbService {
       id: 3,
       enabled: +true,
       deleted: +false,
-      label: 'Lava',
+      label: 'BetaFPV',
     };
     this.db.putItem(dbTables['brands-anag'], itemBrandLava);
 
