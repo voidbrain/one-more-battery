@@ -437,7 +437,7 @@ export class FillDbService {
       cellsNumber: 3,
       date: new Date('2025-05-14'),
 
-      typeId: 1,
+      typeId: 2,
       model: 'Lava',
       mA: 550,
       brandId: 3,
@@ -452,7 +452,7 @@ export class FillDbService {
       cellsNumber: 3,
       date: new Date('2025-05-14'),
 
-      typeId: 1,
+      typeId: 2,
       model: 'Lava',
       mA: 550,
       brandId: 3,
