@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1748468730511,
+  "timestamp": 1748593681573,
   "index": "/one-more-battery/index.html",
   "assetGroups": [
     {
@@ -71,7 +71,7 @@
         "/one-more-battery/9073.1c25d3b340482d71.js",
         "/one-more-battery/9344.4f3ff0d1c8913d37.js",
         "/one-more-battery/964.44a4c6339af787ff.js",
-        "/one-more-battery/9809.356bef012f1c48c3.js",
+        "/one-more-battery/9809.5a2012e1640fed3c.js",
         "/one-more-battery/9952.0be63a42259d4313.js",
         "/one-more-battery/9977.710c61d12b2880a2.js",
         "/one-more-battery/common.40fbfd2ee65a5b65.js",
@@ -81,7 +81,7 @@
         "/one-more-battery/polyfills-core-js.9b17e8c75eeccf74.js",
         "/one-more-battery/polyfills-dom.bf542500b6fca113.js",
         "/one-more-battery/polyfills.e7c66142a18648d4.js",
-        "/one-more-battery/runtime.92c8c569bb326b34.js",
+        "/one-more-battery/runtime.1833eb560040fef0.js",
         "/one-more-battery/styles.ff5393c22cd9e450.css"
       ],
       "patterns": []
@@ -165,7 +165,7 @@
     "/one-more-battery/9073.1c25d3b340482d71.js": "53bf591d4c28d78ef18bdedcba3b2c70aa54b8fb",
     "/one-more-battery/9344.4f3ff0d1c8913d37.js": "f4e7f1e208c1f372f6a6fba44c90cd5a52e4c73b",
     "/one-more-battery/964.44a4c6339af787ff.js": "a5789e7459ae82ee95cb6e6b8a5671f5ef6dba42",
-    "/one-more-battery/9809.356bef012f1c48c3.js": "d79134c795d572db9f8974e47c13ccc2713a0416",
+    "/one-more-battery/9809.5a2012e1640fed3c.js": "6f66b12b60427f7e1de317c92e69977d3a58ae98",
     "/one-more-battery/9952.0be63a42259d4313.js": "28da59dc29bd9c2214ee2a34e74fe9c1460cba3f",
     "/one-more-battery/9977.710c61d12b2880a2.js": "0089229e1b53be7214183af57d6025808f17467b",
     "/one-more-battery/assets/a18b.zip": "482bfe3c95b7b0039ab23003ef49919752e66073",
@@ -174,13 +174,13 @@
     "/one-more-battery/assets/shapes.svg": "5413e95adabcb2cb639970051f55e0ddb64ace53",
     "/one-more-battery/common.40fbfd2ee65a5b65.js": "faa01c53567fb0366932e9ffffbb763f92a41c8d",
     "/one-more-battery/firebase-messaging-sw.js": "5d51300ebcebec43679a4e7498ab5c8ddb1f09d5",
-    "/one-more-battery/index.html": "bb921a37c36b7c3f0d2fc56c34ae53c805aa5c6f",
+    "/one-more-battery/index.html": "9a8844bb840af5cb6948a759a2cadd50afe2f033",
     "/one-more-battery/main.50e790f65f2013c7.js": "e905a54af7f862cf8575e0972102c4551559a056",
     "/one-more-battery/manifest.webmanifest": "fd7e440a42d9031cdf741e812c87465337906a98",
     "/one-more-battery/polyfills-core-js.9b17e8c75eeccf74.js": "79c38229b37c1b018dc0427b03319da272d1c3bf",
     "/one-more-battery/polyfills-dom.bf542500b6fca113.js": "3fa333db66c8050f12e99d977f5098a6de8dd593",
     "/one-more-battery/polyfills.e7c66142a18648d4.js": "7759bfd76af47764509f6ec04767eb3f0c4e4bc1",
-    "/one-more-battery/runtime.92c8c569bb326b34.js": "83ab1679649d3a82558c0a8f1f71b75a122edd24",
+    "/one-more-battery/runtime.1833eb560040fef0.js": "82df10c87741720dd7ed1742c919f5ae24c6c06e",
     "/one-more-battery/styles.ff5393c22cd9e450.css": "4e5d6a7f5735cdadd4a006b3049dad4ce849a0d5"
   },
   "navigationUrls": [
