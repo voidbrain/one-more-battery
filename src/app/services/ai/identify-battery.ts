@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class IdentifyBatteryService {
   private model: tf.LayersModel | null = null;
+  private readonly CONFIDENCE_THRESHOLD = 0.7;
 
   constructor() {
     this.loadModel();
@@ -13,18 +14,25 @@ export class IdentifyBatteryService {
 
   async loadModel() {
     try {
-      await tf.setBackend('webgl');
-      console.log('Loading model...');
+      if (!tf.getBackend()) {
+        await tf.setBackend('webgl');
+      }
+      console.log('Loading model with backend:', tf.getBackend());
 
       if (this.model) {
         this.model.dispose();
       }
 
-      this.model = await tf.loadLayersModel('/assets/data/model.json');
+      this.model = await tf.loadLayersModel('/assets/data/tfjs_files/model.json');
       console.log('Model loaded successfully');
       console.log('Model input shape:', this.model.inputs[0].shape);
     } catch (error) {
       console.error('Error loading model:', error);
+      if (error instanceof Error) {
+        throw new Error('Failed to load model: ' + error.message);
+      } else {
+        throw new Error('Failed to load model: Unknown error');
+      }
     }
   }
 
@@ -34,51 +42,56 @@ export class IdentifyBatteryService {
       return { digit: null, confidence: null };
     }
 
-    const processedTensor = tf.tidy(() => {
-      let tensor = imageTensor;
+    const result: { digit: number | null; confidence: number | null } = (() => {
+      const processedTensor = tf.tidy(() => {
+        let tensor = imageTensor;
 
-      // Convert RGB to grayscale if necessary
-      if (tensor.shape.length === 3 && tensor.shape[2] === 3) {
-        tensor = tensor.mean(2); // Convert RGB to grayscale
+        // Convert RGB to grayscale if necessary
+        if (tensor.shape.length === 3 && tensor.shape[2] === 3) {
+          tensor = tensor.mean(2); // Convert RGB to grayscale
+        }
+
+        // Resize to 28x28
+        tensor = tf.image.resizeBilinear(tensor, [28, 28]);
+
+        // Invert colors if needed (MNIST expects white digits on black background)
+        tensor = tf.scalar(1).sub(tensor.div(255.0));
+
+        // Reshape to [1, 28, 28] to match MNIST model input shape
+        return tensor.reshape([1, 28, 28]);
+      });
+
+      // Add debugging to see the processed image
+      this.renderTensorToCanvas(processedTensor.squeeze() as tf.Tensor2D, 'Preprocessed Input');
+
+      if (!this.model) {
+        throw new Error('Model is not loaded');
+      }
+      const predictions = this.model.predict(processedTensor) as tf.Tensor;
+      const probabilities = predictions.dataSync();
+
+      // Log probabilities for each digit (0–9)
+      console.log('Probabilities for each digit:');
+      probabilities.forEach((probability, index) => {
+        console.log(`Digit ${index}: ${probability.toFixed(4)}`);
+      });
+
+      const maxProbability = Math.max(...probabilities);
+      const digit = probabilities.indexOf(maxProbability);
+
+      processedTensor.dispose();
+      predictions.dispose();
+
+      if (maxProbability < this.CONFIDENCE_THRESHOLD) {
+        console.warn(`Low confidence (${maxProbability.toFixed(4)}) - below threshold ${this.CONFIDENCE_THRESHOLD}`);
+        return { digit: null, confidence: maxProbability };
       }
 
-      // Resize to 28x28
-      tensor = tf.image.resizeBilinear(tensor, [28, 28]);
+      console.log(`Predicted digit: ${digit}, confidence: ${maxProbability.toFixed(4)}`);
+      return { digit, confidence: maxProbability };
+    })();
 
-      // Normalize to [0, 1]
-      tensor = tensor.div(255.0);
-
-      // Reshape to [1, 1, 28, 28] (batch size of 1, 1 channel, 28x28 image)
-      return tensor.reshape([1, 1, 28, 28]);
-    });
-
-    const predictions = this.model.predict(processedTensor) as tf.Tensor;
-    const probabilities = await predictions.data();
-
-    // Log probabilities for each digit (0–9)
-    console.log('Probabilities for each digit:');
-    probabilities.forEach((probability, index) => {
-      console.log(`Digit ${index}: ${probability.toFixed(4)}`);
-    });
-
-    // Visualize the preprocessed input
-    this.renderTensorToCanvas(processedTensor.squeeze() as tf.Tensor2D, 'Preprocessed Input');
-
-    const maxProbability = Math.max(...probabilities);
-    const digit = probabilities.indexOf(maxProbability);
-
-    if (maxProbability < 0.5) {
-      console.warn('Low confidence in prediction');
-    }
-
-    console.log(`Predicted digit: ${digit}, confidence: ${maxProbability.toFixed(4)}`);
-
-    const confidence = probabilities[digit];
-
-    processedTensor.dispose();
-    predictions.dispose();
-
-    return { digit, confidence };
+    return result;
   }
 
   async extractDigits(image: HTMLImageElement): Promise<tf.Tensor3D[]> {
@@ -86,64 +99,68 @@ export class IdentifyBatteryService {
       const imgTensor = tf.browser.fromPixels(image);
       const grayscale = imgTensor.mean(2).toFloat().expandDims(-1) as tf.Tensor3D;
 
-      // Normalize and threshold
+      // Normalize and apply stronger thresholding
       const normalized = grayscale.div(255.0) as tf.Tensor3D;
 
-      // Adaptive thresholding
-      const localMeanImage = tf.avgPool(normalized, [5, 5], [1, 1], 'same');
-      const C = 0.03;
-      const thresholded = normalized.greater(localMeanImage.sub(tf.scalar(C))).toFloat(); // Binary
+      // Adaptive thresholding with adjusted parameters
+      const localMeanImage = tf.avgPool(normalized, [7, 7], [1, 1], 'same');
+      const C = 0.05; // Increased threshold constant
+      const thresholded = normalized.greater(localMeanImage.sub(tf.scalar(C))).toFloat();
       localMeanImage.dispose();
 
-      const [height, width] = thresholded.shape;
+      // Invert the image to match MNIST format (white digits on black background)
+      const inverted = tf.scalar(1).sub(thresholded);
+
+      const [height, width] = inverted.shape;
 
       // Sum along the vertical axis to detect digit regions
-      const projection = thresholded.sum(0).squeeze() as tf.Tensor1D;
+      const projection = inverted.sum(0).squeeze() as tf.Tensor1D;
       const projectionData = projection.arraySync() as number[];
 
+      // Improve digit region detection
       const digitBoxes: [number, number][] = [];
       let inBox = false;
       let start = 0;
+      const minWidth = 10; // Minimum width for a digit
+      const threshold = height * 0.1; // Minimum sum for a digit region
 
       for (let x = 0; x < projectionData.length; x++) {
-        if (projectionData[x] > 0 && !inBox) {
+        if (projectionData[x] > threshold && !inBox) {
           start = x;
           inBox = true;
-        } else if (projectionData[x] === 0 && inBox) {
-          digitBoxes.push([start, x]);
+        } else if ((projectionData[x] <= threshold || x === projectionData.length - 1) && inBox) {
+          const end = x;
+          if (end - start >= minWidth) {
+            digitBoxes.push([start, end]);
+          }
           inBox = false;
         }
       }
 
-      if (inBox) {
-        digitBoxes.push([start, projectionData.length]);
-      }
-
       const digitTensors: tf.Tensor3D[] = [];
 
+      // Process each detected digit region
       for (const [xStart, xEnd] of digitBoxes) {
         const digitWidth = xEnd - xStart;
-        if (digitWidth > 2) {
-          const cropped = thresholded.slice([0, xStart, 0], [height, digitWidth, 1]) as tf.Tensor3D;
+        if (digitWidth > minWidth) {
+          const cropped = inverted.slice([0, xStart, 0], [height, digitWidth, 1]) as tf.Tensor3D;
 
-          // Ensure the tensor has rank 3 before resizing
-          const resized = tf.image.resizeBilinear(cropped, [28, 28]) as tf.Tensor3D;
+          // Add padding to make the digit square
+          const paddedWidth = Math.max(digitWidth, height);
+          const padLeft = Math.floor((paddedWidth - digitWidth) / 2);
+          const padRight = paddedWidth - digitWidth - padLeft;
+
+          const padded = tf.pad(cropped, [[0, 0], [padLeft, padRight], [0, 0]], 0);
+
+          // Resize to MNIST dimensions
+          const resized = tf.image.resizeBilinear(padded, [28, 28]) as tf.Tensor3D;
 
           digitTensors.push(resized);
 
-          // Optional: visual debug
+          // Debug visualization
           this.renderTensorToCanvas(resized.squeeze() as tf.Tensor2D, `Digit from x=${xStart}`);
         }
       }
-
-      imgTensor.dispose();
-      grayscale.dispose();
-      normalized.dispose();
-      // thresholded is disposed further down if it's part of the return chain,
-      // but if not, it should be disposed here.
-      // For now, let's assume it's handled by the existing logic.
-      // thresholded.dispose(); // Already part of the digitTensors which are returned or disposed
-      projection.dispose();
 
       return digitTensors;
     });
@@ -153,9 +170,12 @@ export class IdentifyBatteryService {
     const digits = await this.extractDigits(image);
     const results: { digit: number | null; confidence: number | null }[] = [];
 
-    for (const digitTensor of digits) {
-      results.push(await this.predictNumber(digitTensor));
-      digitTensor.dispose();
+    try {
+      for (const digitTensor of digits) {
+        results.push(await this.predictNumber(digitTensor));
+      }
+    } finally {
+      await this.cleanupTensors(...digits);
     }
 
     return results;
@@ -183,6 +203,14 @@ export class IdentifyBatteryService {
         label.textContent = title;
         document.body.appendChild(label);
         document.body.appendChild(canvas);
+      }
+    });
+  }
+
+  private async cleanupTensors(...tensors: tf.Tensor[]) {
+    tensors.forEach(tensor => {
+      if (tensor && !tensor.isDisposed) {
+        tensor.dispose();
       }
     });
   }
