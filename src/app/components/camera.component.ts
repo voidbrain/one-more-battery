@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { IdentifyBatteryService } from '../services/ai/identify-battery';
+import { DigitRecognitionService } from '../services/ai/identify-battery';
 
 @Component({
   selector: 'app-camera',
@@ -54,7 +54,7 @@ export class CameraComponent {
   colorBand: string | undefined | null = null;
   recognizedDigitConfidence: number | undefined | null = null;
 
-  constructor(private identifyBatteryService: IdentifyBatteryService) {}
+  constructor(private digitRecognitionService: DigitRecognitionService) {}
 
   async takePhoto() {
     try {
@@ -96,10 +96,10 @@ export class CameraComponent {
       const boundingBox = this.getBoundingBox(canvas);
 
       // const result = await this.identifyBatteryService.predictNumber(imgElement, boundingBox, threshold, erosion, dilation);
-      const result = await this.identifyBatteryService.processPhoto(imgElement);
+      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement);
       console.log(result)
-      this.recognizedDigit = result[0]?.digit;
-      this.recognizedDigitConfidence = result[0]?.confidence;
+      // this.recognizedDigit = result[0]?.digit;
+      // this.recognizedDigitConfidence = result[0]?.confidence;
     };
   }
 
