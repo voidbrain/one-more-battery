@@ -6605,5 +6605,79 @@ export class FillDbService {
 
     // last update 2025-06-13
 
+    itemStatus11 = {
+      idBattery: 11,
+      date: new Date('2025-06-14'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus11);
+
+    itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-06-14'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus12);
+
+    itemStatus11 = {
+      idBattery: 11,
+      date: new Date('2025-06-15'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus11);
+
+    itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-06-15'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus12);
+
+    itemStatus1 = {
+      idBattery: 1,
+      date: new Date('2025-06-14'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus1);
+
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-06-14'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
+    itemStatus1 = {
+      idBattery: 1,
+      date: new Date('2025-06-15'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus1);
+
+    itemStatus2 = {
+      idBattery: 2,
+      date: new Date('2025-06-15'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus2);
+
+    console.info('[DB]: fill Db finish');
+
   }
 }
