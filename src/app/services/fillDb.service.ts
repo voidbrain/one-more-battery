@@ -7243,7 +7243,7 @@ export class FillDbService {
     itemStatus1 = {
       idBattery: 1,
       date: new Date('2025-07-06'),
-      status: batteryStatusActionEnum.Discharge,
+      status: batteryStatusActionEnum.Store,
       enabled: +true,
       deleted: +false,
     };
