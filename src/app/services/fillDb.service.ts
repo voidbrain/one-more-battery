@@ -85,6 +85,17 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs1,
     );
+    itemBatteryResistanceLogs1 = {
+      idBattery: 1,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-07-12'),
+      values: [4.4, 4.9, 4.9, 6.4, 5.9, 6.4],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs1,
+    );
     let itemBatteryResistanceLogs2: BatteryResistanceLogInterface = {
       idBattery: 2,
       enabled: +true,
@@ -113,6 +124,17 @@ export class FillDbService {
       deleted: +false,
       date: new Date('2025-05-01'),
       values: [4.9, 5.4, 4.9, 5.4, 5.4, 6.4],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs2,
+    );
+    itemBatteryResistanceLogs2 = {
+      idBattery: 2,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-07-12'),
+      values: [5.4, 4.9, 5.9, 5.9, 5.4, 7.4],
     };
     this.db.putItem(
       dbTables['batteries-resistance-logs'],
@@ -162,6 +184,17 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs4,
     );
+    itemBatteryResistanceLogs4 = {
+      idBattery: 4,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-07-12'),
+      values: [8.3, 6.4, 6.4, 5.4, 5.9, 5.4],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs4,
+    );
 
     const itemBatteryResistanceLogs5: BatteryResistanceLogInterface = {
       idBattery: 5,
@@ -197,6 +230,18 @@ export class FillDbService {
       dbTables['batteries-resistance-logs'],
       itemBatteryResistanceLogs6,
     );
+    itemBatteryResistanceLogs6 = {
+      idBattery: 6,
+      enabled: +true,
+      deleted: +false,
+      date: new Date('2025-07-12'),
+      values: [11, 10, 10, 11, 13, 11],
+    };
+    this.db.putItem(
+      dbTables['batteries-resistance-logs'],
+      itemBatteryResistanceLogs6,
+    );
+
     let itemBatteryResistanceLogs11: BatteryResistanceLogInterface = {
       idBattery: 11,
       enabled: +true,
