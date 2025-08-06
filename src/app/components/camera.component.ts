@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { DigitRecognitionService } from '../services/ai/identify-battery';
+import { DigitRecognitionService } from '../services/ai/digit-recognition.service';
 
 @Component({
   selector: 'app-camera',

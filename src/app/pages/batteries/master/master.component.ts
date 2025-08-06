@@ -158,7 +158,7 @@ export class BatteriesMasterComponent implements OnInit {
   toggle(id: number): void {
     this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
-  showDismissedBatteries!: boolean;
+  showDismissedBatteries = false;
 
   constructor(
     private db: DbService,
@@ -463,7 +463,8 @@ export class BatteriesMasterComponent implements OnInit {
   async getSettings() {
     try {
       const settings = await this.db.getItems<SettingsInterface>('settings');
-      this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? false);
+      console.log(settings)
+      this.showDismissedBatteries = (settings[0]?.showDismissedBatteries ?? false);
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }

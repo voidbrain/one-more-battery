@@ -8,9 +8,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint",
-    "format": "npx prettier . --write"
+    "test:e2e": "playwright test",
+    "test:codegen": "playwright codegen localhost:8080",
+    "format": "prettier --write src/",
+    "server": "dotnet run --project ../server/GarbWebPortal.Web/GarbWebPortal.Web.csproj"
   },
   "private": true,
   "dependencies": {
@@ -69,6 +70,7 @@
     "@angular/localize": "^18.2.0",
     "@capacitor/cli": "6.1.2",
     "@ionic/angular-toolkit": "^12.1.1",
+    "@playwright/test": "^1.54.2",
     "@types/jasmine": "~5.1.4",
     "@types/node": "^22.12.0",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
