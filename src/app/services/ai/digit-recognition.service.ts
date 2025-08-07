@@ -33,20 +33,34 @@ export class DigitRecognitionService {
     }
   }
 
-  async predictDigitsFromImage(img: HTMLImageElement): Promise<number[]> {
+  async predictDigitsFromImage(
+    img: HTMLImageElement,
+    threshold: number,
+    erosion: number,
+    dilation: number
+  ): Promise<{ digit: number; confidence: number; box: number[] }[]> {
     if (!this.model) {
       await this.loadModel();
     }
 
-    const digits = this.extractDigits(img);
-    const predictions: number[] = [];
+    const { digits, boxes } = this.extractDigits(img, threshold, erosion, dilation);
+    const predictions: { digit: number; confidence: number; box: number[] }[] =
+      [];
 
-    for (const digitCanvas of digits) {
+    for (let i = 0; i < digits.length; i++) {
+      const digitCanvas = digits[i];
+      const box = boxes[i];
       const inputTensor = this.preprocessDigit(digitCanvas);
       const pred = this.model!.predict(inputTensor) as tf.Tensor;
-      const data = await pred.data();
-      const predictedDigit = data.indexOf(Math.max(...data));
-      predictions.push(predictedDigit);
+      const data = (await pred.data()) as Float32Array;
+      const confidence = Math.max(...data);
+      const predictedDigit = data.indexOf(confidence);
+
+      predictions.push({
+        digit: predictedDigit,
+        confidence: confidence,
+        box: box,
+      });
 
       // Cleanup
       inputTensor.dispose();
@@ -56,7 +70,15 @@ export class DigitRecognitionService {
     return predictions;
   }
 
-  private extractDigits(img: HTMLImageElement): HTMLCanvasElement[] {
+  private extractDigits(
+    img: HTMLImageElement,
+    threshold: number,
+    erosion: number,
+    dilation: number
+  ): {
+    digits: HTMLCanvasElement[];
+    boxes: number[][];
+  } {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
     canvas.width = img.width;
@@ -64,8 +86,14 @@ export class DigitRecognitionService {
     ctx.drawImage(img, 0, 0);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const binaryData = this.toBinary(imageData);
-    const boxes = this.findBoundingBoxes(binaryData, canvas.width, canvas.height);
+    const binaryData = this.toBinary(imageData, threshold);
+    const erodedData = this.erode(binaryData, canvas.width, canvas.height, erosion);
+    const dilatedData = this.dilate(erodedData, canvas.width, canvas.height, dilation);
+    const boxes = this.findBoundingBoxes(
+      dilatedData,
+      canvas.width,
+      canvas.height
+    );
     const digitCanvases: HTMLCanvasElement[] = [];
 
     for (const box of boxes) {
@@ -79,11 +107,10 @@ export class DigitRecognitionService {
       digitCanvases.push(digitCanvas);
     }
 
-    return digitCanvases;
+    return { digits: digitCanvases, boxes: boxes };
   }
 
-  private toBinary(imageData: ImageData): Uint8ClampedArray {
-    const threshold = 127;
+  private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
     const binary = new Uint8ClampedArray(imageData.data.length / 4);
 
     for (let i = 0; i < imageData.data.length; i += 4) {
@@ -95,6 +122,45 @@ export class DigitRecognitionService {
     }
 
     return binary;
+  }
+
+  private erode(data: Uint8ClampedArray, width: number, height: number, iterations: number): Uint8ClampedArray {
+    let eroded = data;
+    for (let i = 0; i < iterations; i++) {
+      eroded = this.morphology(eroded, width, height, 'erode');
+    }
+    return eroded;
+  }
+
+  private dilate(data: Uint8ClampedArray, width: number, height: number, iterations: number): Uint8ClampedArray {
+    let dilated = data;
+    for (let i = 0; i < iterations; i++) {
+      dilated = this.morphology(dilated, width, height, 'dilate');
+    }
+    return dilated;
+  }
+
+  private morphology(data: Uint8ClampedArray, width: number, height: number, operation: 'erode' | 'dilate'): Uint8ClampedArray {
+    const output = new Uint8ClampedArray(data.length);
+    const matchValue = operation === 'erode' ? 1 : 0;
+
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        const idx = y * width + x;
+        let mismatch = false;
+        for (let j = -1; j <= 1; j++) {
+          for (let i = -1; i <= 1; i++) {
+            if (data[(y + j) * width + (x + i)] === matchValue) {
+              mismatch = true;
+              break;
+            }
+          }
+          if (mismatch) break;
+        }
+        output[idx] = mismatch ? matchValue : 1 - matchValue;
+      }
+    }
+    return output;
   }
 
   private findBoundingBoxes(binary: Uint8ClampedArray, width: number, height: number): [number, number, number, number][] {
