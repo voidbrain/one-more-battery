@@ -9039,7 +9039,7 @@ export class FillDbService {
 
     itemStatus6 = {
       idBattery: 6,
-      date: new Date('2025-08-17'),
+      date: new Date('2025-08-16'),
       status: batteryStatusActionEnum.Charge,
       enabled: +true,
       deleted: +false,
@@ -9048,23 +9048,25 @@ export class FillDbService {
 
     itemStatus6 = {
       idBattery: 6,
-      date: new Date('2025-08-17'),
+      date: new Date('2025-08-16'),
       status: batteryStatusActionEnum.Discharge,
       enabled: +true,
       deleted: +false,
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus6);
 
-    console.info('[DB]: fill Db finish');
-
-    itemStatus8 = {
-      idBattery: 8,
-      date: new Date('2025-08-17'),
+    itemStatus10 = {
+      idBattery: 10,
+      date: new Date('2025-08-16'),
       status: batteryStatusActionEnum.Discharge,
       enabled: +true,
       deleted: +false,
     };
-    this.db.putItem(dbTables['batteries-status'], itemStatus8);
+    this.db.putItem(dbTables['batteries-status'], itemStatus10);
+
+
+
+    console.info('[DB]: fill Db finish');
 
     // last update 2025-08-17
 
