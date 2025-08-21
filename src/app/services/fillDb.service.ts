@@ -9253,9 +9253,83 @@ export class FillDbService {
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus2);
 
+    itemStatus4 = {
+      idBattery: 4,
+      date: new Date('2025-08-18'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus4);
+
+    itemStatus4 = {
+      idBattery: 4,
+      date: new Date('2025-08-18'),
+      status: batteryStatusActionEnum.Store,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus4);
+
+    itemStatus8 = {
+      idBattery: 8,
+      date: new Date('2025-08-19'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus8);
+
+    itemStatus9 = {
+      idBattery: 9,
+      date: new Date('2025-08-19'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus9);
+
+    itemStatus10 = {
+      idBattery: 10,
+      date: new Date('2025-08-19'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus10);
+
+    itemStatus8 = {
+      idBattery: 8,
+      date: new Date('2025-08-19'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus8);
+
+    itemStatus4 = {
+      idBattery: 4,
+      date: new Date('2025-08-21'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus4);
+
+    itemStatus8 = {
+      idBattery: 8,
+      date: new Date('2025-08-21'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+    this.db.putItem(dbTables['batteries-status'], itemStatus8);
+
+
+
     console.info('[DB]: fill Db finish');
 
-    // last update 2025-08-18
+    // last update 2025-08-21
 
   }
 }
