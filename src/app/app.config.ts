@@ -6,7 +6,6 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment, Environment } from '../environments/environment';
 import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { routes } from './app.routes';
-import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { AngularDelegate } from '@ionic/angular';
 import { provideIonicAngular, IonicRouteStrategy } from '@ionic/angular/standalone';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
