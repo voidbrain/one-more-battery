@@ -4,7 +4,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideMessaging, getMessaging } from '@angular/fire/messaging';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment, Environment } from '../environments/environment';
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { routes } from './app.routes';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { AngularDelegate } from '@ionic/angular';
@@ -13,6 +13,7 @@ import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 export function initializeFirebaseApp() {
   const typedEnvironment: Environment = environment;
