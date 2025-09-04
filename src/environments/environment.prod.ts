@@ -19,7 +19,7 @@ export interface Environment {
 }
 
 export const environment: Environment = {
-  production: false,
+  production: true,
   firebase: {
     "apiKey": "AIzaSyBmy0V78f60G3llqJBoRwWUzkOVi_RU3A4",
     "authDomain": "more-aa0d7.firebaseapp.com",
