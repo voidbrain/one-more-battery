@@ -1,4 +1,45 @@
-name: Build and Deploy to GitHub Pages
+# name: Build and Deploy to GitHub Pages
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v4
+
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: 22
+#         cache: 'npm'
+#         cache-dependency-path: subdir/package-lock.json
+
+
+#     - run: npm ci --legacy-peer-deps
+#     - run: npm run build -- --output-path=dist/one-more-battery --base-href="/one-more-battery/"
+
+#     - name: Add Redirect for Angular Routing
+#       run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/one-more-battery/index.html"></head><body><p>If you are not redirected, <a href="/one-more-battery/index.html">click here</a>.</p></body></html>' > dist/one-more-battery/404.html
+
+#     - name: Deploy to GitHub Pages
+#       uses: peaceiris/actions-gh-pages@v3
+#       with:
+#         github_token: ${{ secrets.GITHUB_TOKEN }}
+
+#         publish_dir: ./dist/one-more-battery
+
+#         #
+
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
 
 on:
   push:
@@ -7,30 +48,22 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-deploy:
+  build:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v4
-
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: 22
+        node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: subdir/package-lock.json
-
-
     - run: npm ci --legacy-peer-deps
-    - run: npm run build -- --output-path=dist/one-more-battery --base-href="/one-more-battery/"
-
-    - name: Add Redirect for Angular Routing
-      run: echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/one-more-battery/index.html"></head><body><p>If you are not redirected, <a href="/one-more-battery/index.html">click here</a>.</p></body></html>' > dist/one-more-battery/404.html
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-
-        publish_dir: ./dist/one-more-battery
+    - run: npm run build --if-present
 
