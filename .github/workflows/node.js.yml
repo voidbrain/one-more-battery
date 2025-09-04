@@ -18,6 +18,8 @@ jobs:
       with:
         node-version: 22
         cache: 'npm'
+        cache-dependency-path: subdir/package-lock.json
+
 
     - run: npm ci --legacy-peer-deps
     - run: npm run build -- --output-path=dist/one-more-battery --base-href="/one-more-battery/"
