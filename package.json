@@ -10,8 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "format": "npx prettier . --write",
-    "deploy": "ng build --configuration production --base-href=/one-more-battery/ && npx angular-cli-ghpages"
+    "format": "npx prettier . --write"
   },
   "private": true,
   "dependencies": {
