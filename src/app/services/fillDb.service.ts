@@ -573,11 +573,11 @@ export class FillDbService {
     this.db.putItem(dbTables['batteries-anag'], b10);
 
     const b11: BatteryAnagraphInterface = {
-      enabled: +true,
+      enabled: +false,
       deleted: +false,
       cellsNumber: 3,
       date: new Date('2025-05-14'),
-
+      disabledDate: new Date('2025-09-10'),
       typeId: 2,
       model: 'Lava',
       mA: 550,
@@ -9639,6 +9639,30 @@ export class FillDbService {
       deleted: +false,
     };
     this.db.putItem(dbTables['batteries-status'], itemStatus8);
+
+    itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-09-01'),
+      status: batteryStatusActionEnum.Charge,
+      enabled: +true,
+      deleted: +false,
+    };
+
+    itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-09-01'),
+      status: batteryStatusActionEnum.Discharge,
+      enabled: +true,
+      deleted: +false,
+    };
+
+    itemStatus12 = {
+      idBattery: 12,
+      date: new Date('2025-09-01'),
+      status: batteryStatusActionEnum.Store,
+      enabled: +true,
+      deleted: +false,
+    };
 
     itemStatus7 = {
       idBattery: 7,
