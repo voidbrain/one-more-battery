@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.container {
+  padding: 16px;
+}
+
+.display-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 16px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+ion-card {
+  margin-bottom: 16px;
+}
+
+ion-list {
+  margin-bottom: 16px;
+}
+
+ion-button {
+  margin-top: 16px;
+}

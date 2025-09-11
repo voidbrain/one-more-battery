@@ -1,5 +1,6 @@
 // src/app/services/digit-recognition.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
 import * as tf from '@tensorflow/tfjs';
 
 @Injectable({
@@ -7,17 +8,21 @@ import * as tf from '@tensorflow/tfjs';
 })
 export class DigitRecognitionService {
   private model: tf.LayersModel | null = null;
+  private modelPath: string;
 
-  constructor() {
+  constructor(@Inject(APP_BASE_HREF) private baseHref: string) {
+    console.log('DigitRecognitionService constructor called.'); // Added for debugging
+    this.modelPath = `${this.baseHref}assets/model.json`;
     this.loadModel();
   }
 
   async loadModel() {
+    console.log('loadModel method called.'); // Added for debugging
     try {
-      await tf.setBackend('webgl');
+      await tf.setBackend('cpu'); // Changed to CPU for debugging
       console.log('Using backend:', tf.getBackend());
 
-      this.model = await tf.loadLayersModel('/assets/data/tfjs_files/model.json');
+      this.model = await tf.loadLayersModel(this.modelPath);
 
       if (!this.model) {
         throw new Error('Failed to load model');
@@ -38,12 +43,12 @@ export class DigitRecognitionService {
     threshold: number,
     erosion: number,
     dilation: number
-  ): Promise<{ digit: number; confidence: number; box: number[] }[]> {
+  ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     if (!this.model) {
       await this.loadModel();
     }
 
-    const { digits, boxes } = this.extractDigits(img, threshold, erosion, dilation);
+    const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
     const predictions: { digit: number; confidence: number; box: number[] }[] =
       [];
 
@@ -67,7 +72,30 @@ export class DigitRecognitionService {
       pred.dispose();
     }
 
-    return predictions;
+    return { predictions, processedImageBase64 };
+  }
+
+  async recognizeDigitFromBase64(
+    base64Image: string,
+    threshold: number,
+    erosion: number,
+    dilation: number
+  ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          const result = await this.predictDigitsFromImage(img, threshold, erosion, dilation);
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      img.onerror = (error) => {
+        reject(new Error('Failed to load image from base64 string.'));
+      };
+      img.src = base64Image;
+    });
   }
 
   private extractDigits(
@@ -78,6 +106,7 @@ export class DigitRecognitionService {
   ): {
     digits: HTMLCanvasElement[];
     boxes: number[][];
+    processedImageBase64: string;
   } {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
@@ -107,7 +136,22 @@ export class DigitRecognitionService {
       digitCanvases.push(digitCanvas);
     }
 
-    return { digits: digitCanvases, boxes: boxes };
+    const processedCanvas = document.createElement('canvas');
+    processedCanvas.width = canvas.width;
+    processedCanvas.height = canvas.height;
+    const pctx = processedCanvas.getContext('2d')!;
+    const processedImageData = pctx.createImageData(canvas.width, canvas.height);
+    for (let i = 0; i < dilatedData.length; i++) {
+      const val = dilatedData[i] === 1 ? 255 : 0;
+      processedImageData.data[i * 4] = val;
+      processedImageData.data[i * 4 + 1] = val;
+      processedImageData.data[i * 4 + 2] = val;
+      processedImageData.data[i * 4 + 3] = 255;
+    }
+    pctx.putImageData(processedImageData, 0, 0);
+    const processedImageBase64 = processedCanvas.toDataURL();
+
+    return { digits: digitCanvases, boxes: boxes, processedImageBase64 };
   }
 
   private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
