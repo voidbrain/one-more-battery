@@ -7,13 +7,22 @@
   padding: 16px;
 }
 
+ion-card-content {
+  display: flex; /* Use flexbox to manage child sizing */
+  justify-content: center;
+  align-items: center;
+  min-height: 200px; /* Ensure a minimum height for the content area */
+}
+
 .display-image {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 100%; /* Force canvas to take full height of its container */
+  max-height: 100%; /* Ensure it doesn't overflow */
   display: block;
-  margin: 0 auto 16px auto;
+  margin: 0 auto; /* Center the canvas horizontally */
   border: 1px solid #ddd;
   border-radius: 8px;
+  object-fit: contain; /* Scale the content to fit within the element's box */
 }
 
 ion-card {

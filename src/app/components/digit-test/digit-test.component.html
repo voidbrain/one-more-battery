@@ -20,12 +20,13 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card *ngIf="processedImageBase64">
+    <ion-card>
       <ion-card-header>
         <ion-card-title>Processed Image</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <img [src]="processedImageBase64" alt="Processed Image" class="display-image" />
+        <canvas #canvas class="display-image"></canvas>
+         <!-- <img [src]="processedImageBase64" alt="Processed Image" class="display-image" /> -->
       </ion-card-content>
     </ion-card>
 
