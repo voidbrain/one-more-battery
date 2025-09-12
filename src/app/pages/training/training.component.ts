@@ -22,10 +22,11 @@ export class TrainingComponent {
 
   async loadRawData(): Promise<{images: Float32Array, labels: Uint8Array}> {
     const img = new Image();
-    img.src = '/assets/data/mnist_images.png';
+    // img.src = '/assets/data/mnist_images.png';
+    img.src = '/1more/en/assets/data/mnist_images.png';
     await new Promise(resolve => (img.onload = resolve));
 
-    const labelsResponse = await fetch('/assets/data/mnist_labels_uint8');
+    const labelsResponse = await fetch('/1more/en/assets/data/mnist_labels_uint8');
     const labels = new Uint8Array(await labelsResponse.arrayBuffer());
 
     const numSamples = labels.length;
@@ -110,8 +111,8 @@ export class TrainingComponent {
   }
 
   async train() {
-    this.trainingLog = ['Setting backend to CPU...'];
-    await tf.setBackend('cpu');
+    this.trainingLog = ['Setting backend to webgl...'];
+    await tf.setBackend('webgl');
     this.trainingLog.push('Backend set.');
     this.trainingLog.push('Loading data...');
     const { images, labels } = await this.loadRawData();

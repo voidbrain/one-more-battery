@@ -31,9 +31,21 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/manifest.webmanifest"
+              {
+                "glob": "favicon.ico",
+                "input": "src",
+                "output": "1more/en/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "1more/en/assets"
+              },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "src",
+                "output": "1more/en/"
+              }
             ],
             "styles": [
               "src/global.scss"
