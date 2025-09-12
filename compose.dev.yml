@@ -1,0 +1,17 @@
+services:
+  angular-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4200:4200"
+    volumes:
+      # Mount the host's current directory to /app in the container
+      - .:/app
+      # Use a volume for node_modules to prevent the host's node_modules from overwriting the container's
+      - /app/node_modules
+      # Persist npm cache
+      - npm-cache:/root/.npm
+
+volumes:
+  npm-cache:
