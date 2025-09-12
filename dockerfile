@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
   librsvg2-dev \
   pkg-config \
   build-essential \
+  ca-certificates curl && update-ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
