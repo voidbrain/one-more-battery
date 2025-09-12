@@ -19,7 +19,7 @@ export class DigitRecognitionService {
   async loadModel() {
     console.log('loadModel method called.'); // Added for debugging
     try {
-      await tf.setBackend('cpu'); // Changed to CPU for debugging
+      await tf.setBackend('webgl'); // Use webgl for GPU acceleration
       console.log('Using backend:', tf.getBackend());
 
       this.model = await tf.loadLayersModel(this.modelPath);
@@ -58,8 +58,10 @@ export class DigitRecognitionService {
       const inputTensor = this.preprocessDigit(digitCanvas);
       const pred = this.model!.predict(inputTensor) as tf.Tensor;
       const data = (await pred.data()) as Float32Array;
+      console.log('Raw prediction data:', data); // Log raw prediction output
       const confidence = Math.max(...data);
-      const predictedDigit = data.indexOf(confidence);
+      // let predictedDigit = -1; // Default to -1 for unrecognized
+      let predictedDigit = data.indexOf(confidence);
 
       predictions.push({
         digit: predictedDigit,
