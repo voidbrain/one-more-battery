@@ -1,0 +1,9 @@
+services:
+  one-more-battery-main:
+    image: one-more-battery:latest
+    container_name: one-more-battery-main
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:80"

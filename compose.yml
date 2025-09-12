@@ -1,9 +1,16 @@
 services:
-  one-more-battery-prod:
-    image: one-more-battery:latest
-    container_name: one-more-battery-prod
+  angular-app:
+    image: voidbrainvx/camera-plugin:latest
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "88:80"
+    environment:
+      VIRTUAL_HOST: camera-plugin.local
+    volumes:
+      - .:/app
+      - npm-cache:/root/.npm
+
+volumes:
+  npm-cache:
