@@ -19,7 +19,7 @@ export class DigitTestComponent implements AfterViewInit {
   imageUrl: string = 'assets/test-images/IMG_2451.png';
   predictions: { digit: number; confidence: number; box: number[] }[] | undefined;
   processedImageBase64: string | undefined;
-  threshold: number = 60;
+  threshold: number = 50;
   erosion: number = 3;
   dilation: number = 1;
 

@@ -139,7 +139,17 @@ export class DigitRecognitionService {
       digitCanvas.height = 28;
       const dctx = digitCanvas.getContext('2d')!;
 
-      dctx.drawImage(canvas, x, y, w, h, 0, 0, 28, 28);
+      // Calculate the aspect ratio and adjust the bounding box to be square
+      const maxDim = Math.max(w, h);
+      const offsetX = (maxDim - w) / 2;
+      const offsetY = (maxDim - h) / 2;
+
+      const sourceX = Math.max(0, x - offsetX);
+      const sourceY = Math.max(0, y - offsetY);
+      const sourceWidth = Math.min(canvas.width - sourceX, maxDim);
+      const sourceHeight = Math.min(canvas.height - sourceY, maxDim);
+
+      dctx.drawImage(canvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, 28, 28);
       digitCanvases.push(digitCanvas);
     }
 
