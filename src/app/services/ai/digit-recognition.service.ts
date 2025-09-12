@@ -251,8 +251,8 @@ export class DigitRecognitionService {
         queue.push([x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]);
       }
 
-      // Filter out elements smaller than 50px
-      if ((maxX - minX >= 50) && (maxY - minY >= 50)) {
+      // Filter out elements smaller than 20px
+      if ((maxX - minX >= 20) && (maxY - minY >= 20)) {
         boxes.push([minX, minY, maxX - minX, maxY - minY]);
       }
     };
@@ -283,6 +283,12 @@ export class DigitRecognitionService {
     }
 
     const tensor = tf.tensor3d(gray, [28, 28, 1]);
-    return tensor.reshape([1, 28, 28]);
+    const reshapedTensor = tensor.reshape([1, 28, 28, 1]);
+    console.log('Preprocessed digit tensor shape:', reshapedTensor.shape);
+    // Log a few values to check content
+    reshapedTensor.data().then(data => {
+      console.log('Preprocessed digit tensor sample (first 10 values):', data.slice(0, 10));
+    });
+    return reshapedTensor;
   }
 }
