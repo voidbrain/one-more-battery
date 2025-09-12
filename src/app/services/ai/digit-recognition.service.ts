@@ -283,7 +283,7 @@ export class DigitRecognitionService {
     }
 
     const tensor = tf.tensor3d(gray, [28, 28, 1]);
-    const reshapedTensor = tensor.reshape([1, 28, 28, 1]);
+    const reshapedTensor = tensor.reshape([1, 28, 28]);
     console.log('Preprocessed digit tensor shape:', reshapedTensor.shape);
     // Log a few values to check content
     reshapedTensor.data().then(data => {

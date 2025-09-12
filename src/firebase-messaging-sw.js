@@ -29,28 +29,28 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-self.addEventListener('activate', function (event) {
-  event.waitUntil(
-    fetch('./../../assets/data/firebase-config.json')
-      .then((response) => response.json())
-      .then((config) => {
-        firebase.initializeApp(config); // Initialize Firebase with config from JSON
-        const messaging = firebase.messaging();
+// self.addEventListener('activate', function (event) {
+//   event.waitUntil(
+//     fetch('./assets/data/firebase-config.json')
+//       .then((response) => response.json())
+//       .then((config) => {
+//         firebase.initializeApp(config); // Initialize Firebase with config from JSON
+//         const messaging = firebase.messaging();
 
-        // Set up background message handler
-        messaging.onBackgroundMessage(function (payload) {
-          const notificationTitle = payload.notification.title;
-          const notificationOptions = {
-            body: payload.notification.body,
-            icon: '/firebase-logo.png',
-          };
+//         // Set up background message handler
+//         messaging.onBackgroundMessage(function (payload) {
+//           const notificationTitle = payload.notification.title;
+//           const notificationOptions = {
+//             body: payload.notification.body,
+//             icon: '/firebase-logo.png',
+//           };
 
-          // Show the notification
-          self.registration.showNotification(notificationTitle, notificationOptions);
-        });
-      })
-      .catch((error) => {
-        console.error('Failed to fetch Firebase config', error);
-      })
-  );
-});
+//           // Show the notification
+//           self.registration.showNotification(notificationTitle, notificationOptions);
+//         });
+//       })
+//       .catch((error) => {
+//         console.error('Failed to fetch Firebase config', error);
+//       })
+//   );
+// });
