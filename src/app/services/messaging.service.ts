@@ -6,25 +6,25 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class MessagingService {
-  constructor(private afMessaging: AngularFireMessaging) {}
+  // constructor(private afMessaging: AngularFireMessaging) {}
 
-  requestPermission(): Observable<void> {
-    return new Observable((observer) => {
-      this.afMessaging.requestToken.subscribe({
-        next: (token) => {
-          console.log('FCM Token:', token);
-          observer.next();
-          observer.complete();
-        },
-        error: (error) => {
-          console.error('Request permission error:', error);
-          observer.error(error);
-        },
-      });
-    });
-  }
+  // requestPermission(): Observable<void> {
+  //   return new Observable((observer) => {
+  //     this.afMessaging.requestToken.subscribe({
+  //       next: (token) => {
+  //         console.log('FCM Token:', token);
+  //         observer.next();
+  //         observer.complete();
+  //       },
+  //       error: (error) => {
+  //         console.error('Request permission error:', error);
+  //         observer.error(error);
+  //       },
+  //     });
+  //   });
+  // }
 
-  receiveMessage() {
-    return this.afMessaging.messages;
-  }
+  // receiveMessage() {
+  //   return this.afMessaging.messages;
+  // }
 }

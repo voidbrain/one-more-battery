@@ -83,7 +83,7 @@ import {
 } from '@angular/animations';
 // import { NotificationService } from 'src/app/services/notifications.service';
 import { TokenService } from 'src/app/services/token.service';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -169,7 +169,7 @@ export class BatteriesMasterComponent implements OnInit {
     private alertController: AlertController,
     // private notificationService: NotificationService,
     private tokenService: TokenService,
-    private messaging: AngularFireMessaging,
+    // private messaging: AngularFireMessaging,
     // private authService: AuthService
     private platform: Platform,
     private messagingService: MessagingService
@@ -207,7 +207,7 @@ export class BatteriesMasterComponent implements OnInit {
 
 
 
-    this.requestPermission()
+    // this.requestPermission()
     // try {
     //   const alreadyAsked = localStorage.getItem(
     //     this.settings.getAppName() + '_requestNotificationsPermissions',
@@ -253,19 +253,19 @@ export class BatteriesMasterComponent implements OnInit {
     // this.sendNotification();
   }
 
-  requestPermission() {
-    this.messagingService.requestPermission().subscribe({
-      next: () => {
-        console.log('Permission granted');
-        this.messagingService.receiveMessage().subscribe((message) => {
-          console.log('Message received:', message);
-        });
-      },
-      error: (error) => {
-        console.error('Permission denied', error);
-      }
-    });
-  }
+  // requestPermission() {
+  //   this.messagingService.requestPermission().subscribe({
+  //     next: () => {
+  //       console.log('Permission granted');
+  //       this.messagingService.receiveMessage().subscribe((message) => {
+  //         console.log('Message received:', message);
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.error('Permission denied', error);
+  //     }
+  //   });
+  // }
 
   // sendNotification() {
 
