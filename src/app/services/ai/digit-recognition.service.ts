@@ -110,9 +110,16 @@ export class DigitRecognitionService {
   } {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
+
+    // Calculate the central part of the image (e.g., 50% of width and height)
+    const cropWidth = img.width * 0.5;
+    const cropHeight = img.height * 0.5;
+    const cropX = (img.width - cropWidth) / 2;
+    const cropY = (img.height - cropHeight) / 2;
+
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+    ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const binaryData = this.toBinary(imageData, threshold);
@@ -232,7 +239,8 @@ export class DigitRecognitionService {
         queue.push([x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]);
       }
 
-      if ((maxX - minX > 5) && (maxY - minY > 5)) {
+      // Filter out elements smaller than 50px
+      if ((maxX - minX >= 50) && (maxY - minY >= 50)) {
         boxes.push([minX, minY, maxX - minX, maxY - minY]);
       }
     };
