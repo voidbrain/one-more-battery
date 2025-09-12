@@ -129,7 +129,7 @@ export class DigitTestComponent implements AfterViewInit {
 
           // Draw digit and confidence
           ctx.fillStyle = 'red';
-          ctx.font = '16px Arial';
+          ctx.font = '40px Arial';
           ctx.fillText(`${prediction.digit} (${(prediction.confidence * 100).toFixed(2)}%)`, x, y > 10 ? y - 5 : y + 15);
         });
       }
