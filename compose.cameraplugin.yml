@@ -3,7 +3,7 @@ services:
     image: voidbrainvx/camera-plugin:latest
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile.cameraplugin
     ports:
       - "88:80"
     environment:
