@@ -1,0 +1,16 @@
+services:
+  angular-app:
+    image: voidbrainvx/camera-plugin:latest
+    build:
+      context: .
+      dockerfile: dockerfile.cameraplugin
+    ports:
+      - "88:80"
+    environment:
+      VIRTUAL_HOST: camera-plugin.local
+    volumes:
+      - .:/app
+      - npm-cache:/root/.npm
+
+volumes:
+  npm-cache:

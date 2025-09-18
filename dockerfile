@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
   librsvg2-dev \
   pkg-config \
   build-essential \
+  ca-certificates curl && update-ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -24,7 +25,7 @@ RUN npm run build
 # Stage 2: Serve the app with Nginx
 FROM nginx:alpine
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/docs /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
