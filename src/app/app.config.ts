@@ -10,7 +10,6 @@ import { AngularDelegate } from '@ionic/angular';
 import { provideIonicAngular, IonicRouteStrategy } from '@ionic/angular/standalone';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { APP_BASE_HREF } from '@angular/common'; // Import APP_BASE_HREF from @angular/common
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 // import { FIREBASE_OPTIONS } from '@angular/fire/compat';
@@ -34,7 +33,6 @@ export const appConfig: ApplicationConfig = {
     // provideFirebaseApp(() => initializeApp((environment as Environment).firebase)),
     provideMessaging(() => getMessaging()),
     provideNoopAnimations(),
-    { provide: APP_BASE_HREF, useValue: '/' }, // Provide APP_BASE_HREF for local development
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'

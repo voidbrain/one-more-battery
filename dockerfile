@@ -25,7 +25,7 @@ RUN npm run build
 # Stage 2: Serve the app with Nginx
 FROM nginx:alpine
 
-COPY --from=builder /app/docs /usr/share/nginx/html
+COPY --from=builder /app/docs /usr/share/nginx/html/one-more-battery
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
