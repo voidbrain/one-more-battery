@@ -8,21 +8,21 @@ import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
-import { FIREBASE_OPTIONS } from '@angular/fire/compat';
-import { firebaseProviders } from './firebase.config'; // Import firebaseProviders
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app'; // Import provideFirebaseApp and initializeApp
+// import { FIREBASE_OPTIONS } from '@angular/fire/compat'; // Commented out Firebase
+// import { firebaseProviders } from './firebase.config'; // Commented out Firebase
+// import { provideFirebaseApp, initializeApp } from '@angular/fire/app'; // Commented out Firebase
 
 export const appConfig: ApplicationConfig = {
   providers: [
     AngularDelegate,
-    { provide: FIREBASE_OPTIONS, useValue: (environment as Environment).firebase },
+    // { provide: FIREBASE_OPTIONS, useValue: (environment as Environment).firebase }, // Commented out Firebase
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideIonicAngular({ mode: 'ios' }),
     provideRouter(routes),
     provideHttpClient(),
-    provideFirebaseApp(() => initializeApp((environment as Environment).firebase)), // Initialize Firebase app once
-    ...firebaseProviders, // Spread the Firebase providers from firebase.config.ts
+    // provideFirebaseApp(() => initializeApp((environment as Environment).firebase)), // Commented out Firebase
+    // ...firebaseProviders, // Commented out Firebase
     provideNoopAnimations(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
