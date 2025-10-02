@@ -1,8 +1,4 @@
 // src/app/app.config.ts
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideMessaging, getMessaging } from '@angular/fire/messaging';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment, Environment } from '../environments/environment';
 import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { routes } from './app.routes';
@@ -13,11 +9,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
-
-export function initializeFirebaseApp() {
-  const typedEnvironment: Environment = environment;
-  return initializeApp(typedEnvironment.firebase);
-}
+import { firebaseProviders } from './firebase.config'; // Import firebaseProviders
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app'; // Import provideFirebaseApp and initializeApp
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,10 +21,8 @@ export const appConfig: ApplicationConfig = {
     provideIonicAngular({ mode: 'ios' }),
     provideRouter(routes),
     provideHttpClient(),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideFirebaseApp(() => initializeApp((environment as Environment).firebase)),
-    provideMessaging(() => getMessaging()),
+    provideFirebaseApp(() => initializeApp((environment as Environment).firebase)), // Initialize Firebase app once
+    ...firebaseProviders, // Spread the Firebase providers from firebase.config.ts
     provideNoopAnimations(),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
