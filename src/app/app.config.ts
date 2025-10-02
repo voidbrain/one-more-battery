@@ -1,5 +1,5 @@
 // src/app/app.config.ts
-// import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideMessaging, getMessaging } from '@angular/fire/messaging';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
@@ -12,17 +12,17 @@ import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
-// import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 export function initializeFirebaseApp() {
   const typedEnvironment: Environment = environment;
-  // return initializeApp(typedEnvironment.firebase);
+  return initializeApp(typedEnvironment.firebase);
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
     AngularDelegate,
-    // { provide: FIREBASE_OPTIONS, useValue: (environment as Environment).firebase },
+    { provide: FIREBASE_OPTIONS, useValue: (environment as Environment).firebase },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideIonicAngular({ mode: 'ios' }),
@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    // provideFirebaseApp(() => initializeApp((environment as Environment).firebase)),
+    provideFirebaseApp(() => initializeApp((environment as Environment).firebase)),
     provideMessaging(() => getMessaging()),
     provideNoopAnimations(),
     provideServiceWorker('ngsw-worker.js', {
