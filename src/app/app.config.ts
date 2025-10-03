@@ -11,6 +11,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 // import { FIREBASE_OPTIONS } from '@angular/fire/compat'; // Commented out Firebase
 // import { firebaseProviders } from './firebase.config'; // Commented out Firebase
 // import { provideFirebaseApp, initializeApp } from '@angular/fire/app'; // Commented out Firebase
+import { APP_BASE_HREF } from '@angular/common'; // Import APP_BASE_HREF
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,5 +29,6 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    { provide: APP_BASE_HREF, useValue: '/one-more-battery/' } // Explicitly provide APP_BASE_HREF
   ],
 };
