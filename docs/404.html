@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Get the current path
+    var path = window.location.pathname;
+    // Get the base href from the index.html (e.g., /one-more-battery/)
+    var baseHref = document.querySelector('base').href;
+    var relativePath = path.replace(baseHref, '');
+
+    // Redirect to index.html, preserving the path
+    window.location.replace(baseHref + 'index.html#' + relativePath);
+  </script>
+</head>
+<body>
+  If you are not redirected automatically, follow this <a href="/one-more-battery/index.html">link</a>.
+</body>
+</html>
