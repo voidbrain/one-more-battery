@@ -8,10 +8,11 @@
     var path = window.location.pathname;
     // Get the base href from the index.html (e.g., /one-more-battery/)
     var baseHref = document.querySelector('base').href;
-    var relativePath = path.replace(baseHref, '');
 
-    // Redirect to index.html, preserving the path
-    window.location.replace(baseHref + 'index.html#' + relativePath);
+    // Redirect to index.html, preserving the full path
+    // GitHub Pages will serve 404.html for non-existent paths.
+    // This redirect will load index.html, and Angular's router will then handle the path.
+    window.location.replace(baseHref + 'index.html');
   </script>
 </head>
 <body>
