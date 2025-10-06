@@ -3,14 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Redirecting...</title>
-  <script>
-    var path = window.location.pathname;
-    var baseHref = document.querySelector('base').getAttribute('href');
+  <script type="text/javascript">
+    // Function to get the base href from the <base> tag
+    function getBaseHref() {
+      var base = document.querySelector('base');
+      return base ? base.getAttribute('href') : '/';
+    }
 
-    // Construct the new URL by combining baseHref, index.html, and the original path
-    // This ensures Angular's router receives the full path.
-    var newPath = baseHref + 'index.html' + path.substring(baseHref.length -1);
-    window.location.replace(newPath);
+    var baseHref = getBaseHref();
+    var path = window.location.pathname;
+    var query = window.location.search;
+    var fragment = window.location.hash;
+
+    // Store the original full path in session storage
+    sessionStorage.setItem('redirectPath', path + query + fragment);
+    // Redirect to the base index.html
+    window.location.replace(baseHref + 'index.html');
   </script>
 </head>
 <body>
