@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { Platform } from '@ionic/angular';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CameraComponent } from 'src/app/components/camera.component';
 import {
   IonButton,
   IonButtons,
@@ -42,6 +43,10 @@ import { DbService } from '../../../services/db.service';
 import { addIcons } from 'ionicons';
 import { dbTables, SettingsService } from '../../../services/settings.service';
 import * as ionIcons from 'ionicons/icons';
+
+import { MessagingService } from '../../../services/messaging.service';
+
+
 import {
   batteryStatusActionEnum,
   batteryStatusDaysAlertEnum,
@@ -76,9 +81,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { NotificationService } from 'src/app/services/notifications.service';
+// import { NotificationService } from 'src/app/services/notifications.service';
 import { TokenService } from 'src/app/services/token.service';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+// import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -87,6 +92,7 @@ import { AuthService } from 'src/app/services/auth.service';
 
   imports: [
     ReactiveFormsModule, FormsModule,
+    CameraComponent,
     JsonPipe,
     IonAlert,
     IonActionSheet,
@@ -141,7 +147,7 @@ import { AuthService } from 'src/app/services/auth.service';
     ]),
   ],
 })
-export class BatteriesMasterComponent {
+export class BatteriesMasterComponent implements OnInit {
   items: ExtendedBatteryAnagraphInterface[] = [];
   page = 'batteries';
   debug = true;
@@ -152,7 +158,7 @@ export class BatteriesMasterComponent {
   toggle(id: number): void {
     this.state[id] = this.state[id] === 'collapsed' ? 'expanded' : 'collapsed';
   }
-  showDismissedBatteries!: boolean;
+  showDismissedBatteries = false;
 
   constructor(
     private db: DbService,
@@ -162,12 +168,19 @@ export class BatteriesMasterComponent {
     private modalCtrl: ModalController,
     private alertController: AlertController,
     // private notificationService: NotificationService,
-    // private tokenService: TokenService,
+    private tokenService: TokenService,
     // private messaging: AngularFireMessaging,
     // private authService: AuthService
-    private platform: Platform
+    private platform: Platform,
+    private messagingService: MessagingService
   ) {
     addIcons(ionIcons);
+  }
+
+  async ngOnInit() {
+    await this.db.load();
+    const forceLoading = true;
+    await this.db.initService(forceLoading);
   }
 
   public async resetDatabase() {
@@ -190,7 +203,11 @@ export class BatteriesMasterComponent {
     await this.getSettings();
     await this.getItems();
 
-    this.setupLocalNotifications();
+    // this.setupLocalNotifications();
+
+
+
+    // this.requestPermission()
     // try {
     //   const alreadyAsked = localStorage.getItem(
     //     this.settings.getAppName() + '_requestNotificationsPermissions',
@@ -237,28 +254,17 @@ export class BatteriesMasterComponent {
   }
 
   // requestPermission() {
-  //   try{
-  //     this.messaging.requestPermission.subscribe({
-  //       next: () => {
-  //         console.info('Notification permission granted.');
-
-  //         this.messaging.getToken.subscribe({
-  //           next: (token) => {
-  //             console.info('FCM Token:', token);
-  //             this.tokenService.setToken(token!);
-  //           },
-  //           error: (error) => {
-  //             console.error('Error getting token:', error);
-  //           }
-  //         });
-  //       },
-  //       error: (error) => {
-  //         console.error('Notification permission denied:', error);
-  //       }
-  //     });
-  //   }catch(e){
-  //     console.error(e)
-  //   }
+  //   this.messagingService.requestPermission().subscribe({
+  //     next: () => {
+  //       console.log('Permission granted');
+  //       this.messagingService.receiveMessage().subscribe((message) => {
+  //         console.log('Message received:', message);
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.error('Permission denied', error);
+  //     }
+  //   });
   // }
 
   // sendNotification() {
@@ -457,7 +463,8 @@ export class BatteriesMasterComponent {
   async getSettings() {
     try {
       const settings = await this.db.getItems<SettingsInterface>('settings');
-      this.showDismissedBatteries = (settings[0].showDismissedBatteries ?? false);
+      console.log(settings)
+      this.showDismissedBatteries = (settings[0]?.showDismissedBatteries ?? false);
     } catch (err) {
       console.error('[PAGE]: [DB]: Error during initialization:', err);
     }

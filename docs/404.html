@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script type="text/javascript">
+    // Function to get the base href from the <base> tag
+    function getBaseHref() {
+      var base = document.querySelector('base');
+      return base ? base.getAttribute('href') : '/';
+    }
+
+    var baseHref = getBaseHref();
+    var path = window.location.pathname;
+    var query = window.location.search;
+    var fragment = window.location.hash;
+
+    // Store the original full path in session storage
+    sessionStorage.setItem('redirectPath', path + query + fragment);
+    // Redirect to the base index.html
+    window.location.replace(baseHref + 'index.html');
+  </script>
+</head>
+<body>
+  If you are not redirected automatically, follow this <a href="/one-more-battery/index.html">link</a>.
+</body>
+</html>
