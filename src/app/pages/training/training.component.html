@@ -1,0 +1,8 @@
+<div style="padding: 20px;">
+  <h1>Train Model</h1>
+  <button (click)="train()">Start Training</button>
+  <button (click)="saveModel()" [disabled]="!model">Save Model</button>
+  <div *ngFor="let log of trainingLog">
+    <pre>{{ log }}</pre>
+  </div>
+</div>

@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { IonRouterOutlet, IonApp } from "@ionic/angular/standalone";
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
+import { DigitTestComponent } from './components/digit-test/digit-test.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [IonApp, IonRouterOutlet, RouterOutlet],
+  imports: [IonApp, IonRouterOutlet, RouterOutlet, DigitTestComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
