@@ -9,7 +9,7 @@
     <script type="text/javascript">
       (function () {
         var redirect = sessionStorage.getItem('redirectPath');
-        if (redirect && window.location.pathname.endsWith('index.html')) {
+        if (redirect) {
           sessionStorage.removeItem('redirectPath');
           history.replaceState(null, null, redirect);
         }
