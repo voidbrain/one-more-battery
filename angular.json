@@ -34,7 +34,12 @@
               "src/favicon.ico",
               "src/assets",
               "src/manifest.webmanifest",
-              "src/404.html"
+              "src/404.html",
+              {
+                "glob": "**/*",
+                "input": "public/icons",
+                "output": "icons"
+              }
             ],
             "styles": [
               "src/global.scss"
