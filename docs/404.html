@@ -5,20 +5,14 @@
   <title>Redirecting...</title>
   <script type="text/javascript">
 
-    function getBaseHref() {
-      var base = document.querySelector('base');
-      return base ? base.getAttribute('href') : '/';
-    }
-
-    var baseHref = getBaseHref();
     var path = window.location.pathname;
     var query = window.location.search;
     var fragment = window.location.hash;
 
-
+    // Store the original full path in session storage
     sessionStorage.setItem('redirectPath', path + query + fragment);
-
-    window.location.replace(baseHref + 'index.html');
+    // Redirect to the base index.html, using the known base path for the Angular app
+    window.location.replace('/one-more-battery/index.html');
   </script>
 </head>
 <body>
