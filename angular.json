@@ -45,6 +45,7 @@
               "src/global.scss"
             ],
             "scripts": [],
+            "webWorkerTsConfig": "tsconfig.worker.json",
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },
