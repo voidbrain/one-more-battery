@@ -16,7 +16,8 @@ export class DigitTestComponent implements AfterViewInit {
   @ViewChild('canvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   base64Image: string | undefined;
-  imageUrl: string = 'assets/test-images/IMG_2451.png';
+  // imageUrl: string = 'assets/test-images/IMG_2451.png';
+  imageUrl: string = 'assets/test-images/number.png'; // Default image URL
   predictions: { digit: number; confidence: number; box: number[] }[] | undefined;
   processedImageBase64: string | undefined;
   threshold: number = 50;
