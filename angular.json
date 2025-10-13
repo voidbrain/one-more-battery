@@ -90,12 +90,17 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "disableHostCheck": true
+          },
           "configurations": {
             "production": {
               "buildTarget": "app:build:production"
             },
             "development": {
-              "buildTarget": "app:build:development"
+              "buildTarget": "app:build:development",
+              "hmr": true
             },
             "en": {
               "browserTarget": "app:build:development,en"

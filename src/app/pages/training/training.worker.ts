@@ -2,16 +2,18 @@
 
 import * as tf from '@tensorflow/tfjs';
 
+// tf.enableDebugMode();
+
 const IMAGE_WIDTH = 28;
 const IMAGE_HEIGHT = 28;
 const NUM_CLASSES = 10;
 
 async function loadRawData(): Promise<{ images: Float32Array, labels: Uint8Array }> {
-  const img = new Image();
-  img.src = '/1more/en/assets/data/mnist_images.png';
-  await new Promise(resolve => (img.onload = resolve));
+  const response = await fetch('/one-more-battery/assets/data/mnist_images.png');
+  const blob = await response.blob();
+  const img = await createImageBitmap(blob);
 
-  const labelsResponse = await fetch('/1more/en/assets/data/mnist_labels_uint8');
+  const labelsResponse = await fetch('/one-more-battery/assets/data/mnist_labels_uint8');
   const labels = new Uint8Array(await labelsResponse.arrayBuffer());
 
   const numSamples = labels.length;
@@ -91,12 +93,17 @@ function createModel() {
 }
 
 addEventListener('message', async ({ data }) => {
-  postMessage({ type: 'log', message: 'Setting backend to webgl...' });
-  await tf.setBackend('webgl');
+  postMessage({ type: 'log', message: 'Setting backend to cpu...' });
+  await tf.setBackend('cpu');
   postMessage({ type: 'log', message: 'Backend set.' });
   postMessage({ type: 'log', message: 'Loading data...' });
+  const startTime = performance.now();
   const { images, labels } = await loadRawData();
-  postMessage({ type: 'log', message: 'Data loaded.' });
+  const endTime = performance.now();
+  postMessage({
+    type: 'log',
+    message: `Data loaded in ${(endTime - startTime).toFixed(2)} ms.`,
+  });
   postMessage({ type: 'log', message: 'Creating model...' });
   const model = createModel();
   postMessage({ type: 'log', message: 'Model created.' });
@@ -116,6 +123,6 @@ addEventListener('message', async ({ data }) => {
   });
 
   postMessage({ type: 'log', message: 'Training complete.' });
-  const saveResult = await model.save('indexeddb://model');
-  postMessage({ type: 'done', saveResult });
+  await model.save('downloads://model');
+  postMessage({ type: 'done' });
 });

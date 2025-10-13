@@ -12,7 +12,7 @@ export class DigitRecognitionService {
 
   constructor(@Inject(APP_BASE_HREF) private baseHref: string) {
     console.log('DigitRecognitionService constructor called.'); // Added for debugging
-    this.modelPath = `${this.baseHref}assets/model.json`;
+    this.modelPath = `${this.baseHref}assets/model/model.json`;
     this.loadModel();
   }
 

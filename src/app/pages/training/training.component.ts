@@ -12,6 +12,7 @@ import * as tf from '@tensorflow/tfjs';
 export class TrainingComponent implements OnDestroy {
   public trainingLog: string[] = [];
   private worker: Worker | null = null;
+  public model: any = null;
 
   constructor() {
     if (typeof Worker !== 'undefined') {
@@ -20,7 +21,10 @@ export class TrainingComponent implements OnDestroy {
         if (data.type === 'log') {
           this.trainingLog.push(data.message);
         } else if (data.type === 'done') {
-          this.trainingLog.push('Model saved to IndexedDB.');
+          this.trainingLog.push(
+            'Model files downloaded. Please move model.json and model.weights.bin to src/assets/model/.'
+          );
+          this.model = true;
         }
       };
     } else {
@@ -41,9 +45,10 @@ export class TrainingComponent implements OnDestroy {
     }
   }
 
-  async saveModel() {
-    // The model is now saved in the worker.
-    // This function could be used to trigger a download from IndexedDB if needed.
-    this.trainingLog.push('Model is saved in IndexedDB by the worker.');
-  }
+  // saveModel() {
+  //   if (this.worker) {
+  //     this.trainingLog = [];
+  //     this.worker.postMessage({});
+  //   }
+  // }
 }
