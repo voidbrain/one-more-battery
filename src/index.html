@@ -5,7 +5,17 @@
     <title>Ionic App</title>
 
     <!-- <base href="/temp/1more/" /> -->
-    <base href="/"/>
+    <base href="/one-more-battery/"/>
+    <script type="text/javascript">
+      (function () {
+        var redirect = sessionStorage.getItem('redirectPath');
+        if (redirect) {
+          sessionStorage.removeItem('redirectPath');
+          history.replaceState(null, null, redirect);
+        }
+
+      })();
+    </script>
 
     <meta name="color-scheme" content="dark"/>
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -17,8 +27,6 @@
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#1976d2">
   <link rel="manifest" href="manifest.webmanifest">
@@ -29,6 +37,7 @@
 
   <body class="mat-typography">
     <app-root></app-root>
+
     <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { IdentifyBatteryService } from '../services/ai/identify-battery';
+import { DigitRecognitionService } from '../services/ai/digit-recognition.service';
 
 @Component({
   selector: 'app-camera',
@@ -54,7 +54,7 @@ export class CameraComponent {
   colorBand: string | undefined | null = null;
   recognizedDigitConfidence: number | undefined | null = null;
 
-  constructor(private identifyBatteryService: IdentifyBatteryService) {}
+  constructor(private digitRecognitionService: DigitRecognitionService) {}
 
   async takePhoto() {
     try {
@@ -90,44 +90,31 @@ export class CameraComponent {
     const imgElement = new Image();
     imgElement.src = canvas.toDataURL();
     imgElement.onload = async () => {
-      // const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
-      // const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
-      // const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
-      // const boundingBox = this.getBoundingBox(canvas);
-
-      // const result = await this.identifyBatteryService.predictNumber(imgElement, boundingBox, threshold, erosion, dilation);
-      const result = await this.identifyBatteryService.processPhoto(imgElement);
-      console.log(result)
-      this.recognizedDigit = result[0].digit;
-      this.recognizedDigitConfidence = result[0].confidence;
+      const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
+      const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
+      const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
+      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement, threshold, erosion, dilation);
+      this.drawPredictions(canvas, result.predictions);
     };
   }
 
-  // private getBoundingBox(canvas: HTMLCanvasElement) {
-  //   // Implement logic to get bounding box from drawn rectangle
-  //   // For now, return the entire canvas as the bounding box
-  //   return {
-  //     x: 0,
-  //     y: 0,
-  //     width: 220,// canvas.width,
-  //     height: 220// canvas.height
-  //   };
-  // }
-  private getBoundingBox(canvas: HTMLCanvasElement) {
-    const width = canvas.width;
-    const height = canvas.height;
+  private drawPredictions(
+    canvas: HTMLCanvasElement,
+    predictions: { digit: number; confidence: number; box: number[] }[]
+  ) {
+    const ctx = canvas.getContext('2d')!;
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
 
-    // Calculate the central third region
-    const x = Math.round(width / 3);
-    const y = Math.round(height / 3);
-    const boxWidth = Math.round(width / 3);
-    const boxHeight = Math.round(height / 3);
+    for (const pred of predictions) {
+      const [x, y, w, h] = pred.box;
+      const text = `${pred.digit} (${(pred.confidence * 100).toFixed(2)}%)`;
 
-    return {
-      x: x,
-      y: y,
-      width: boxWidth,
-      height: boxHeight
-    };
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillText(text, x, y - 5);
+    }
   }
+
 }

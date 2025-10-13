@@ -8,11 +8,19 @@ import { BatteriesSettingComponent } from '../batteries/settings/settings.compon
 import { IncidentsMasterComponent } from '../incidents/master/master.component';
 import { IncidentsDetailComponent } from '../incidents/detail/detail.component';
 
+import { TrainingComponent } from '../training/training.component';
+import { DigitTestComponent } from 'src/app/components/digit-test/digit-test.component';
+
+
+
 const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
     children: [
+      { path: 'training', component: TrainingComponent },
+      { path: 'digit-test', component: DigitTestComponent },
+
       { path: 'batteries', component: BatteriesMasterComponent },
       { path: 'batteries/create', component: BatteriesDetailComponent },
       { path: 'batteries/settings', component: BatteriesSettingComponent },
