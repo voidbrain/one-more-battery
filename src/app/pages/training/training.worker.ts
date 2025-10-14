@@ -2,7 +2,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-// tf.enableDebugMode();
+tf.enableDebugMode();
 
 const IMAGE_WIDTH = 28;
 const IMAGE_HEIGHT = 28;

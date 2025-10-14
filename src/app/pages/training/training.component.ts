@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import * as tf from '@tensorflow/tfjs';
 
 @Component({
   selector: 'app-training',
