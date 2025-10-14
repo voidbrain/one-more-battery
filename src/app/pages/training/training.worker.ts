@@ -2,7 +2,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-tf.enableDebugMode();
+// tf.enableDebugMode();
 
 const IMAGE_WIDTH = 28;
 const IMAGE_HEIGHT = 28;
@@ -93,8 +93,38 @@ function createModel() {
 }
 
 addEventListener('message', async ({ data }) => {
-  postMessage({ type: 'log', message: 'Setting backend to cpu...' });
-  await tf.setBackend('cpu');
+  try {
+    // Dynamically import the backend
+    const wasmBackend = await import('@tensorflow/tfjs-backend-wasm');
+
+    // ✅ Tell tfjs where to load the wasm binaries
+    wasmBackend.setWasmPaths({
+      'tfjs-backend-wasm.wasm': '/one-more-battery/assets/wasm/tfjs-backend-wasm.wasm',
+      'tfjs-backend-wasm-simd.wasm': '/one-more-battery/assets/wasm/tfjs-backend-wasm.wasm',
+      'tfjs-backend-wasm-threaded-simd.wasm': '/one-more-battery/assets/wasm/tfjs-backend-wasm.wasm'
+    });
+
+    tf.env().set('WASM_HAS_SIMD_SUPPORT', false);
+
+    const mt = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT') as boolean;
+    const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT') as boolean;
+    postMessage({ type: 'log', message: `WASM multithreading support: ${mt}` });
+    postMessage({ type: 'log', message: `WASM SIMD support: ${simd}` });
+
+
+    // ✅ Set and initialize the backend
+    await tf.setBackend('wasm');
+    await tf.ready();
+
+    postMessage({ type: 'log', message: `✅ Using backend: ${tf.getBackend()}` });
+  } catch (err) {
+    // Fallback
+    postMessage({ type: 'log', message: `⚠️ WASM backend not available, falling back to CPU: ${err}` });
+    await tf.setBackend('cpu');
+    await tf.ready();
+    postMessage({ type: 'log', message: '✅ Using CPU backend.' });
+  }
+
   postMessage({ type: 'log', message: 'Backend set.' });
   postMessage({ type: 'log', message: 'Loading data...' });
   const startTime = performance.now();
