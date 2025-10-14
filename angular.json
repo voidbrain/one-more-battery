@@ -33,6 +33,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "*.wasm",
+                "input": "node_modules/@tensorflow/tfjs-backend-wasm/dist/",
+                "output": "/assets/wasm/"
+              },
               "src/manifest.webmanifest",
               "src/404.html",
               {
