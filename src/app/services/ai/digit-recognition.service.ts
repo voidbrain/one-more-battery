@@ -11,29 +11,28 @@ export class DigitRecognitionService {
   private modelPath: string;
 
   constructor(@Inject(APP_BASE_HREF) private baseHref: string) {
-    console.log('DigitRecognitionService constructor called.'); // Added for debugging
+    console.log('DigitRecognitionService constructor called.');
     this.modelPath = `${this.baseHref}assets/model/model.json`;
     this.loadModel();
   }
 
   async loadModel() {
-    console.log('loadModel method called.'); // Added for debugging
+    console.log('loadModel method called.');
     try {
-      await tf.setBackend('webgl'); // Use webgl for GPU acceleration
+      await tf.setBackend('webgl');
       console.log('Using backend:', tf.getBackend());
-
       this.model = await tf.loadLayersModel(this.modelPath);
 
-      if (!this.model) {
-        throw new Error('Failed to load model');
-      }
+      if (!this.model) throw new Error('Failed to load model');
 
-      console.log('Model loaded successfully');
+      console.log('✅ Model loaded successfully.');
       console.log('Model input shape:', this.model.inputs[0].shape);
+      console.log('Model summary:');
+      this.model.summary();
 
       return true;
     } catch (error) {
-      console.error('Error loading model:', error);
+      console.error('❌ Error loading model:', error);
       throw error;
     }
   }
@@ -45,29 +44,42 @@ export class DigitRecognitionService {
     dilation: number
   ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     if (!this.model) {
+      console.warn('Model not loaded yet, loading now...');
       await this.loadModel();
     }
 
+    console.log('Starting digit extraction and prediction...');
     const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
-    const predictions: { digit: number; confidence: number; box: number[] }[] =
-      [];
+    const predictions: { digit: number; confidence: number; box: number[] }[] = [];
 
     for (let i = 0; i < digits.length; i++) {
       const digitCanvas = digits[i];
       const box = boxes[i];
+
+      console.log(`🖼️ Processing digit #${i + 1}/${digits.length}`);
+
       const inputTensor = this.preprocessDigit(digitCanvas);
+
+      // Optional: visualize the 28x28 preprocessed image
+      const previewBase64 = digitCanvas.toDataURL();
+      console.log(`Preview for digit ${i + 1}:`, previewBase64);
+
       const pred = this.model!.predict(inputTensor) as tf.Tensor;
       const data = (await pred.data()) as Float32Array;
-      console.log('Raw prediction data:', data); // Log raw prediction output
-      const confidence = Math.max(...data);
-      // let predictedDigit = -1; // Default to -1 for unrecognized
-      let predictedDigit = data.indexOf(confidence);
 
-      predictions.push({
-        digit: predictedDigit,
-        confidence: confidence,
-        box: box,
-      });
+      const confidence = Math.max(...data);
+      const predictedDigit = data.indexOf(confidence);
+
+      // Sort predictions for readability
+      const sorted = Array.from(data)
+        .map((v, idx) => ({ idx, v }))
+        .sort((a, b) => b.v - a.v)
+        .slice(0, 5);
+      console.log('🔢 Prediction breakdown (top 5):', sorted);
+
+      console.log(`🧠 Predicted digit: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
+
+      predictions.push({ digit: predictedDigit, confidence, box });
 
       // Cleanup
       inputTensor.dispose();
@@ -93,13 +105,12 @@ export class DigitRecognitionService {
           reject(error);
         }
       };
-      img.onerror = (error) => {
-        reject(new Error('Failed to load image from base64 string.'));
-      };
+      img.onerror = () => reject(new Error('Failed to load image from base64 string.'));
       img.src = base64Image;
     });
   }
 
+  // --- Image preprocessing chain (binary, morphology, box detection) ---
   private extractDigits(
     img: HTMLImageElement,
     threshold: number,
@@ -113,48 +124,59 @@ export class DigitRecognitionService {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
 
-    // Calculate the central part of the image (e.g., 50% of width and height)
-    const cropWidth = img.width * 0.5;
-    const cropHeight = img.height * 0.5;
-    const cropX = (img.width - cropWidth) / 2;
-    const cropY = (img.height - cropHeight) / 2;
-
-    canvas.width = cropWidth;
-    canvas.height = cropHeight;
-    ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const binaryData = this.toBinary(imageData, threshold);
     const erodedData = this.erode(binaryData, canvas.width, canvas.height, erosion);
     const dilatedData = this.dilate(erodedData, canvas.width, canvas.height, dilation);
-    const boxes = this.findBoundingBoxes(
-      dilatedData,
-      canvas.width,
-      canvas.height
-    );
+
+    const boxes = this.findBoundingBoxes(dilatedData, canvas.width, canvas.height);
     const digitCanvases: HTMLCanvasElement[] = [];
 
     for (const box of boxes) {
-      const [x, y, w, h] = box;
+      let [x, y, w, h] = box;
+
+      // Add small padding
+      const pad = 4;
+      x = Math.max(0, x - pad);
+      y = Math.max(0, y - pad);
+      w = Math.min(canvas.width - x, w + pad * 2);
+      h = Math.min(canvas.height - y, h + pad * 2);
+
+      // Maintain aspect ratio
+      const maxDim = Math.max(w, h);
+
       const digitCanvas = document.createElement('canvas');
       digitCanvas.width = 28;
       digitCanvas.height = 28;
       const dctx = digitCanvas.getContext('2d')!;
 
-      // Calculate the aspect ratio and adjust the bounding box to be square
-      const maxDim = Math.max(w, h);
-      const offsetX = (maxDim - w) / 2;
-      const offsetY = (maxDim - h) / 2;
+      // Fill black background
+      dctx.fillStyle = 'black';
+      dctx.fillRect(0, 0, 28, 28);
 
-      const sourceX = Math.max(0, x - offsetX);
-      const sourceY = Math.max(0, y - offsetY);
-      const sourceWidth = Math.min(canvas.width - sourceX, maxDim);
-      const sourceHeight = Math.min(canvas.height - sourceY, maxDim);
+      // Calculate scaled width/height to keep aspect ratio
+      const scale = 28 / maxDim;
+      const scaledW = w * scale;
+      const scaledH = h * scale;
 
-      dctx.drawImage(canvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, 28, 28);
+      // Center digit in canvas
+      const offsetX = (28 - scaledW) / 2;
+      const offsetY = (28 - scaledH) / 2;
+
+      dctx.drawImage(
+        canvas,
+        x, y, w, h,
+        offsetX, offsetY, scaledW, scaledH
+      );
+
       digitCanvases.push(digitCanvas);
     }
 
+    // Processed full image for debugging
     const processedCanvas = document.createElement('canvas');
     processedCanvas.width = canvas.width;
     processedCanvas.height = canvas.height;
@@ -170,42 +192,34 @@ export class DigitRecognitionService {
     pctx.putImageData(processedImageData, 0, 0);
     const processedImageBase64 = processedCanvas.toDataURL();
 
-    return { digits: digitCanvases, boxes: boxes, processedImageBase64 };
+    return { digits: digitCanvases, boxes, processedImageBase64 };
   }
 
+  // --- Morphology operations ---
   private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
     const binary = new Uint8ClampedArray(imageData.data.length / 4);
-
     for (let i = 0; i < imageData.data.length; i += 4) {
-      const r = imageData.data[i];
-      const g = imageData.data[i + 1];
-      const b = imageData.data[i + 2];
-      const avg = (r + g + b) / 3;
+      const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
       binary[i / 4] = avg < threshold ? 1 : 0;
     }
-
     return binary;
   }
 
   private erode(data: Uint8ClampedArray, width: number, height: number, iterations: number): Uint8ClampedArray {
-    let eroded = data;
-    for (let i = 0; i < iterations; i++) {
-      eroded = this.morphology(eroded, width, height, 'erode');
-    }
-    return eroded;
+    let result = data;
+    for (let i = 0; i < iterations; i++) result = this.morphology(result, width, height, 'erode');
+    return result;
   }
 
   private dilate(data: Uint8ClampedArray, width: number, height: number, iterations: number): Uint8ClampedArray {
-    let dilated = data;
-    for (let i = 0; i < iterations; i++) {
-      dilated = this.morphology(dilated, width, height, 'dilate');
-    }
-    return dilated;
+    let result = data;
+    for (let i = 0; i < iterations; i++) result = this.morphology(result, width, height, 'dilate');
+    return result;
   }
 
-  private morphology(data: Uint8ClampedArray, width: number, height: number, operation: 'erode' | 'dilate'): Uint8ClampedArray {
+  private morphology(data: Uint8ClampedArray, width: number, height: number, op: 'erode' | 'dilate'): Uint8ClampedArray {
     const output = new Uint8ClampedArray(data.length);
-    const matchValue = operation === 'erode' ? 1 : 0;
+    const matchValue = op === 'erode' ? 1 : 0;
 
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
@@ -226,11 +240,10 @@ export class DigitRecognitionService {
     return output;
   }
 
+  // --- Bounding boxes ---
   private findBoundingBoxes(binary: Uint8ClampedArray, width: number, height: number): [number, number, number, number][] {
-    // Simple connected component labeling (naive, not optimal)
     const boxes: [number, number, number, number][] = [];
     const visited = new Uint8Array(binary.length);
-
     const getIndex = (x: number, y: number) => y * width + x;
 
     const floodFill = (x0: number, y0: number) => {
@@ -241,34 +254,28 @@ export class DigitRecognitionService {
         const [x, y] = queue.pop()!;
         const idx = getIndex(x, y);
         if (x < 0 || y < 0 || x >= width || y >= height || visited[idx] || binary[idx] === 0) continue;
-
         visited[idx] = 1;
         minX = Math.min(minX, x);
         maxX = Math.max(maxX, x);
         minY = Math.min(minY, y);
         maxY = Math.max(maxY, y);
-
         queue.push([x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]);
       }
 
-      // Filter out elements smaller than 20px
-      if ((maxX - minX >= 20) && (maxY - minY >= 20)) {
-        boxes.push([minX, minY, maxX - minX, maxY - minY]);
-      }
+      if (maxX - minX >= 20 && maxY - minY >= 20) boxes.push([minX, minY, maxX - minX, maxY - minY]);
     };
 
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const idx = getIndex(x, y);
-        if (!visited[idx] && binary[idx] === 1) {
-          floodFill(x, y);
-        }
+        if (!visited[idx] && binary[idx] === 1) floodFill(x, y);
       }
     }
 
     return boxes;
   }
 
+  // --- Tensor preprocessing with debug ---
   private preprocessDigit(canvas: HTMLCanvasElement): tf.Tensor {
     const ctx = canvas.getContext('2d')!;
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -279,16 +286,19 @@ export class DigitRecognitionService {
       const g = imgData.data[i + 1];
       const b = imgData.data[i + 2];
       const avg = (r + g + b) / 3;
-      gray.push((255 - avg) / 255); // Invert: black background
+      gray.push(avg / 255); // black background, white digit
+      //gray.push((255 - avg) / 255); // invert: whitebackground, black digit
     }
 
     const tensor = tf.tensor3d(gray, [28, 28, 1]);
     const reshapedTensor = tensor.reshape([1, 28, 28]);
-    console.log('Preprocessed digit tensor shape:', reshapedTensor.shape);
-    // Log a few values to check content
+
+    console.log('🧠 [Preprocess] Tensor shape:', reshapedTensor.shape);
     reshapedTensor.data().then(data => {
-      console.log('Preprocessed digit tensor sample (first 10 values):', data.slice(0, 10));
+      console.log('🧠 [Preprocess] Sample values:', data.slice(0, 10));
     });
+
     return reshapedTensor;
   }
+
 }
