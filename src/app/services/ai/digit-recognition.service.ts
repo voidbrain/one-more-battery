@@ -77,7 +77,7 @@ export class DigitRecognitionService {
         .slice(0, 5);
       console.log('🔢 Prediction breakdown (top 5):', sorted);
 
-      console.log(`🧠 Predicted digit: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
+      console.log(`🧠 Predicted digit ${i + 1}: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
 
       predictions.push({ digit: predictedDigit, confidence, box });
 
@@ -123,7 +123,6 @@ export class DigitRecognitionService {
   } {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
-
     canvas.width = img.width;
     canvas.height = img.height;
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -136,17 +135,17 @@ export class DigitRecognitionService {
     const boxes = this.findBoundingBoxes(dilatedData, canvas.width, canvas.height);
     const digitCanvases: HTMLCanvasElement[] = [];
 
-    for (const box of boxes) {
+    for (const [idx, box] of boxes.entries()) {
       let [x, y, w, h] = box;
 
-      // Add small padding
+      if (w < 10 || h < 10) continue; // Skip tiny boxes
+
       const pad = 4;
       x = Math.max(0, x - pad);
       y = Math.max(0, y - pad);
       w = Math.min(canvas.width - x, w + pad * 2);
       h = Math.min(canvas.height - y, h + pad * 2);
 
-      // Maintain aspect ratio
       const maxDim = Math.max(w, h);
 
       const digitCanvas = document.createElement('canvas');
@@ -158,20 +157,36 @@ export class DigitRecognitionService {
       dctx.fillStyle = 'black';
       dctx.fillRect(0, 0, 28, 28);
 
-      // Calculate scaled width/height to keep aspect ratio
       const scale = 28 / maxDim;
       const scaledW = w * scale;
       const scaledH = h * scale;
-
-      // Center digit in canvas
       const offsetX = (28 - scaledW) / 2;
       const offsetY = (28 - scaledH) / 2;
 
-      dctx.drawImage(
-        canvas,
-        x, y, w, h,
-        offsetX, offsetY, scaledW, scaledH
-      );
+      dctx.drawImage(canvas, x, y, w, h, offsetX, offsetY, scaledW, scaledH);
+
+      // Auto-invert
+      const imgData = dctx.getImageData(0, 0, 28, 28);
+      let lightPixels = 0;
+      let darkPixels = 0;
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
+        if (avg > 128) lightPixels++;
+        else darkPixels++;
+      }
+      const invert = lightPixels > darkPixels; // invert if background is light
+      console.log(`Digit #${idx + 1}: lightPixels=${lightPixels}, darkPixels=${darkPixels}, invert=${invert}`);
+
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
+        let value = invert ? 255 - avg : avg; // invert if needed
+        value = value > 128 ? 255 : 0; // threshold to pure black/white
+        imgData.data[i] = value;
+        imgData.data[i + 1] = value;
+        imgData.data[i + 2] = value;
+        imgData.data[i + 3] = 255;
+      }
+      dctx.putImageData(imgData, 0, 0);
 
       digitCanvases.push(digitCanvas);
     }
@@ -194,6 +209,8 @@ export class DigitRecognitionService {
 
     return { digits: digitCanvases, boxes, processedImageBase64 };
   }
+
+
 
   // --- Morphology operations ---
   private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
@@ -281,13 +298,30 @@ export class DigitRecognitionService {
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const gray: number[] = [];
 
+    // Count bright vs dark pixels
+    let brightCount = 0;
+    let darkCount = 0;
+
     for (let i = 0; i < imgData.data.length; i += 4) {
       const r = imgData.data[i];
       const g = imgData.data[i + 1];
       const b = imgData.data[i + 2];
       const avg = (r + g + b) / 3;
-      gray.push(avg / 255); // black background, white digit
-      //gray.push((255 - avg) / 255); // invert: whitebackground, black digit
+
+      if (avg > 127) brightCount++;
+      else darkCount++;
+    }
+
+    // Decide whether to invert
+    const invert = brightCount > darkCount; // true if background is white
+
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      const r = imgData.data[i];
+      const g = imgData.data[i + 1];
+      const b = imgData.data[i + 2];
+      const avg = (r + g + b) / 255;
+
+      gray.push(invert ? 1 - avg : avg);
     }
 
     const tensor = tf.tensor3d(gray, [28, 28, 1]);
