@@ -15,10 +15,6 @@ import { DigitRecognitionService } from '../services/ai/digit-recognition.servic
         <h2>Photo Preview:</h2>
         <canvas id="canvas" width="500" height="500"></canvas>
         <div class="controls">
-          <label for="threshold">Threshold:</label>
-          <input type="range" id="threshold" name="threshold" min="0" max="255" value="127">
-          <span id="thresholdValue">127</span>
-          <br>
           <label for="erosion">Erosion:</label>
           <input type="range" id="erosion" name="erosion" min="0" max="10" value="8">
           <span contentEditable="true" id="erosionValue">8</span>
@@ -90,10 +86,9 @@ export class CameraComponent {
     const imgElement = new Image();
     imgElement.src = canvas.toDataURL();
     imgElement.onload = async () => {
-      const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
       const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
       const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
-      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement, threshold, erosion, dilation);
+      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement, erosion, dilation);
       this.drawPredictions(canvas, result.predictions);
     };
   }

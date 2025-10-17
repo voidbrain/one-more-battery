@@ -39,7 +39,6 @@ export class DigitRecognitionService {
 
   async predictDigitsFromImage(
     img: HTMLImageElement,
-    threshold: number,
     erosion: number,
     dilation: number
   ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
@@ -49,7 +48,7 @@ export class DigitRecognitionService {
     }
 
     console.log('Starting digit extraction and prediction...');
-    const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
+    const { digits, boxes, processedImageBase64 } = this.extractDigits(img, erosion, dilation);
     const predictions: { digit: number; confidence: number; box: number[] }[] = [];
 
     for (let i = 0; i < digits.length; i++) {
@@ -79,7 +78,9 @@ export class DigitRecognitionService {
 
       console.log(`🧠 Predicted digit ${i + 1}: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
 
-      predictions.push({ digit: predictedDigit, confidence, box });
+      if (confidence > 0.8) {
+        predictions.push({ digit: predictedDigit, confidence, box });
+      }
 
       // Cleanup
       inputTensor.dispose();
@@ -91,7 +92,6 @@ export class DigitRecognitionService {
 
   async recognizeDigitFromBase64(
     base64Image: string,
-    threshold: number,
     erosion: number,
     dilation: number
   ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
@@ -99,7 +99,7 @@ export class DigitRecognitionService {
       const img = new Image();
       img.onload = async () => {
         try {
-          const result = await this.predictDigitsFromImage(img, threshold, erosion, dilation);
+          const result = await this.predictDigitsFromImage(img, erosion, dilation);
           resolve(result);
         } catch (error) {
           reject(error);
@@ -113,7 +113,6 @@ export class DigitRecognitionService {
   // --- Image preprocessing chain (binary, morphology, box detection) ---
   private extractDigits(
     img: HTMLImageElement,
-    threshold: number,
     erosion: number,
     dilation: number
   ): {
@@ -128,7 +127,8 @@ export class DigitRecognitionService {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const binaryData = this.toBinary(imageData, threshold);
+    const grayImageData = this.grayscaleAndBlur(imageData);
+    const binaryData = this.toBinary(grayImageData);
     const erodedData = this.erode(binaryData, canvas.width, canvas.height, erosion);
     const dilatedData = this.dilate(erodedData, canvas.width, canvas.height, dilation);
 
@@ -136,9 +136,9 @@ export class DigitRecognitionService {
     const digitCanvases: HTMLCanvasElement[] = [];
 
     for (const [idx, box] of boxes.entries()) {
+      const minSize = 20;
       let [x, y, w, h] = box;
-
-      if (w < 10 || h < 10) continue; // Skip tiny boxes
+      if (w < minSize || h < minSize) continue; // Skip tiny boxes
 
       const pad = 4;
       x = Math.max(0, x - pad);
@@ -174,7 +174,8 @@ export class DigitRecognitionService {
         if (avg > 128) lightPixels++;
         else darkPixels++;
       }
-      const invert = lightPixels > darkPixels; // invert if background is light
+      const avgBrightness = (lightPixels / (lightPixels + darkPixels)) * 100;
+      const invert = avgBrightness > 65; // instead of > 50
       console.log(`Digit #${idx + 1}: lightPixels=${lightPixels}, darkPixels=${darkPixels}, invert=${invert}`);
 
       for (let i = 0; i < imgData.data.length; i += 4) {
@@ -211,14 +212,91 @@ export class DigitRecognitionService {
   }
 
 
+  private grayscaleAndBlur(imageData: ImageData): ImageData {
+    const { data, width, height } = imageData;
+    const gray = new Uint8ClampedArray(width * height);
+
+    // Grayscale
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      gray[i / 4] = 0.299 * r + 0.587 * g + 0.114 * b;
+    }
+
+    // Gaussian blur
+    const blurred = new Uint8ClampedArray(gray.length);
+    const kernel = [1, 2, 1, 2, 4, 2, 1, 2, 1];
+    const kernelWeight = 16;
+
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        let sum = 0;
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            sum += gray[(y + ky) * width + (x + kx)] * kernel[(ky + 1) * 3 + (kx + 1)];
+          }
+        }
+        blurred[y * width + x] = sum / kernelWeight;
+      }
+    }
+
+    const result = new ImageData(width, height);
+    for (let i = 0; i < blurred.length; i++) {
+      result.data[i * 4] = blurred[i];
+      result.data[i * 4 + 1] = blurred[i];
+      result.data[i * 4 + 2] = blurred[i];
+      result.data[i * 4 + 3] = 255;
+    }
+
+    return result;
+  }
 
   // --- Morphology operations ---
-  private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
-    const binary = new Uint8ClampedArray(imageData.data.length / 4);
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-      binary[i / 4] = avg < threshold ? 1 : 0;
+  private toBinary(imageData: ImageData): Uint8ClampedArray {
+    const { data, width, height } = imageData;
+    const binary = new Uint8ClampedArray(width * height);
+    const integralImage = new Uint32Array(width * height);
+    const s = width / 8;
+    const t = 15;
+
+    // Calculate integral image
+    for (let y = 0; y < height; y++) {
+      let rowSum = 0;
+      for (let x = 0; x < width; x++) {
+        const idx = y * width + x;
+        rowSum += data[idx * 4];
+        if (y === 0) {
+          integralImage[idx] = rowSum;
+        } else {
+          integralImage[idx] = integralImage[(y - 1) * width + x] + rowSum;
+        }
+      }
     }
+
+    // Apply adaptive threshold
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = y * width + x;
+        const x1 = Math.max(0, x - Math.floor(s / 2));
+        const y1 = Math.max(0, y - Math.floor(s / 2));
+        const x2 = Math.min(width - 1, x + Math.floor(s / 2));
+        const y2 = Math.min(height - 1, y + Math.floor(s / 2));
+
+        const count = (x2 - x1 + 1) * (y2 - y1 + 1);
+        let sum = integralImage[y2 * width + x2];
+        if (x1 > 0) sum -= integralImage[y2 * width + x1 - 1];
+        if (y1 > 0) sum -= integralImage[(y1 - 1) * width + x2];
+        if (x1 > 0 && y1 > 0) sum += integralImage[(y1 - 1) * width + x1 - 1];
+
+        if (data[idx * 4] * count <= sum * (100 - t) / 100) {
+          binary[idx] = 1;
+        } else {
+          binary[idx] = 0;
+        }
+      }
+    }
+
     return binary;
   }
 
@@ -279,7 +357,11 @@ export class DigitRecognitionService {
         queue.push([x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]);
       }
 
-      if (maxX - minX >= 20 && maxY - minY >= 20) boxes.push([minX, minY, maxX - minX, maxY - minY]);
+      const boxWidth = maxX - minX;
+      const boxHeight = maxY - minY;
+      if (boxWidth >= 20 && boxHeight >= 20 && boxHeight > boxWidth) {
+        boxes.push([minX, minY, boxWidth, boxHeight]);
+      }
     };
 
     for (let y = 0; y < height; y++) {

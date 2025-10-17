@@ -21,8 +21,8 @@ export class DigitTestComponent implements AfterViewInit {
   predictions: { digit: number; confidence: number; box: number[] }[] | undefined;
   processedImageBase64: string | undefined;
   threshold: number = 50;
-  erosion: number = 3;
-  dilation: number = 1;
+  erosion: number = 5;
+  dilation: number = 3;
 
   constructor(private digitRecognitionService: DigitRecognitionService) {}
 
@@ -65,7 +65,6 @@ export class DigitTestComponent implements AfterViewInit {
     try {
       const result = await this.digitRecognitionService.recognizeDigitFromBase64(
         this.base64Image,
-        this.threshold,
         this.erosion,
         this.dilation
       );
