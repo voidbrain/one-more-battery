@@ -42,7 +42,7 @@ export class DigitRecognitionService {
     threshold: number,
     erosion: number,
     dilation: number
-  ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
+  ): Promise<{ predictions: { image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     if (!this.model) {
       console.warn('Model not loaded yet, loading now...');
       await this.loadModel();
@@ -50,7 +50,7 @@ export class DigitRecognitionService {
 
     console.log('Starting digit extraction and prediction...');
     const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
-    const predictions: { digit: number; confidence: number; box: number[] }[] = [];
+    const predictions: { image: string; digit: number; confidence: number; box: number[] }[] = [];
 
     for (let i = 0; i < digits.length; i++) {
       const digitCanvas = digits[i];
@@ -79,7 +79,7 @@ export class DigitRecognitionService {
 
       console.log(`🧠 Predicted digit ${i + 1}: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
 
-      predictions.push({ digit: predictedDigit, confidence, box });
+      predictions.push({ image: previewBase64, digit: predictedDigit, confidence, box });
 
       // Cleanup
       inputTensor.dispose();
@@ -94,7 +94,7 @@ export class DigitRecognitionService {
     threshold: number,
     erosion: number,
     dilation: number
-  ): Promise<{ predictions: { digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
+  ): Promise<{ predictions: { image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = async () => {
@@ -137,8 +137,8 @@ export class DigitRecognitionService {
 
     for (const [idx, box] of boxes.entries()) {
       let [x, y, w, h] = box;
-
-      if (w < 10 || h < 10) continue; // Skip tiny boxes
+      console.log(`Box detected ${idx}: x=${x}, y=${y}, w=${w}, h=${h}`);
+      if (w < 20 || h < 20) continue; // Skip tiny boxes
 
       const pad = 4;
       x = Math.max(0, x - pad);
@@ -174,8 +174,17 @@ export class DigitRecognitionService {
         if (avg > 128) lightPixels++;
         else darkPixels++;
       }
-      const invert = lightPixels > darkPixels; // invert if background is light
-      console.log(`Digit #${idx + 1}: lightPixels=${lightPixels}, darkPixels=${darkPixels}, invert=${invert}`);
+
+      const totalPixels = lightPixels + darkPixels;
+      const avgBrightness = totalPixels ? lightPixels / totalPixels : 0;
+      const contrast = totalPixels ? Math.abs(lightPixels - darkPixels) / totalPixels : 0;
+
+      // Invert if background is clearly light AND contrast is decent
+      const invert = avgBrightness > 0.6 && contrast > 0.1;
+
+      console.log(
+        `Digit #${idx + 1}: light=${lightPixels}, dark=${darkPixels}, avg=${(avgBrightness * 100).toFixed(1)}%, contrast=${contrast.toFixed(2)}, invert=${invert}`
+      );
 
       for (let i = 0; i < imgData.data.length; i += 4) {
         const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;

@@ -18,7 +18,7 @@ export class DigitTestComponent implements AfterViewInit {
   base64Image: string | undefined;
   imageUrl: string = 'assets/test-images/IMG_2451.png';
   // imageUrl: string = 'assets/test-images/number.png'; // Default image URL
-  predictions: { digit: number; confidence: number; box: number[] }[] | undefined;
+  predictions: { digit: number; confidence: number; box: number[]; image: string }[] | undefined;
   processedImageBase64: string | undefined;
   threshold: number = 50;
   erosion: number = 3;
