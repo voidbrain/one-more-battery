@@ -36,3 +36,30 @@ ion-list {
 ion-button {
   margin-top: 16px;
 }
+
+.camera-container {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
+  background: black;
+}
+
+#webcam,
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#overlay {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.buttons {
+  margin: 16px;
+}

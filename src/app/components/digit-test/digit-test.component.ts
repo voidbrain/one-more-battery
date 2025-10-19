@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DigitRecognitionService } from '../../services/ai/digit-recognition.service';
 import { IonicModule } from '@ionic/angular';
-import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-digit-test',
@@ -12,8 +11,15 @@ import { AfterViewInit } from '@angular/core';
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule],
 })
-export class DigitTestComponent implements AfterViewInit {
+export class DigitTestComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
+
+  private video!: HTMLVideoElement;
+  private overlay!: HTMLCanvasElement;
+  private ctx!: CanvasRenderingContext2D;
+  private frameInterval: any;
+  private stream?: MediaStream;
+  isRunning = false;
 
   base64Image: string | undefined;
   imageUrl: string = 'assets/test-images/IMG_2451.png';
@@ -29,6 +35,15 @@ export class DigitTestComponent implements AfterViewInit {
   async ngAfterViewInit() {
     await this.loadImage();
     this.drawProcessedImage();
+
+    this.video = document.getElementById('webcam') as HTMLVideoElement;
+    this.overlay = document.getElementById('overlay') as HTMLCanvasElement;
+    this.ctx = this.overlay.getContext('2d')!;
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    this.video.srcObject = stream;
+
+    this.frameInterval = setInterval(() => this.processFrame(), 300);
   }
 
   async loadImage() {
@@ -136,5 +151,62 @@ export class DigitTestComponent implements AfterViewInit {
       }
     };
     img.src = this.processedImageBase64;
+  }
+
+  async startCamera() {
+    if (this.isRunning) return;
+
+    this.video = document.getElementById('webcam') as HTMLVideoElement;
+    this.overlay = document.getElementById('overlay') as HTMLCanvasElement;
+    this.ctx = this.overlay.getContext('2d')!;
+    this.overlay.width = this.video.clientWidth;
+    this.overlay.height = this.video.clientHeight;
+
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
+      });
+      this.video.srcObject = this.stream;
+      this.isRunning = true;
+
+      // Process frames periodically
+      this.frameInterval = setInterval(() => this.processFrame(), 300);
+    } catch (err) {
+      console.error('❌ Camera access error:', err);
+      alert('Unable to access camera: ' + err);
+    }
+  }
+
+  private async processFrame() {
+    if (!this.video || this.video.readyState !== this.video.HAVE_ENOUGH_DATA) return;
+
+    const w = this.overlay.width;
+    const h = this.overlay.height;
+    this.ctx.drawImage(this.video, 0, 0, w, h);
+
+    // Extract frame data
+    const base64Frame = this.overlay.toDataURL('image/png');
+
+    // Example: process with your DigitRecognitionService (optional)
+    // const result = await this.digitRecognitionService.recognizeDigitFromBase64(base64Frame, 128, 1, 1);
+    // this.drawPredictions(result.predictions);
+  }
+
+  stopCamera() {
+    if (!this.isRunning) return;
+
+    clearInterval(this.frameInterval);
+    if (this.stream) {
+      this.stream.getTracks().forEach((t) => t.stop());
+      this.stream = undefined;
+    }
+
+    this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+    this.video.srcObject = null;
+    this.isRunning = false;
+  }
+
+  ngOnDestroy() {
+    this.stopCamera();
   }
 }

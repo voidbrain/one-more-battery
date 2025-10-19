@@ -18,6 +18,22 @@
       </ion-grid>
       <ion-row>
         <ion-col size="12" size-lg="6">
+          <ion-card>
+            <ion-card-content>
+              <video id="webcam" autoplay playsinline></video>
+              <canvas id="overlay"></canvas>
+            </ion-card-content>
+            <ion-card-content>
+              <div class="buttons">
+                <ion-button expand="block" (click)="startCamera()" [disabled]="isRunning">
+                  Start Camera
+                </ion-button>
+                <ion-button expand="block" color="danger" (click)="stopCamera()" [disabled]="!isRunning">
+                  Stop Camera
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
           <ion-card *ngIf="base64Image">
             <ion-card-header>
               <ion-card-title>Original Image</ion-card-title>
