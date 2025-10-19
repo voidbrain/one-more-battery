@@ -219,17 +219,24 @@ export class DigitTestComponent implements OnDestroy {
 
   // --- Detect colored strip at top or bottom ---
   private detectColoredStrip(canvas: HTMLCanvasElement): { position: 'top' | 'bottom' | null; color: string | null } {
-    if (!canvas) return { position: null, color: null };
+    if (!canvas) {
+      console.log('⚠️ Canvas is null');
+      return { position: null, color: null };
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return { position: null, color: null };
+    if (!ctx) {
+      console.log('⚠️ Could not get canvas 2D context');
+      return { position: null, color: null };
+    }
 
     const stripHeight = Math.floor(canvas.height * 0.1); // top/bottom 10%
+    console.log(`Canvas size: ${canvas.width}x${canvas.height}, strip height: ${stripHeight}`);
 
     const topData = ctx.getImageData(0, 0, canvas.width, stripHeight).data;
     const bottomData = ctx.getImageData(0, canvas.height - stripHeight, canvas.width, stripHeight).data;
 
-    const analyze = (data: Uint8ClampedArray) => {
+    const analyze = (data: Uint8ClampedArray, position: 'top' | 'bottom') => {
       let r = 0, g = 0, b = 0, count = 0;
       for (let i = 0; i < data.length; i += 4) {
         r += data[i];
@@ -238,6 +245,8 @@ export class DigitTestComponent implements OnDestroy {
         count++;
       }
       r /= count; g /= count; b /= count;
+
+      console.log(`Avg RGB ${position}: R=${r.toFixed(1)} G=${g.toFixed(1)} B=${b.toFixed(1)}`);
 
       const max = Math.max(r, g, b);
       let color: string | null = null;
@@ -249,11 +258,12 @@ export class DigitTestComponent implements OnDestroy {
         else if (r > 200 && g > 200 && b < 100) color = 'yellow';
       }
 
+      console.log(`Detected color ${position}: ${color}`);
       return { avg: [r, g, b], color };
     };
 
-    const top = analyze(topData);
-    const bottom = analyze(bottomData);
+    const top = analyze(topData, 'top');
+    const bottom = analyze(bottomData, 'bottom');
 
     let detected: { position: 'top' | 'bottom' | null; color: string | null } = { position: null, color: null };
 
@@ -262,11 +272,15 @@ export class DigitTestComponent implements OnDestroy {
     else if (top.color && bottom.color) {
       const topBrightness = top.avg.reduce((a, b) => a + b, 0);
       const bottomBrightness = bottom.avg.reduce((a, b) => a + b, 0);
-      detected = topBrightness > bottomBrightness ? { position: 'top', color: top.color } : { position: 'bottom', color: bottom.color };
+      detected = topBrightness > bottomBrightness
+        ? { position: 'top', color: top.color }
+        : { position: 'bottom', color: bottom.color };
     }
 
+    console.log('✅ Final detected strip:', detected);
     return detected;
   }
+
 
 
   ngOnDestroy() {
