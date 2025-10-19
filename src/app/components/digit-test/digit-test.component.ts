@@ -111,7 +111,6 @@ export class DigitTestComponent implements OnDestroy {
     console.log('Canvas initialized with default dimensions:', canvas.width, canvas.height);
     console.log('Processed Image Base64 (truncated):', this.processedImageBase64.substring(0, 100) + '...');
 
-
     const img = new Image();
     img.onload = () => {
       console.log('Image loaded successfully. Intrinsic image dimensions:', img.width, img.height);
@@ -175,6 +174,11 @@ export class DigitTestComponent implements OnDestroy {
     const imageData = this.ctx.getImageData(0, 0, w, h);
     const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
 
+    const strip = this.detectColoredStrip(this.overlay);
+    if (strip.position && strip.color) {
+      console.log(`🎨 Detected ${strip.color.toUpperCase()} strip at ${strip.position}`);
+    }
+
     if (qrCode) {
       // ✅ QR detected
       this.ctx.strokeStyle = 'lime';
@@ -212,6 +216,58 @@ export class DigitTestComponent implements OnDestroy {
     this.video.srcObject = null;
     this.isRunning = false;
   }
+
+  // --- Detect colored strip at top or bottom ---
+  private detectColoredStrip(canvas: HTMLCanvasElement): { position: 'top' | 'bottom' | null; color: string | null } {
+    if (!canvas) return { position: null, color: null };
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return { position: null, color: null };
+
+    const stripHeight = Math.floor(canvas.height * 0.1); // top/bottom 10%
+
+    const topData = ctx.getImageData(0, 0, canvas.width, stripHeight).data;
+    const bottomData = ctx.getImageData(0, canvas.height - stripHeight, canvas.width, stripHeight).data;
+
+    const analyze = (data: Uint8ClampedArray) => {
+      let r = 0, g = 0, b = 0, count = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+        count++;
+      }
+      r /= count; g /= count; b /= count;
+
+      const max = Math.max(r, g, b);
+      let color: string | null = null;
+
+      if (max > 60) {
+        if (max === r && g < r && b < r / 2) color = 'red';
+        else if (max === g && g > r && g > b) color = 'green';
+        else if (max === b && b > r && b > g) color = 'blue';
+        else if (r > 200 && g > 200 && b < 100) color = 'yellow';
+      }
+
+      return { avg: [r, g, b], color };
+    };
+
+    const top = analyze(topData);
+    const bottom = analyze(bottomData);
+
+    let detected: { position: 'top' | 'bottom' | null; color: string | null } = { position: null, color: null };
+
+    if (top.color && !bottom.color) detected = { position: 'top', color: top.color };
+    else if (!top.color && bottom.color) detected = { position: 'bottom', color: bottom.color };
+    else if (top.color && bottom.color) {
+      const topBrightness = top.avg.reduce((a, b) => a + b, 0);
+      const bottomBrightness = bottom.avg.reduce((a, b) => a + b, 0);
+      detected = topBrightness > bottomBrightness ? { position: 'top', color: top.color } : { position: 'bottom', color: bottom.color };
+    }
+
+    return detected;
+  }
+
 
   ngOnDestroy() {
     this.stopCamera();
