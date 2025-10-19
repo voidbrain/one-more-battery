@@ -61,9 +61,9 @@
       <ion-list>
         <ion-item *ngFor="let pred of predictions">
           <ion-label>
-            <img [src]="pred.image" alt="Digit Image" class="digit-image" />
+            <img style="border: 1px solid #f00;" [src]="pred.image" alt="Digit Image" class="digit-image" />
 
-            Digit: {{ pred.digit }}
+            {{ pred.id }}: Digit: {{ pred.digit }}
             <p>Confidence: {{ pred.confidence | number:'1.2-2' }}</p>
           </ion-label>
         </ion-item>

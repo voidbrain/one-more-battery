@@ -42,7 +42,7 @@ export class DigitRecognitionService {
     threshold: number,
     erosion: number,
     dilation: number
-  ): Promise<{ predictions: { image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
+  ): Promise<{ predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     if (!this.model) {
       console.warn('Model not loaded yet, loading now...');
       await this.loadModel();
@@ -50,7 +50,7 @@ export class DigitRecognitionService {
 
     console.log('Starting digit extraction and prediction...');
     const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
-    const predictions: { image: string; digit: number; confidence: number; box: number[] }[] = [];
+    const predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[] = [];
 
     for (let i = 0; i < digits.length; i++) {
       const digitCanvas = digits[i];
@@ -79,7 +79,7 @@ export class DigitRecognitionService {
 
       console.log(`🧠 Predicted digit ${i + 1}: ${predictedDigit}, Confidence: ${(confidence * 100).toFixed(2)}%`);
 
-      predictions.push({ image: previewBase64, digit: predictedDigit, confidence, box });
+      predictions.push({ id: i + 1, image: previewBase64, digit: predictedDigit, confidence, box });
 
       // Cleanup
       inputTensor.dispose();
@@ -94,7 +94,7 @@ export class DigitRecognitionService {
     threshold: number,
     erosion: number,
     dilation: number
-  ): Promise<{ predictions: { image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
+  ): Promise<{ predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = async () => {
@@ -331,6 +331,7 @@ export class DigitRecognitionService {
       const avg = (r + g + b) / 255;
 
       gray.push(invert ? 1 - avg : avg);
+
     }
 
     const tensor = tf.tensor3d(gray, [28, 28, 1]);
