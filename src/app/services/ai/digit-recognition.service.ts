@@ -128,11 +128,32 @@ export class DigitRecognitionService {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const binaryData = this.toBinary(imageData, threshold);
+    const smoothed = this.smoothImage(imageData, 1);
+    const binaryData = this.toBinary(smoothed, threshold);
     const erodedData = this.erode(binaryData, canvas.width, canvas.height, erosion);
     const dilatedData = this.dilate(erodedData, canvas.width, canvas.height, dilation);
 
     const boxes = this.findBoundingBoxes(dilatedData, canvas.width, canvas.height);
+
+    // Sort boxes: prioritize central + larger area
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    boxes.sort((a, b) => {
+      const [xA, yA, wA, hA] = a;
+      const [xB, yB, wB, hB] = b;
+      const centerDistA = Math.hypot(xA + wA / 2 - cx, yA + hA / 2 - cy);
+      const centerDistB = Math.hypot(xB + wB / 2 - cx, yB + hB / 2 - cy);
+      const areaA = wA * hA;
+      const areaB = wB * hB;
+
+      // prioritize closer to center, then by area
+      return centerDistA - centerDistB || areaB - areaA;
+    });
+
+    // Keep only top 1–2 boxes
+    boxes.splice(2);
+
     const digitCanvases: HTMLCanvasElement[] = [];
 
     for (const [idx, box] of boxes.entries()) {
@@ -179,8 +200,20 @@ export class DigitRecognitionService {
       const avgBrightness = totalPixels ? lightPixels / totalPixels : 0;
       const contrast = totalPixels ? Math.abs(lightPixels - darkPixels) / totalPixels : 0;
 
-      // Invert if background is clearly light AND contrast is decent
-      const invert = avgBrightness > 0.6 && contrast > 0.1;
+      // Compute border brightness average
+      const borderSamples = [];
+      const step = 2;
+      for (let y = 0; y < 28; y += step) {
+        for (let x = 0; x < 28; x += step) {
+          if (x < 2 || y < 2 || x > 25 || y > 25) {
+            const idx = (y * 28 + x) * 4;
+            const avg = (imgData.data[idx] + imgData.data[idx + 1] + imgData.data[idx + 2]) / 3;
+            borderSamples.push(avg);
+          }
+        }
+      }
+      const borderMean = borderSamples.reduce((a, b) => a + b, 0) / borderSamples.length;
+      const invert = borderMean > 128; // light border → dark digit
 
       console.log(
         `Digit #${idx + 1}: light=${lightPixels}, dark=${darkPixels}, avg=${(avgBrightness * 100).toFixed(1)}%, contrast=${contrast.toFixed(2)}, invert=${invert}`
@@ -219,15 +252,51 @@ export class DigitRecognitionService {
     return { digits: digitCanvases, boxes, processedImageBase64 };
   }
 
+  private smoothImage(imageData: ImageData, radius = 1): ImageData {
+    const w = imageData.width;
+    const h = imageData.height;
+    const src = imageData.data;
+    const dst = new Uint8ClampedArray(src.length);
+
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        let sum = 0;
+        for (let j = -radius; j <= radius; j++) {
+          for (let i = -radius; i <= radius; i++) {
+            const idx = ((y + j) * w + (x + i)) * 4;
+            const avg = (src[idx] + src[idx + 1] + src[idx + 2]) / 3;
+            sum += avg;
+          }
+        }
+        const mean = sum / ((2 * radius + 1) ** 2);
+        const idx = (y * w + x) * 4;
+        dst[idx] = dst[idx + 1] = dst[idx + 2] = mean;
+        dst[idx + 3] = 255;
+      }
+    }
+
+    return new ImageData(dst, w, h);
+  }
 
 
   // --- Morphology operations ---
   private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
     const binary = new Uint8ClampedArray(imageData.data.length / 4);
+
+    // Compute global mean brightness
+    let sum = 0;
     for (let i = 0; i < imageData.data.length; i += 4) {
       const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-      binary[i / 4] = avg < threshold ? 1 : 0;
+      sum += avg;
     }
+    const mean = sum / (imageData.data.length / 4);
+    const adaptiveThreshold = threshold || mean * 0.9; // relative to scene brightness
+
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+      binary[i / 4] = avg < adaptiveThreshold ? 1 : 0;
+    }
+
     return binary;
   }
 

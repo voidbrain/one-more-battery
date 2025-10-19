@@ -21,8 +21,8 @@ export class DigitTestComponent implements AfterViewInit {
   predictions: { id: number; digit: number; confidence: number; box: number[]; image: string }[] | undefined;
   processedImageBase64: string | undefined;
   threshold: number = 50;
-  erosion: number = 3;
-  dilation: number = 1;
+  erosion: number = 5;
+  dilation: number = 5;
 
   constructor(private digitRecognitionService: DigitRecognitionService) {}
 
