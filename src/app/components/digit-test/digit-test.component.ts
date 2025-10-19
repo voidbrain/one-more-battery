@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DigitRecognitionService } from '../../services/ai/digit-recognition.service';
 import { IonicModule } from '@ionic/angular';
+import jsQR from 'jsqr';
 
 @Component({
   selector: 'app-digit-test',
@@ -170,14 +171,32 @@ export class DigitTestComponent implements OnDestroy {
     const h = this.overlay.height;
     this.ctx.drawImage(this.video, 0, 0, w, h);
 
+    // Extract image data for QR scanning
+    const imageData = this.ctx.getImageData(0, 0, w, h);
+    const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (qrCode) {
+      // ✅ QR detected
+      this.ctx.strokeStyle = 'lime';
+      this.ctx.lineWidth = 4;
+      this.ctx.strokeRect(qrCode.location.topLeftCorner.x, qrCode.location.topLeftCorner.y,
+        qrCode.location.bottomRightCorner.x - qrCode.location.topLeftCorner.x,
+        qrCode.location.bottomRightCorner.y - qrCode.location.topLeftCorner.y);
+
+      this.ctx.font = '20px Arial';
+      this.ctx.fillStyle = 'lime';
+      this.ctx.fillText(`QR: ${qrCode.data}`, qrCode.location.topLeftCorner.x, qrCode.location.topLeftCorner.y - 10);
+
+      console.log('📷 QR Detected:', qrCode.data);
+      return; // Stop here — no need for digit recognition this frame
+    }
+
+    // ❌ No QR found → fallback to digit recognition
+
     // Extract frame data
     const base64Frame = this.overlay.toDataURL('image/png');
     this.base64Image = base64Frame;
     this.recognize();
-
-    // Example: process with your DigitRecognitionService (optional)
-    // const result = await this.digitRecognitionService.recognizeDigitFromBase64(base64Frame, 128, 1, 1);
-    // this.drawPredictions(result.predictions);
   }
 
   stopCamera() {

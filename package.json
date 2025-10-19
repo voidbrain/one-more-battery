@@ -50,6 +50,7 @@
     "date-fns": "^3.6.0",
     "firebase": "^10.14.1",
     "ionicons": "^7.4.0",
+    "jsqr": "^1.4.0",
     "long": "^5.2.4",
     "ngx-colors": "^3.6.0",
     "pngjs": "^7.0.0",
