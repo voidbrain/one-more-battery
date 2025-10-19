@@ -1,9 +1,8 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "types": ["node"],
+    "types": ["node"],   // keep node types
     "typeRoots": [
       "node_modules/@types",
       "src/types"
@@ -32,5 +31,9 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/types/**/*.d.ts"   // 👈 ensure TypeScript sees your custom types
+  ]
 }
