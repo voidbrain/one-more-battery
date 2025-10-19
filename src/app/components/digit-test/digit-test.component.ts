@@ -11,7 +11,7 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule],
 })
-export class DigitTestComponent implements AfterViewInit, OnDestroy {
+export class DigitTestComponent implements OnDestroy {
   @ViewChild('canvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private video!: HTMLVideoElement;
@@ -31,20 +31,6 @@ export class DigitTestComponent implements AfterViewInit, OnDestroy {
   dilation: number = 5;
 
   constructor(private digitRecognitionService: DigitRecognitionService) {}
-
-  async ngAfterViewInit() {
-    await this.loadImage();
-    this.drawProcessedImage();
-
-    this.video = document.getElementById('webcam') as HTMLVideoElement;
-    this.overlay = document.getElementById('overlay') as HTMLCanvasElement;
-    this.ctx = this.overlay.getContext('2d')!;
-
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    this.video.srcObject = stream;
-
-    this.frameInterval = setInterval(() => this.processFrame(), 300);
-  }
 
   async loadImage() {
     if (!this.imageUrl) {
@@ -186,6 +172,8 @@ export class DigitTestComponent implements AfterViewInit, OnDestroy {
 
     // Extract frame data
     const base64Frame = this.overlay.toDataURL('image/png');
+    this.base64Image = base64Frame;
+    this.recognize();
 
     // Example: process with your DigitRecognitionService (optional)
     // const result = await this.digitRecognitionService.recognizeDigitFromBase64(base64Frame, 128, 1, 1);
