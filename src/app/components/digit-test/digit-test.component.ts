@@ -1,9 +1,9 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DigitRecognitionService } from '../../services/ai/digit-recognition.service';
 import { IonicModule } from '@ionic/angular';
-import * as jsQR from 'jsqr';
+import jsQR from 'jsqr';
 
 @Component({
   selector: 'app-digit-test',
