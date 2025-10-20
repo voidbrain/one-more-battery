@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
-    "types": ["node"],   // keep node types
+    "types": ["node"],
     "typeRoots": [
       "node_modules/@types",
       "src/types"
@@ -35,6 +35,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/types/**/*.d.ts"   // 👈 ensure TypeScript sees your custom types
+    "src/types/**/*.d.ts"
   ]
 }
