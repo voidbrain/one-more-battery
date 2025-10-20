@@ -192,6 +192,7 @@ export class DigitTestComponent implements OnDestroy {
       this.ctx.fillText(`QR: ${qrCode.data}`, qrCode.location.topLeftCorner.x, qrCode.location.topLeftCorner.y - 10);
 
       console.log('📷 QR Detected:', qrCode.data);
+      this.stopCamera(); // Stop processing after QR code is found
       return; // Stop here — no need for digit recognition this frame
     }
 
