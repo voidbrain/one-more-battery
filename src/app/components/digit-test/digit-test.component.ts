@@ -23,7 +23,7 @@ export class DigitTestComponent implements OnDestroy {
   isRunning = false;
 
   base64Image: string | undefined;
-  imageUrl: string = 'assets/test-images/IMG_2451.png';
+  imageUrl: string = 'assets/test-images/black.png';
   // imageUrl: string = 'assets/test-images/number.png'; // Default image URL
   predictions: { id: number; digit: number; confidence: number; box: number[]; image: string }[] | undefined;
   processedImageBase64: string | undefined;
