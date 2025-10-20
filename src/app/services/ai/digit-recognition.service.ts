@@ -284,24 +284,198 @@ export class DigitRecognitionService {
 
 
   // --- Morphology operations ---
-  private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
-    const binary = new Uint8ClampedArray(imageData.data.length / 4);
+  // ORIGINAL VERSION
+  // private toBinary(imageData: ImageData, threshold: number): Uint8ClampedArray {
+  //   const binary = new Uint8ClampedArray(imageData.data.length / 4);
 
-    // Compute global mean brightness
+  //   // Compute global mean brightness
+  //   let sum = 0;
+  //   for (let i = 0; i < imageData.data.length; i += 4) {
+  //     const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+  //     sum += avg;
+  //   }
+  //   const mean = sum / (imageData.data.length / 4);
+  //   const adaptiveThreshold = threshold || mean * 0.9; // relative to scene brightness
+
+  //   for (let i = 0; i < imageData.data.length; i += 4) {
+  //     const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+  //     binary[i / 4] = avg < adaptiveThreshold ? 1 : 0;
+  //   }
+
+  //   return binary;
+  // }
+
+  // private toBinary(imageData: ImageData, threshold?: number): Uint8ClampedArray {
+  //   const { data, width, height } = imageData;
+  //   const grayValues = new Uint8ClampedArray(width * height);
+
+  //   // 1️⃣ Convert to grayscale
+  //   for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+  //     grayValues[j] = (data[i] + data[i + 1] + data[i + 2]) / 3;
+  //   }
+
+  //   // 2️⃣ Auto compute threshold if not provided or out of range
+  //   let usedThreshold: number;
+  //   if (threshold == null || threshold < 0 || threshold > 255) {
+  //     usedThreshold = this.otsuThreshold(grayValues);
+  //   } else {
+  //     usedThreshold = threshold;
+  //   }
+
+  //   // 3️⃣ Apply threshold to produce binary image
+  //   const binaryData = new Uint8ClampedArray(width * height);
+  //   for (let i = 0; i < grayValues.length; i++) {
+  //     binaryData[i] = grayValues[i] > usedThreshold ? 1 : 0;
+  //   }
+
+  //   return binaryData;
+  // }
+
+
+  private toBinary(imageData: ImageData, threshold?: number): Uint8ClampedArray {
+    const { data, width, height } = imageData;
+    const n = width * height;
+    const gray = new Uint8ClampedArray(n);
+
+    // 1) convert to grayscale 0..255
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+      gray[j] = Math.round((data[i] + data[i + 1] + data[i + 2]) / 3);
+    }
+
+    // 2) threshold selection (Otsu if threshold not provided or out of range)
+    let usedThreshold: number;
+    if (threshold == null || threshold < 0 || threshold > 255) {
+      usedThreshold = this.otsuThreshold(gray);
+    } else {
+      usedThreshold = Math.round(threshold);
+    }
+
+    // 3) initial binary assuming "foreground = darker than threshold"
+    const bin = new Uint8ClampedArray(n);
+    for (let i = 0; i < n; i++) bin[i] = gray[i] < usedThreshold ? 1 : 0;
+
+    // 4) determine polarity robustly:
+    //    compute mean brightness of border region and center region.
+    const borderH = Math.max(2, Math.floor(height * 0.08)); // 8% border
+    const borderW = Math.max(2, Math.floor(width * 0.08));
+    let borderSum = 0, borderCount = 0;
+    // top border
+    for (let y = 0; y < borderH; y++) for (let x = 0; x < width; x++) { borderSum += gray[y * width + x]; borderCount++; }
+    // bottom border
+    for (let y = height - borderH; y < height; y++) for (let x = 0; x < width; x++) { borderSum += gray[y * width + x]; borderCount++; }
+    // left/right vertical strips (excluding corners already counted lightly)
+    for (let y = borderH; y < height - borderH; y++) {
+      for (let x = 0; x < borderW; x++) { borderSum += gray[y * width + x]; borderCount++; }
+      for (let x = width - borderW; x < width; x++) { borderSum += gray[y * width + x]; borderCount++; }
+    }
+    const borderMean = borderCount ? borderSum / borderCount : 128;
+
+    // center box mean
+    const centerW = Math.max(4, Math.floor(width * 0.4));
+    const centerH = Math.max(4, Math.floor(height * 0.4));
+    const startX = Math.floor((width - centerW) / 2);
+    const startY = Math.floor((height - centerH) / 2);
+    let centerSum = 0, centerCount = 0;
+    for (let y = startY; y < startY + centerH; y++) {
+      for (let x = startX; x < startX + centerW; x++) {
+        centerSum += gray[y * width + x];
+        centerCount++;
+      }
+    }
+    const centerMean = centerCount ? centerSum / centerCount : 128;
+
+    // If center is *lighter* than border, the digit is likely lighter than background -> flip
+    // If center is *darker* than border, the current binary (gray < threshold => 1) is correct.
+    const shouldFlip = centerMean > borderMean + 6; // +6 tolerance
+    if (shouldFlip) {
+      for (let i = 0; i < n; i++) bin[i] = 1 - bin[i];
+    }
+
+    // 5) small morphological opening to remove speckles and tighten shapes
+    //    apply 1 erosion then 1 dilation (3x3 kernel)
+    const eroded = this.morphologyBinary(bin, width, height, 'erode');
+    const opened = this.morphologyBinary(eroded, width, height, 'dilate');
+
+    // 6) Optional: if result is almost empty or almost full, fallback to inverted Otsu
+    const sumOpened = opened.reduce((s, v) => s + v, 0);
+    if (sumOpened < 10 || sumOpened > n * 0.9) {
+      // try inverted thresholding as fallback (handles pathological images)
+      const inverted = new Uint8ClampedArray(n);
+      for (let i = 0; i < n; i++) inverted[i] = gray[i] > usedThreshold ? 1 : 0;
+      const invE = this.morphologyBinary(inverted, width, height, 'erode');
+      const invO = this.morphologyBinary(invE, width, height, 'dilate');
+      const sumInv = invO.reduce((s, v) => s + v, 0);
+      // pick the one with more reasonable amount of foreground
+      if (sumInv > 10 && sumInv < n * 0.95) {
+        return invO;
+      }
+    }
+
+    return opened;
+  }
+
+  /** small binary morphology for 3x3 kernel (operates on 0/1 arrays) */
+  private morphologyBinary(data: Uint8ClampedArray, width: number, height: number, op: 'erode' | 'dilate'): Uint8ClampedArray {
+    const out = new Uint8ClampedArray(data.length);
+    const match = op === 'erode' ? 1 : 0;
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        let found = false;
+        for (let j = -1; j <= 1 && !found; j++) {
+          for (let i = -1; i <= 1; i++) {
+            if (data[(y + j) * width + (x + i)] === match) {
+              found = true;
+              break;
+            }
+          }
+        }
+        out[y * width + x] = found ? match : 1 - match;
+      }
+    }
+    // fill borders conservatively
+    for (let x = 0; x < width; x++) { out[x] = data[x]; out[(height - 1) * width + x] = data[(height - 1) * width + x]; }
+    for (let y = 0; y < height; y++) { out[y * width + 0] = data[y * width + 0]; out[y * width + (width - 1)] = data[y * width + (width - 1)]; }
+    return out;
+  }
+
+  /** Otsu threshold supporting Uint8ClampedArray input */
+  private otsuThreshold(gray: Uint8ClampedArray): number {
+    const hist = new Array(256).fill(0);
+    for (let i = 0; i < gray.length; i++) hist[gray[i]]++;
+    const total = gray.length;
     let sum = 0;
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-      sum += avg;
-    }
-    const mean = sum / (imageData.data.length / 4);
-    const adaptiveThreshold = threshold || mean * 0.9; // relative to scene brightness
+    for (let t = 0; t < 256; t++) sum += t * hist[t];
 
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-      binary[i / 4] = avg < adaptiveThreshold ? 1 : 0;
-    }
+    let sumB = 0;
+    let wB = 0;
+    let maxVar = 0;
+    let threshold = 128;
 
-    return binary;
+    for (let t = 0; t < 256; t++) {
+      wB += hist[t];
+      if (wB === 0) continue;
+      const wF = total - wB;
+      if (wF === 0) break;
+
+      sumB += t * hist[t];
+      const mB = sumB / wB;
+      const mF = (sum - sumB) / wF;
+      const between = wB * wF * (mB - mF) * (mB - mF);
+      if (between > maxVar) {
+        maxVar = between;
+        threshold = t;
+      }
+    }
+    return threshold;
+  }
+
+  private imageContrast(gray: Uint8ClampedArray): number {
+    let min = 255, max = 0;
+    for (let i = 0; i < gray.length; i++) {
+      if (gray[i] < min) min = gray[i];
+      if (gray[i] > max) max = gray[i];
+    }
+    return max - min;
   }
 
   private erode(data: Uint8ClampedArray, width: number, height: number, iterations: number): Uint8ClampedArray {

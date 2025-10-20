@@ -45,6 +45,35 @@
         </ion-col>
 
         <ion-col size="12" size-lg="6">
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Settings</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+
+              <ion-list>
+                <ion-item>
+                  <ion-input label="Threshold" type="number" [(ngModel)]="threshold" labelPlacement="floating"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-input label="Erosion" type="number" [(ngModel)]="erosion" labelPlacement="floating"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-input label="Dilation" type="number" [(ngModel)]="dilation" labelPlacement="floating"></ion-input>
+                </ion-item>
+                <ion-item>
+                  ({{forceInvert}})<ion-checkbox [(ngModel)]="forceInvert">Force Invert</ion-checkbox>
+                </ion-item>
+              </ion-list>
+
+            </ion-card-content>
+            <ion-card-content>
+              <ion-button expand="block" (click)="recognize()">Recognize Digit</ion-button>
+
+            </ion-card-content>
+          </ion-card>
+
           <ion-card>
             <ion-card-header>
               <ion-card-title>Processed Image</ion-card-title>
@@ -58,22 +87,7 @@
       </ion-row>
     </ion-grid>
 
-    <ion-list>
-      <ion-item>
-        <ion-input label="Threshold" type="number" [(ngModel)]="threshold" labelPlacement="floating"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="Erosion" type="number" [(ngModel)]="erosion" labelPlacement="floating"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="Dilation" type="number" [(ngModel)]="dilation" labelPlacement="floating"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-checkbox [(ngModel)]="forceInvert">Force Invert</ion-checkbox>
-      </ion-item>
-    </ion-list>
 
-    <ion-button expand="block" (click)="recognize()">Recognize Digit</ion-button>
 
     <div *ngIf="predictions && predictions.length > 0">
       <h2>Predictions:</h2>
