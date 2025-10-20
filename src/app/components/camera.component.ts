@@ -93,7 +93,7 @@ export class CameraComponent {
       const threshold = parseInt((document.getElementById('threshold') as HTMLInputElement).value);
       const erosion = parseInt((document.getElementById('erosion') as HTMLInputElement).value);
       const dilation = parseFloat((document.getElementById('dilation') as HTMLInputElement).value);
-      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement, threshold, erosion, dilation);
+      const result = await this.digitRecognitionService.predictDigitsFromImage(imgElement, threshold, erosion, dilation, false);
       this.drawPredictions(canvas, result.predictions);
     };
   }

@@ -41,7 +41,8 @@ export class DigitRecognitionService {
     img: HTMLImageElement,
     threshold: number,
     erosion: number,
-    dilation: number
+    dilation: number,
+    forceInvert: boolean
   ): Promise<{ predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     if (!this.model) {
       console.warn('Model not loaded yet, loading now...');
@@ -49,7 +50,7 @@ export class DigitRecognitionService {
     }
 
     console.log('Starting digit extraction and prediction...');
-    const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation);
+    const { digits, boxes, processedImageBase64 } = this.extractDigits(img, threshold, erosion, dilation, forceInvert);
     const predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[] = [];
 
     for (let i = 0; i < digits.length; i++) {
@@ -93,13 +94,14 @@ export class DigitRecognitionService {
     base64Image: string,
     threshold: number,
     erosion: number,
-    dilation: number
+    dilation: number,
+    forceInvert: boolean
   ): Promise<{ predictions: { id: number; image: string; digit: number; confidence: number; box: number[] }[]; processedImageBase64: string }> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = async () => {
         try {
-          const result = await this.predictDigitsFromImage(img, threshold, erosion, dilation);
+          const result = await this.predictDigitsFromImage(img, threshold, erosion, dilation, forceInvert);
           resolve(result);
         } catch (error) {
           reject(error);
@@ -115,7 +117,8 @@ export class DigitRecognitionService {
     img: HTMLImageElement,
     threshold: number,
     erosion: number,
-    dilation: number
+    dilation: number,
+    forceInvert: boolean
   ): {
     digits: HTMLCanvasElement[];
     boxes: number[][];
@@ -213,7 +216,8 @@ export class DigitRecognitionService {
         }
       }
       const borderMean = borderSamples.reduce((a, b) => a + b, 0) / borderSamples.length;
-      const invert = borderMean > 128; // light border → dark digit
+      const autoInvert = borderMean > 128; // light border → dark digit
+      const invert = forceInvert ? !autoInvert : autoInvert;
 
       console.log(
         `Digit #${idx + 1}: light=${lightPixels}, dark=${darkPixels}, avg=${(avgBrightness * 100).toFixed(1)}%, contrast=${contrast.toFixed(2)}, invert=${invert}`
@@ -407,7 +411,7 @@ export class DigitRecognitionService {
     const reshapedTensor = tensor.reshape([1, 28, 28]);
 
     console.log('🧠 [Preprocess] Tensor shape:', reshapedTensor.shape);
-    reshapedTensor.data().then(data => {
+    reshapedTensor.data().then((data: any) => {
       console.log('🧠 [Preprocess] Sample values:', data.slice(0, 10));
     });
 

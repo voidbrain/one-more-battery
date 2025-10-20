@@ -30,6 +30,7 @@ export class DigitTestComponent implements OnDestroy {
   threshold: number = 50;
   erosion: number = 5;
   dilation: number = 5;
+  forceInvert: boolean = false;
 
   constructor(private digitRecognitionService: DigitRecognitionService) {}
 
@@ -69,7 +70,8 @@ export class DigitTestComponent implements OnDestroy {
         this.base64Image,
         this.threshold,
         this.erosion,
-        this.dilation
+        this.dilation,
+        this.forceInvert
       );
       this.predictions = result.predictions;
       this.processedImageBase64 = result.processedImageBase64;
