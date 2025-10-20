@@ -195,6 +195,10 @@ export class DigitTestComponent implements OnDestroy {
       return; // Stop here — no need for digit recognition this frame
     }
 
+    else {
+      console.log('📷 QR NOT Detected, go on');
+    }
+
     // ❌ No QR found → fallback to digit recognition
 
     // Extract frame data

@@ -19,10 +19,10 @@ RUN npm install -g @angular/cli
 
 COPY package*.json ./
 
-COPY . .
-
 # install dependencies
 RUN npm install --unsafe-perm --legacy-peer-deps
+
+COPY . .
 
 # RUN server
 EXPOSE 4200
