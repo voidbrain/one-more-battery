@@ -345,3 +345,7 @@ ion-toast[color='primary'] {
   --color: #ffffff;
   --border: 1px solid rgba(59, 130, 246, 0.3);
 }
+
+ion-header>div {
+  display: flex;
+}

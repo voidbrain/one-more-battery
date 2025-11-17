@@ -1,7 +1,7 @@
 <ion-header>
-  <ion-toolbar>
+  <div>
     <ion-title>{{ 'app.title' | transloco }}</ion-title>
-    <div slot="primary" class="toolbar-dropdowns">
+    <div class="toolbar-dropdowns">
       <app-rich-dropdown
         [options]="languageOptions"
         [selectedValue]="selectedLanguage()"
@@ -24,7 +24,7 @@
       >
       </app-rich-dropdown>
     </div>
-  </ion-toolbar>
+  </div>
 
   <ion-toolbar>
     <ion-segment [value]="activeSegment()" (ionChange)="onSegmentChange($event)" mode="ios">
