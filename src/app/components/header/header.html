@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'app.title' | transloco }}</ion-title>
+    <div slot="primary" class="toolbar-dropdowns">
+      <app-rich-dropdown
+        [options]="languageOptions"
+        [selectedValue]="selectedLanguage()"
+        triggerLabel="Select Language"
+        (selectionChange)="onLanguageChange($event)"
+      >
+      </app-rich-dropdown>
+      <app-rich-dropdown
+        [options]="themeOptions"
+        [selectedValue]="selectedTheme()"
+        triggerLabel="Select Theme"
+        (selectionChange)="onThemeChange($event)"
+      >
+      </app-rich-dropdown>
+      <app-rich-dropdown
+        [options]="styleOptions"
+        [selectedValue]="selectedStyle()"
+        triggerLabel="Select Style"
+        (selectionChange)="onStyleChange($event)"
+      >
+      </app-rich-dropdown>
+    </div>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [value]="activeSegment()" (ionChange)="onSegmentChange($event)" mode="ios">
+      <ion-segment-button
+        value="batteries"
+        routerLink="/batteries"
+        [class.active]="activeSegment() === 'batteries'"
+      >
+        <ion-label>{{ 'nav.batteries' | transloco }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button
+        value="manage"
+        routerLink="/manage"
+        [class.active]="activeSegment() === 'manage'"
+      >
+        <ion-label>{{ 'nav.manageBatteries' | transloco }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button
+        value="settings"
+        routerLink="/settings"
+        [class.active]="activeSegment() === 'settings'"
+      >
+        <ion-label>{{ 'nav.settings' | transloco }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button
+        value="ai"
+        routerLink="/ai"
+        [class.active]="activeSegment() === 'ai'"
+      >
+        <ion-label>{{ 'nav.ai' | transloco }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>

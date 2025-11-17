@@ -1,0 +1,53 @@
+<div class="rich-dropdown" [class.active]="isOpen()">
+  <button
+    class="dropdown-trigger"
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="triggerLabel()"
+    type="button"
+  >
+    <div class="trigger-content">
+      @if (selectedOption()?.icon) {
+        <ion-icon [name]="selectedOption()?.icon" class="option-icon"></ion-icon>
+      } @else if (selectedOption()?.flag) {
+        <img [src]="selectedOption()?.flag" [alt]="selectedOption()?.label" class="flag-icon" />
+      }
+      <span class="option-label">{{ selectedOption()?.label }}</span>
+    </div>
+    <ion-icon name="chevron-down" class="chevron-icon" [class.rotated]="isOpen()"></ion-icon>
+  </button>
+
+  @if (isOpen()) {
+  <div class="dropdown-menu" [class.open]="isOpen()" [style]="dropdownStyle()">
+    <!-- Test comment for live update verification -->
+    @for (option of options(); track option.value) {
+    <button
+      class="dropdown-item"
+      (click)="selectOption(option)"
+      (keydown.enter)="selectOption(option)"
+      (keydown.space)="selectOption(option)"
+      [class.selected]="option.value === selectedValue()"
+      type="button"
+      [attr.aria-label]="option.label"
+    >
+      <div class="item-content">
+        @if (option.icon) {
+          <ion-icon [name]="option.icon" class="option-icon"></ion-icon>
+        } @else if (option.flag) {
+          <img [src]="option.flag" [alt]="option.label" class="flag-icon" />
+        }
+        <span class="option-label">{{ option.label }}</span>
+      </div>
+      @if (option.value === selectedValue()) {
+      <ion-icon
+        name="checkmark"
+        class="checkmark-icon"
+        color="primary"
+      >
+      </ion-icon>
+      }
+    </button>
+    }
+  </div>
+}
+</div>

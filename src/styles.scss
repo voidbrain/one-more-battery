@@ -1,0 +1,347 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Prevent body scrolling when modal is open */
+ion-modal {
+  --backdrop-opacity: 0.4;
+}
+
+/* Fix router-outlet height in Ionic apps */
+ion-app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-app ion-content {
+  flex: 1;
+  height: 100%;
+}
+
+ion-app ion-content ::ng-deep router-outlet + * {
+  height: 100%;
+  display: block;
+}
+
+ion-modal.custom-modal {
+  --height: 80vh;
+  --width: 90vw;
+  --max-width: 600px;
+  --border-radius: 12px;
+}
+
+/* Ensure modal content can scroll */
+ion-modal ion-content {
+  --overflow: auto;
+}
+
+// Light theme (default)
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #dee2e6;
+  --accent-color: #007bff;
+  --hover-color: #e9ecef;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Ionic Light Theme CSS Custom Properties */
+  --ion-background-color: #ffffff;
+  --ion-text-color: #333333;
+  --ion-toolbar-background: #f8f9fa;
+  --ion-toolbar-color: #333333;
+  --ion-item-background: #f8f9fa;
+  --ion-card-background: #f8f9fa;
+  --ion-border-color: #dee2e6;
+
+  /* Liquid Glass Effect */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --glass-backdrop: blur(4px);
+}
+
+// Dark theme - Updated to use Ionic's dark theme class
+.ion-theme-dark {
+  --bg-primary: #1a202c;
+  --bg-secondary: #2d3748;
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --border-color: #4a5568;
+  --accent-color: #63b3ed;
+  --hover-color: #4a5568;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Ionic Dark Theme CSS Custom Properties */
+  --ion-background-color: #1a202c;
+  --ion-text-color: #e2e8f0;
+  --ion-toolbar-background: #2d3748;
+  --ion-toolbar-color: #e2e8f0;
+  --ion-item-background: #2d3748;
+  --ion-card-background: #2d3748;
+  --ion-border-color: #4a5568;
+
+  /* Liquid Glass Effect */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-backdrop: blur(4px);
+}
+
+// Global styles
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+// Ensure modals inherit theme
+.theme-aware {
+  --ion-background-color: var(--bg-primary);
+  --ion-text-color: var(--text-primary);
+  --ion-item-background: var(--bg-secondary);
+  --ion-card-background: var(--bg-secondary);
+  --ion-toolbar-background: var(--bg-primary);
+  --ion-toolbar-color: var(--text-primary);
+}
+
+// Force modal content to inherit theme variables
+ion-modal.theme-aware {
+  --background: var(--bg-primary);
+  --color: var(--text-primary);
+}
+
+ion-modal.theme-aware ion-content {
+  --background: var(--bg-primary);
+  --color: var(--text-primary);
+}
+
+ion-modal.theme-aware ion-card {
+  --background: var(--bg-secondary);
+  --color: var(--text-primary);
+}
+
+ion-modal.theme-aware ion-item {
+  --background: var(--bg-secondary);
+  --color: var(--text-primary);
+}
+
+// Fix ion-select modal/popover theming
+ion-select-popover,
+ion-select-modal {
+  --background: var(--bg-primary);
+  --color: var(--text-primary);
+}
+
+ion-select-popover ion-list,
+ion-select-modal ion-list {
+  --background: var(--bg-primary);
+  --color: var(--text-primary);
+}
+
+ion-select-popover ion-item,
+ion-select-modal ion-item {
+  --background: var(--bg-secondary);
+  --color: var(--text-primary);
+  --border-color: var(--border-color);
+}
+
+ion-select-popover ion-radio,
+ion-select-modal ion-radio {
+  --color: var(--text-primary);
+}
+
+ion-select-popover ion-checkbox,
+ion-select-modal ion-checkbox {
+  --color: var(--text-primary);
+}
+
+ion-select-popover ion-label,
+ion-select-modal ion-label {
+  --color: var(--text-primary);
+}
+
+// Ensure dark theme is applied to select modals
+.ion-theme-dark ion-select-popover,
+.ion-theme-dark ion-select-modal {
+  --background: #1a202c;
+  --color: #e2e8f0;
+}
+
+.ion-theme-dark ion-select-popover ion-list,
+.ion-theme-dark ion-select-modal ion-list {
+  --background: #1a202c;
+  --color: #e2e8f0;
+}
+
+.ion-theme-dark ion-select-popover ion-item,
+.ion-theme-dark ion-select-modal ion-item {
+  --background: #2d3748;
+  --color: #e2e8f0;
+  --border-color: #4a5568;
+}
+
+.ion-theme-dark ion-select-popover ion-radio,
+.ion-theme-dark ion-select-modal ion-radio {
+  --color: #e2e8f0;
+}
+
+.ion-theme-dark ion-select-popover ion-checkbox,
+.ion-theme-dark ion-select-modal ion-checkbox {
+  --color: #e2e8f0;
+}
+
+.ion-theme-dark ion-select-popover ion-label,
+.ion-theme-dark ion-select-modal ion-label {
+  --color: #e2e8f0;
+}
+
+/* Liquid Glass Effect Classes - Only applied when glass-effect is enabled */
+.glass-effect .body {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+.glass-effect ion-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.glass-effect ion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+}
+
+.glass-effect ion-modal {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 20px;
+}
+
+.glass-effect ion-button {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 25px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.glass-effect ion-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 35px 0 rgba(31, 38, 135, 0.6);
+}
+
+.glass-effect .glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+/* Toast styling to ensure visibility and theme awareness */
+ion-toast {
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --backdrop-filter: blur(8px);
+  font-weight: 500;
+  z-index: 9999;
+}
+
+/* Default toast - adapts to theme */
+ion-toast {
+  --background: rgba(0, 0, 0, 0.9);
+  --color: #ffffff;
+}
+
+/* Light theme toasts */
+:root ion-toast {
+  --background: rgba(0, 0, 0, 0.9);
+  --color: #ffffff;
+}
+
+/* Dark theme toasts */
+.ion-theme-dark ion-toast {
+  --background: rgba(0, 0, 0, 0.9);
+  --color: #ffffff;
+}
+
+/* Liquid glass effect on toasts */
+.glass-effect ion-toast {
+  --background: rgba(255, 255, 255, 0.95);
+  --color: var(--text-primary);
+  --border: 1px solid rgba(255, 255, 255, 0.2);
+  --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Success toast */
+ion-toast[color='success'] {
+  --background: rgba(16, 185, 129, 0.95);
+  --color: #ffffff;
+}
+
+.glass-effect ion-toast[color='success'] {
+  --background: rgba(16, 185, 129, 0.9);
+  --color: #ffffff;
+  --border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Error/Danger toast */
+ion-toast[color='danger'] {
+  --background: rgba(239, 68, 68, 0.95);
+  --color: #ffffff;
+}
+
+.glass-effect ion-toast[color='danger'] {
+  --background: rgba(239, 68, 68, 0.9);
+  --color: #ffffff;
+  --border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Warning toast */
+ion-toast[color='warning'] {
+  --background: rgba(245, 158, 11, 0.95);
+  --color: #ffffff;
+}
+
+.glass-effect ion-toast[color='warning'] {
+  --background: rgba(245, 158, 11, 0.9);
+  --color: #ffffff;
+  --border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Primary/Info toast */
+ion-toast[color='primary'] {
+  --background: rgba(59, 130, 246, 0.95);
+  --color: #ffffff;
+}
+
+.glass-effect ion-toast[color='primary'] {
+  --background: rgba(59, 130, 246, 0.9);
+  --color: #ffffff;
+  --border: 1px solid rgba(59, 130, 246, 0.3);
+}

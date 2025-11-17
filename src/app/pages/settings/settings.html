@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'settings.title' | transloco }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment [value]="activeTab()" (ionChange)="onTabChange($event)" mode="ios">
+    <ion-segment-button value="usage">
+      <ion-label>{{ 'settings.usageSettings' | transloco }}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="app">
+      <ion-label>{{ 'settings.appSettings' | transloco }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  @if (isLoading()) {
+    <ion-item>
+      <ion-spinner></ion-spinner>
+      <ion-label class="ion-padding-start">{{ 'common.loading' | transloco }}</ion-label>
+    </ion-item>
+  } @else {
+    @if (activeTab() === 'usage') {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'settings.usageSettings' | transloco }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="usageForm" (ngSubmit)="saveUsageSettings()">
+            <ion-item>
+              <ion-toggle formControlName="showDismissedBatteries">{{
+                'settings.showDismissedBatteries' | transloco
+              }}</ion-toggle>
+            </ion-item>
+            <ion-text color="medium" class="ion-padding-start">
+              <small>{{ 'settings.showDismissedBatteriesDescription' | transloco }}</small>
+            </ion-text>
+
+            <ion-item>
+              <ion-input
+                label="{{ 'settings.batteryAlertDays' | transloco }}"
+                type="number"
+                formControlName="batteryAlertDays"
+                min="1"
+                placeholder="30"
+                labelPlacement="stacked"
+              >
+              </ion-input>
+            </ion-item>
+            <ion-text color="medium" class="ion-padding-start">
+              <small>{{ 'settings.batteryAlertDaysDescription' | transloco }}</small>
+            </ion-text>
+
+            <div class="ion-padding-top">
+              <ion-button type="submit" expand="block" [disabled]="isSaving() || usageForm.invalid">
+                @if (isSaving()) {
+                <ion-icon name="hourglass" slot="start"></ion-icon>
+                }
+                {{ isSaving() ? ('common.saving' | transloco) : ('common.save' | transloco) }}
+              </ion-button>
+              <ion-button fill="outline" expand="block" type="button" (click)="resetToDefaults()">
+                {{ 'settings.resetToDefaults' | transloco }}
+              </ion-button>
+              <ion-button
+                fill="outline"
+                expand="block"
+                type="button"
+                color="warning"
+                (click)="addMockData()"
+              >
+                {{ 'settings.addMockData' | transloco }}
+              </ion-button>
+              <ion-button
+                fill="outline"
+                expand="block"
+                type="button"
+                color="danger"
+                (click)="resetDatabase()"
+              >
+                {{ 'settings.resetDatabase' | transloco }}
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @if (activeTab() === 'app') {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'settings.appSettings' | transloco }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="appForm" (ngSubmit)="saveAppSettings()">
+            <ion-item>
+              <ion-select
+                label="{{ 'settings.language' | transloco }}"
+                formControlName="language"
+                placeholder="{{ 'common.select' | transloco }}"
+                interface="popover"
+              >
+                @for (lang of availableLanguages; track lang.code) {
+                  <ion-select-option [value]="lang.code">
+                    <img
+                      [src]="'/flags/' + lang.code + '.svg'"
+                      style="margin-right: 8px; width: 20px; height: 15px"
+                      [alt]="lang.name + ' flag'"
+                    />
+                    {{ lang.name }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            <ion-text color="medium" class="ion-padding-start">
+              <small>{{ 'settings.languageDescription' | transloco }}</small>
+            </ion-text>
+
+            <ion-item>
+              <ion-select
+                label="{{ 'settings.defaultTheme' | transloco }}"
+                formControlName="defaultTheme"
+                placeholder="{{ 'common.select' | transloco }}"
+                interface="popover"
+              >
+                @for (theme of availableThemes; track theme.value) {
+                  <ion-select-option [value]="theme.value">
+                    <ion-icon
+                      [name]="theme.value === 'light' ? 'sunny' : 'moon'"
+                      style="margin-right: 8px"
+                    ></ion-icon>
+                    {{ theme.label }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            <ion-text color="medium" class="ion-padding-start">
+              <small>{{ 'settings.defaultThemeDescription' | transloco }}</small>
+            </ion-text>
+
+            <ion-item>
+              <ion-select
+                label="{{ 'settings.styleTheme' | transloco }}"
+                formControlName="styleTheme"
+                placeholder="{{ 'common.select' | transloco }}"
+                interface="popover"
+              >
+                @for (style of availableStyleThemes; track style.value) {
+                  <ion-select-option [value]="style.value">
+                    <ion-icon
+                      [name]="style.value === 'default' ? 'square' : 'diamond'"
+                      style="margin-right: 8px"
+                    ></ion-icon>
+                    {{ style.label }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            <ion-text color="medium" class="ion-padding-start">
+              <small>{{ 'settings.styleThemeDescription' | transloco }}</small>
+            </ion-text>
+
+            <div class="ion-padding-top">
+              <ion-button type="submit" expand="block" [disabled]="isSaving() || appForm.invalid">
+                @if (isSaving()) {
+                <ion-icon name="hourglass" slot="start"></ion-icon>
+                }
+                {{ isSaving() ? ('common.saving' | transloco) : ('common.save' | transloco) }}
+              </ion-button>
+              <ion-button fill="outline" expand="block" type="button" (click)="resetToDefaults()">
+                {{ 'settings.resetToDefaults' | transloco }}
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+</ion-content>

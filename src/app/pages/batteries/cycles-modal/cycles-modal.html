@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'cycles.title' | transloco }} - {{ batteryLabel }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <!-- Note about cycles -->
+  <ion-card>
+    <ion-card-content>
+      <p style="font-style: italic; color: var(--text-secondary)">
+        <ion-icon name="information-circle" style="margin-right: 8px"></ion-icon>
+        {{ 'cycles.note' | transloco }}
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Battery Analytics Summary -->
+  <ion-card class="glass-card">
+    <ion-card-header>
+      <ion-card-title>{{ 'cycles.analytics.title' | transloco }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+        <div>
+          <strong>{{ 'cycles.analytics.totalCycles' | transloco }}:</strong> {{ cycleCount }}
+        </div>
+        <div>
+          <strong>{{ 'cycles.analytics.totalCharges' | transloco }}:</strong> {{ totalCharges }}
+        </div>
+        <div>
+          <strong>{{ 'cycles.analytics.totalDischarges' | transloco }}:</strong>
+          {{ totalDischarges }}
+        </div>
+        <div>
+          <strong>{{ 'cycles.analytics.recordsPeriod' | transloco }}:</strong><br />
+          {{ firstRecordDate }} - {{ lastRecordDate }}
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Status Chart -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ 'cycles.chart.title' | transloco }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div style="position: relative; height: 200px; width: 100%">
+        <canvas #cycleChartCanvas></canvas>
+      </div>
+      <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px">
+        {{ 'cycles.chart.description' | transloco }}
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Cycle Logs List -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ 'cycles.records.title' | transloco }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      @if (usageRecords.length > 0) {
+        <ion-list>
+          @for (record of usageRecords; track record.id) {
+            <ion-item>
+              <ion-label>
+                <h3>{{ formatDate(record.date) }}</h3>
+                <p>{{ getStatusText(record.status) }}</p>
+              </ion-label>
+              <ion-badge
+                slot="end"
+                [color]="
+                  record.status === 1 ? 'success' : record.status === 2 ? 'warning' : 'danger'
+                "
+              >
+                {{ getStatusLevel(record.status) }}
+              </ion-badge>
+            </ion-item>
+          }
+        </ion-list>
+      } @else {
+        <p style="text-align: center; color: var(--text-secondary)">
+          {{ 'cycles.records.noRecords' | transloco }}
+        </p>
+      }
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">{{ 'common.cancel' | transloco }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

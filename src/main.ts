@@ -1,23 +1,15 @@
 /// <reference types="@angular/localize" />
 
-// import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app.config';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
 
-defineCustomElements(window);
+/* Core CSS required for Ionic components to work properly */
+import '@ionic/angular/css/core.css';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error(err));
+/* Basic CSS for apps built with Ionic */
+import '@ionic/angular/css/normalize.css';
+import '@ionic/angular/css/structure.css';
+import '@ionic/angular/css/typography.css';
 
-// if ('serviceWorker' in navigator) {
-//   navigator.serviceWorker
-//     .register('./firebase-messaging-sw.js')
-//     .then((registration) => {
-//       console.info('[SW]: Service Worker registered with scope:', registration.scope);
-//     })
-//     .catch((error) => {
-//       console.error('[SW]: Service Worker registration failed:', error);
-//     });
-// }
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));

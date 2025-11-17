@@ -1,0 +1,17 @@
+<ion-app>
+  <app-header></app-header>
+  <ion-content>
+    <router-outlet />
+  </ion-content>
+
+  <!-- Toast notifications -->
+  <ion-toast
+    [isOpen]="toastService.toastState().isOpen"
+    [message]="toastService.toastState().message"
+    [duration]="toastService.toastState().duration"
+    [color]="toastService.toastState().color"
+    [position]="toastService.toastState().position"
+    (didDismiss)="onToastDismiss()"
+  >
+  </ion-toast>
+</ion-app>

@@ -1,0 +1,272 @@
+{
+  "app": {
+    "title": "Progetto Angular 21",
+    "welcome": "Benvenuto in Angular",
+    "description": "Questa è un'applicazione Angular con funzionalità moderne"
+  },
+  "nav": {
+    "batteries": "Batterie",
+    "manageBatteries": "Gestisci Batterie",
+    "settings": "Impostazioni",
+    "ai": "AI"
+  },
+  "batteries": {
+    "title": "Batterie",
+    "loading": "Caricamento batterie...",
+    "cycles": "Cicli",
+    "resistance": "Resistenza",
+    "actions": "Azioni",
+    "viewCycleLogs": "Visualizza log cicli",
+    "viewResistanceLogs": "Visualizza log resistenza",
+    "batteryActions": "Azioni batteria",
+    "emptyState": {
+      "title": "Nessuna batteria trovata",
+      "description": "Aggiungi batterie attraverso la pagina Gestione Batterie"
+    },
+    "status": {
+      "charged": "Caricata",
+      "stored": "Memorizzata",
+      "discharged": "Scaricata"
+    },
+    "time": {
+      "today": "oggi",
+      "dayAgo": "1 giorno fa",
+      "daysAgo": "{{count}} giorni fa",
+      "monthsAgo": "{{count}} mesi fa",
+      "yearsAgo": "{{count}} anni fa"
+    },
+    "labels": {
+      "cycles": "Cicli",
+      "age": "Età"
+    },
+    "scanQrCode": "Scansiona Codice QR",
+    "scanQr": "Scansiona QR",
+    "takePhoto": "Scatta Foto",
+    "photoLibrary": "Libreria Foto",
+    "camera": "Fotocamera",
+    "generateQr": "Genera Codice QR"
+  },
+  "actions": {
+    "charge": "Carica",
+    "store": "Memorizza",
+    "discharge": "Scarica",
+    "cancel": "Annulla"
+  },
+  "manage": {
+    "brands": "Marchi",
+    "series": "Serie",
+    "types": "Tipo",
+    "cells": "Celle",
+    "date": "Data",
+    "capacity": "Capacità",
+    "model": "Modello",
+    "color": "Colore"
+  },
+  "battery-management": {
+    "brands": "Marchi",
+    "series": "Serie",
+    "types": "Tipi",
+    "brand": "Marca",
+    "type": "Tipo",
+    "cells": "Celle",
+    "date": "Data",
+    "capacity": "Capacità",
+    "model": "Modello",
+    "color": "Colore"
+  },
+  "toast": {
+    "battery": {
+      "created": "Batteria creata con successo",
+      "updated": "Batteria aggiornata con successo",
+      "deleted": "Batteria eliminata con successo",
+      "charged": "Batteria caricata con successo",
+      "stored": "Batteria memorizzata con successo",
+      "discharged": "Batteria scaricata con successo"
+    },
+    "brand": {
+      "created": "Marca creata con successo",
+      "updated": "Marca aggiornata con successo",
+      "deleted": "Marca eliminata con successo"
+    },
+    "series": {
+      "created": "Serie creata con successo",
+      "updated": "Serie aggiornata con successo",
+      "deleted": "Serie eliminata con successo"
+    },
+    "type": {
+      "created": "Tipo creato con successo",
+      "updated": "Tipo aggiornato con successo",
+      "deleted": "Tipo eliminato con successo"
+    },
+    "settings": {
+      "usageSaved": "Impostazioni di utilizzo salvate con successo",
+      "appSaved": "Impostazioni app salvate con successo"
+    },
+    "error": {
+      "batterySave": "Impossibile salvare la batteria",
+      "batteryDelete": "Impossibile eliminare la batteria",
+      "brandSave": "Impossibile salvare la marca",
+      "brandDelete": "Impossibile eliminare la marca",
+      "seriesSave": "Impossibile salvare la serie",
+      "seriesDelete": "Impossibile eliminare la serie",
+      "typeSave": "Impossibile salvare il tipo",
+      "typeDelete": "Impossibile eliminare il tipo",
+      "settingsSave": "Impossibile salvare le impostazioni",
+      "batteryStatus": "Impossibile aggiornare lo stato della batteria"
+    }
+  },
+  "cycles": {
+    "title": "Log Cicli",
+    "note": "I cicli sono basati sulle cariche. Ogni ciclo completo di carica-scarica conta come un ciclo.",
+    "analytics": {
+      "title": "Analisi Batteria",
+      "totalCycles": "Cicli Totali",
+      "totalCharges": "Cariche Totali",
+      "totalDischarges": "Scariche Totali",
+      "recordsPeriod": "Periodo Registrazioni"
+    },
+    "chart": {
+      "title": "Cronologia Stato",
+      "placeholder": "La visualizzazione del grafico sarebbe qui",
+      "description": "Asse X: Date, Asse Y: Livello Stato (Caricato=Alto, Memorizzato=Medio, Scaricato=Basso)",
+      "xAxis": "Date",
+      "yAxis": "Livello Stato"
+    },
+    "records": {
+      "title": "Tutti i Record (Prima i Più Recenti)",
+      "noRecords": "Nessun record trovato"
+    }
+  },
+  "resistance": {
+    "title": "Log Resistenza",
+    "analytics": {
+      "title": "Analisi Batteria",
+      "totalRecords": "Record Totali",
+      "cells": "Celle",
+      "firstRecord": "Primo Record",
+      "lastRecord": "Ultimo Record"
+    },
+    "chart": {
+      "title": "Cronologia Resistenza",
+      "placeholder": "La visualizzazione del grafico sarebbe qui",
+      "description": "Asse X: Date, Asse Y: Valori resistenza (mΩ) per ogni cella + linea media",
+      "xAxis": "Date",
+      "yAxis": "Resistenza (mΩ)",
+      "average": "Media"
+    },
+    "table": {
+      "title": "Riepilogo Resistenza Celle",
+      "cellName": "Nome Cella",
+      "firstRead": "Prima Lettura",
+      "lastRead": "Ultima Lettura"
+    },
+    "form": {
+      "title": "Aggiungi Nuova Misurazione",
+      "date": "Data Misurazione",
+      "cellValues": "Valori Resistenza Celle",
+      "addCell": "Aggiungi Cella",
+      "save": "Salva Misurazione",
+      "saving": "Salvataggio...",
+      "cellLabel": "Cella"
+    }
+  },
+  "ai-model": {
+    "DETECTING": "Elaborazione...",
+    "DETECT_OBJECTS": "Rileva Oggetti",
+    "SELECT_IMAGE": "Seleziona Immagine",
+    "CHOOSE_IMAGE": "Scegli Immagine",
+    "LOAD": "Carica",
+    "UNLOAD": "Scarica",
+    "LOADING": "Caricamento",
+    "title": "AI Model Audio Manager",
+    "uploadAudio": "Carica Audio",
+    "processing": "Elaborazione audio...",
+    "transcription": "Trascrizione",
+    "systemMetrics": "Metriche di Sistema",
+    "memoryUsage": "Utilizzo Memoria",
+    "cpuUsage": "Utilizzo CPU",
+    "gpuUsage": "Utilizzo GPU",
+    "noAudio": "Nessun file audio caricato ancora.",
+    "SETTINGS": "Impostazioni",
+    "SELECT_MODEL": "Seleziona Modello",
+    "MULTILINGUAL": "Multilingua",
+    "SELECT_LANGUAGE": "Seleziona Lingua",
+    "BUTTON_CANCEL": "Annulla",
+    "BUTTON_SAVE": "Salva",
+    "TRANSCRIPTION_SETTINGS": "Impostazioni Trascrizione Whisper",
+    "AUDIO_MANAGER": "Manager Audio",
+    "RECORD_AUDIO": "Registra Audio",
+    "BUTTON_RUN_COMMAND": "Esegui Comando",
+    "START_RECORDING": "Inizia Registrazione",
+    "LOADING_MODELS_INFO": "Caricamento informazioni modelli",
+    "STATUS_TITLE": "Stato",
+    "NAME_TITLE": "Nome",
+    "FILE_TITLE": "File",
+    "PROGRESS_TITLE": "Progresso",
+    "ERR_WEBGPU_IS_NOT_SUPPORTED": "WebGPU non è supportato nel tuo browser.",
+    "LOAD_MODEL": "Carica Modello",
+    "LOAD_MINILM_COMMANDS": "Carica MiniLM per Comandi",
+    "INIT_EMBEDDER": "Inizializza MiniLM per l'estrazione dei comandi",
+    "TRANSCRIPTION_RESULT_TITLE": "Risultato Trascrizione Whisper",
+    "FULL_TEXT_TITLE": "Testo Completo",
+    "CHUNKS_TITLE": "Segmenti",
+    "TIMESTAMP_TITLE": "Timestamp",
+    "Type_a_command": "Digita un comando",
+    "TEXT_TITLE": "Testo",
+    "ERR_READING_FILE": "Errore durante la lettura del file audio.",
+    "ERROR_TITLE" : "Errore",
+    "STOP_RECORDING": "Interrompi Registrazione",
+    "BUTTON_Transcribe": "Trascrivi",
+    "RECORDING_COMPLETE_INFO": "Registrazione completata!",
+    "RECORDING_TO_AUDIO_PROGRESS_INFO": "Conversione registrazione in audio...",
+    "TRANSCRIPTION_PROGRESS_INFO": "Trascrizione in corso...",
+    "BUTTON_OK": "OK",
+    "EMBEDDER_SETTINGS": "Impostazioni MiniLM Embedder",
+    "DETECTOR_SETTINGS": "Impostazioni Rilevatore Oggetti",
+    "CONFIDENCE_THRESHOLD": "Soglia di Confidenza",
+    "CURRENT_MODEL_INFO": "Informazioni Modello Corrente",
+    "MODEL": "Modello",
+    "SIZE": "Dimensione",
+    "CONFIDENCE": "Confidenza"
+  },
+  "common": {
+    "ok": "OK",
+    "save": "Salva",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "loading": "Caricamento...",
+    "yes": "Sì",
+    "no": "No",
+    "select": "Seleziona",
+    "label": "Etichetta",
+    "addNew": "Aggiungi Nuovo"
+  },
+  "system-metrics": {
+    "title": "Metriche di Sistema",
+    "memoryUsage": "Utilizzo Memoria",
+    "cpuUsage": "Utilizzo CPU",
+    "gpuUsage": "Utilizzo GPU",
+    "NOT_AVAILABLE_BROWSER": "Non disponibile nel tuo browser.",
+    "notAvailableBrowser": "Non disponibile nel tuo browser."
+  },
+  "settings": {
+    "title": "Impostazioni Applicazione",
+    "usageSettings": "Impostazioni Utilizzo",
+    "appSettings": "Impostazioni App",
+    "showDismissedBatteries": "Mostra batterie dismesse",
+    "showDismissedBatteriesDescription": "Abilita per visualizzare le batterie dismesse nei report di utilizzo",
+    "batteryAlertDays": "Giorni di avviso batteria",
+    "batteryAlertDaysDescription": "Numero di giorni prima che una batteria mostri un avviso quando non è in uso",
+    "resetToDefaults": "Ripristina predefiniti",
+    "addMockData": "Aggiungi Dati Fittizi",
+    "resetDatabase": "Ripristina Database",
+    "language": "Lingua",
+    "languageDescription": "Scegli la tua lingua preferita per l'interfaccia dell'applicazione",
+    "defaultTheme": "Tema Predefinito",
+    "defaultThemeDescription": "Imposta il tuo tema preferito (può essere comunque modificato con il selettore del tema)",
+    "styleTheme": "Tema Stile",
+    "styleThemeDescription": "Scegli il tema visivo per l'applicazione"
+  }
+}

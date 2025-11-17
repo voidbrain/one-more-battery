@@ -1,0 +1,273 @@
+{
+  "app": {
+    "title": "Angular 21 Project",
+    "welcome": "Welcome to Angular",
+    "description": "This is an Angular application with modern features"
+  },
+  "nav": {
+    "batteries": "Batteries",
+    "manageBatteries": "Manage Batteries",
+    "settings": "Settings",
+    "ai": "AI"
+  },
+  "batteries": {
+    "title": "Batteries",
+    "loading": "Loading batteries...",
+    "cycles": "Cycles",
+    "resistance": "Resistance",
+    "actions": "Actions",
+    "viewCycleLogs": "View cycle logs",
+    "viewResistanceLogs": "View resistance logs",
+    "batteryActions": "Battery actions",
+    "emptyState": {
+      "title": "No batteries found",
+      "description": "Add batteries through the Battery Management page"
+    },
+    "status": {
+      "charged": "Charged",
+      "stored": "Stored",
+      "discharged": "Discharged"
+    },
+    "time": {
+      "today": "today",
+      "dayAgo": "1 day ago",
+      "daysAgo": "{{count}} days ago",
+      "monthsAgo": "{{count}} months ago",
+      "yearsAgo": "{{count}} years ago"
+    },
+    "labels": {
+      "cycles": "Cycles",
+      "age": "Age"
+    },
+    "scanQrCode": "Scan QR Code",
+    "scanQr": "Scan QR",
+    "takePhoto": "Take Photo",
+    "photoLibrary": "Photo Library",
+    "camera": "Camera",
+    "generateQr": "Generate QR Code"
+  },
+  "actions": {
+    "charge": "Charge",
+    "store": "Store",
+    "discharge": "Discharge",
+    "cancel": "Cancel"
+  },
+  "manage": {
+    "brands": "Brands",
+    "series": "Series",
+    "types": "Types",
+    "cells": "Cells",
+    "date": "Date",
+    "capacity": "Capacity",
+    "model": "Model",
+    "color": "Color"
+  },
+  "battery-management": {
+    "brands": "Brands",
+    "series": "Series",
+    "types": "Types",
+    "brand": "Brand",
+    "type": "Type",
+    "cells": "Cells",
+    "date": "Date",
+    "capacity": "Capacity",
+    "model": "Model",
+    "color": "Color"
+  },
+  "toast": {
+    "battery": {
+      "created": "Battery created successfully",
+      "updated": "Battery updated successfully",
+      "deleted": "Battery deleted successfully",
+      "charged": "Battery charged successfully",
+      "stored": "Battery stored successfully",
+      "discharged": "Battery discharged successfully"
+    },
+    "brand": {
+      "created": "Brand created successfully",
+      "updated": "Brand updated successfully",
+      "deleted": "Brand deleted successfully"
+    },
+    "series": {
+      "created": "Series created successfully",
+      "updated": "Series updated successfully",
+      "deleted": "Series deleted successfully"
+    },
+    "type": {
+      "created": "Type created successfully",
+      "updated": "Type updated successfully",
+      "deleted": "Type deleted successfully"
+    },
+    "settings": {
+      "usageSaved": "Usage settings saved successfully",
+      "appSaved": "App settings saved successfully"
+    },
+    "error": {
+      "batterySave": "Failed to save battery",
+      "batteryDelete": "Failed to delete battery",
+      "brandSave": "Failed to save brand",
+      "brandDelete": "Failed to delete brand",
+      "seriesSave": "Failed to save series",
+      "seriesDelete": "Failed to delete series",
+      "typeSave": "Failed to save type",
+      "typeDelete": "Failed to delete type",
+      "settingsSave": "Failed to save settings",
+      "batteryStatus": "Failed to update battery status"
+    }
+  },
+  "cycles": {
+    "title": "Cycle Logs",
+    "note": "Cycles are based on charges. Each complete charge-discharge cycle counts as one cycle.",
+    "analytics": {
+      "title": "Battery Analytics",
+      "totalCycles": "Total Cycles",
+      "totalCharges": "Total Charges",
+      "totalDischarges": "Total Discharges",
+      "recordsPeriod": "Records Period"
+    },
+    "chart": {
+      "title": "Status Timeline",
+      "placeholder": "Chart visualization would go here",
+      "description": "X-axis: Dates, Y-axis: Status Level (Charged=High, Stored=Mid, Discharged=Low)",
+      "xAxis": "Dates",
+      "yAxis": "Status Level"
+    },
+    "records": {
+      "title": "All Records (Newest First)",
+      "noRecords": "No records found"
+    }
+  },
+  "resistance": {
+    "title": "Resistance Logs",
+    "analytics": {
+      "title": "Battery Analytics",
+      "totalRecords": "Total Records",
+      "cells": "Cells",
+      "firstRecord": "First Record",
+      "lastRecord": "Last Record"
+    },
+    "chart": {
+      "title": "Resistance Timeline",
+      "placeholder": "Chart visualization would go here",
+      "description": "X-axis: Dates, Y-axis: Resistance values (mΩ) for each cell + average line",
+      "xAxis": "Dates",
+      "yAxis": "Resistance (mΩ)",
+      "average": "Average"
+    },
+    "table": {
+      "title": "Cell Resistance Summary",
+      "cellName": "Cell Name",
+      "firstRead": "First Read",
+      "lastRead": "Last Read"
+    },
+    "form": {
+      "title": "Add New Measurement",
+      "date": "Measurement Date",
+      "cellValues": "Cell Resistance Values",
+      "addCell": "Add Cell",
+      "save": "Save Measurement",
+      "saving": "Saving...",
+      "cellLabel": "Cell"
+    }
+  },
+  "ai-model": {
+    "DETECTING": "Detecting...",
+    "DETECT_OBJECTS": "Detect Objects",
+    "SELECT_IMAGE": "Select Image",
+    "CHOOSE_IMAGE": "Choose Image",
+    "LOAD": "Load",
+    "UNLOAD": "Unload",
+    "LOADING": "Loading",
+    "title": "AI Model Audio Manager",
+    "uploadAudio": "Upload Audio",
+    "processing": "Processing audio...",
+    "transcription": "Transcription",
+    "systemMetrics": "System Metrics",
+    "memoryUsage": "Memory Usage",
+    "cpuUsage": "CPU Usage",
+    "gpuUsage": "GPU Usage",
+    "noAudio": "No audio files uploaded yet.",
+    "SETTINGS": "Settings",
+    "SELECT_MODEL": "Select Model",
+    "MULTILINGUAL": "Multilingual",
+    "SELECT_LANGUAGE": "Select Language",
+    "BUTTON_CANCEL": "Cancel",
+    "BUTTON_SAVE": "Save",
+    "TRANSCRIPTION_SETTINGS": "Whisper Transcription Settings",
+    "AUDIO_MANAGER": "Audio Manager",
+    "RECORD_AUDIO": "Record Audio",
+    "BUTTON_RUN_COMMAND": "Run Command",
+    "START_RECORDING": "Start Recording",
+    "LOADING_MODELS_INFO": "Loading models info",
+    "STATUS_TITLE": "Status",
+    "NAME_TITLE": "Name",
+    "FILE_TITLE": "File",
+    "PROGRESS_TITLE": "Progress",
+    "ERR_WEBGPU_IS_NOT_SUPPORTED": "WebGPU is not supported in your browser.",
+    "LOAD_MODEL": "Load Model",
+    "LOAD_MINILM_COMMANDS": "Load MiniLM for Commands",
+    "TEXT_EMBEDDING_MODEL": "MiniLM Text processing and command extraction",
+    "INIT_EMBEDDER": "Initialize MiniLM for command extraction",
+    "TRANSCRIPTION_RESULT_TITLE": "Whisper transcription Result",
+    "FULL_TEXT_TITLE": "Full Text",
+    "CHUNKS_TITLE": "Chunks",
+    "TIMESTAMP_TITLE": "Timestamp",
+    "Type_a_command": "Type a command",
+    "TEXT_TITLE": "Text",
+    "ERR_READING_FILE": "Error reading audio file.",
+    "ERROR_TITLE" : "Error",
+    "STOP_RECORDING": "Stop Recording",
+    "BUTTON_Transcribe": "Transcribe",
+    "RECORDING_COMPLETE_INFO": "Recording complete!",
+    "RECORDING_TO_AUDIO_PROGRESS_INFO": "Converting recording to audio...",
+    "TRANSCRIPTION_PROGRESS_INFO": "Whisper transcriptio in progress...",
+    "EMBEDDER_SETTINGS": "MiniLM Embedder Settings",
+    "DETECTOR_SETTINGS": "Object Detector Settings",
+    "CONFIDENCE_THRESHOLD": "Confidence Threshold",
+    "CURRENT_MODEL_INFO": "Current Model Information",
+    "MODEL": "Model",
+    "SIZE": "Size",
+    "CONFIDENCE": "Confidence"
+  },
+  "common": {
+    "ok": "OK",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
+    "select": "Select",
+    "label": "Label",
+    "addNew": "Add New"
+  },
+  "system-metrics": {
+    "title": "System Metrics",
+    "memoryUsage": "Memory Usage",
+    "cpuUsage": "CPU Usage",
+    "gpuUsage": "GPU Usage",
+    "NOT_AVAILABLE_BROWSER": "Not available in your browser.",
+    "notAvailableBrowser": "Not available in your browser."
+  },
+  "settings": {
+    "title": "Application Settings",
+    "usageSettings": "Usage Settings",
+    "appSettings": "App Settings",
+    "showDismissedBatteries": "Show dismissed batteries",
+    "showDismissedBatteriesDescription": "Enable to display dismissed batteries in usage reports",
+    "batteryAlertDays": "Battery alert days",
+    "batteryAlertDaysDescription": "Number of days before a battery shows an alert when not in use",
+    "resetToDefaults": "Reset to Defaults",
+    "addMockData": "Add Mock Data",
+    "resetDatabase": "Reset Database",
+    "language": "Language",
+    "languageDescription": "Choose your preferred language for the application interface",
+    "defaultTheme": "Default Theme",
+    "defaultThemeDescription": "Set your preferred theme (can still be changed with the theme switcher)",
+    "styleTheme": "Style Theme",
+    "styleThemeDescription": "Choose the visual style theme for the application"
+  }
+
+}

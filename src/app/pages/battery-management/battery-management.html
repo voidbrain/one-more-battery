@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'nav.manageBatteries' | transloco }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment [value]="activeTab()" (ionChange)="onTabChange($event)" mode="ios">
+    <ion-segment-button value="batteries" routerLink="/manage/batteries">
+      <ion-label>{{ 'nav.batteries' | transloco }} ({{ batteries().length }})</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="brands" routerLink="/manage/brands">
+      <ion-label>{{ 'battery-management.brands' | transloco }} ({{ brands().length }})</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="series" routerLink="/manage/series">
+      <ion-label>{{ 'battery-management.series' | transloco }} ({{ series().length }})</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="types" routerLink="/manage/types">
+      <ion-label>{{ 'battery-management.types' | transloco }} ({{ types().length }})</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  @if (isLoading()) {
+    <ion-item>
+      <ion-spinner></ion-spinner>
+      <ion-label class="ion-padding-start">{{ 'common.loading' | transloco }}</ion-label>
+    </ion-item>
+  } @else {
+    @if (activeTab() === 'batteries') {
+      <app-battery-list
+        [batteries]="batteries()"
+        [brands]="brands()"
+        [series]="series()"
+        [types]="types()"
+        (dataChanged)="refreshData()">
+      </app-battery-list>
+    } @else if (activeTab() === 'brands') {
+      <app-brand-list [brands]="brands()" (dataChanged)="refreshData()"></app-brand-list>
+    } @else if (activeTab() === 'series') {
+      <app-series-list [series]="series()" (dataChanged)="refreshData()"></app-series-list>
+    } @else if (activeTab() === 'types') {
+      <app-type-list [types]="types()" (dataChanged)="refreshData()"></app-type-list>
+    }
+  }
+</ion-content>

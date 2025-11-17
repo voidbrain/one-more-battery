@@ -1,0 +1,81 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Image Section</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- Image Upload -->
+    @if (isDetectorLoaded()) {
+    <ion-item>
+      <ion-label position="stacked">{{ 'ai-model.SELECT_IMAGE' | transloco }}</ion-label>
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onImageSelected($event)"
+        style="display: none"
+        #fileInput
+      >
+      <ion-button
+        fill="outline"
+        slot="end"
+        (click)="fileInput.click()"
+      >
+        <ion-icon name="image" slot="start"></ion-icon>
+        {{ 'ai-model.CHOOSE_IMAGE' | transloco }}
+      </ion-button>
+    </ion-item>
+    }
+
+    <!-- Selected Image Display -->
+    @if (selectedImage) {
+    <div class="image-container">
+      @if (isImageLoading()) {
+      <div class="image-loading">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading image...</p>
+      </div>
+      }
+      <img
+        [src]="selectedImage"
+        alt="Selected image"
+        class="selected-image"
+        [class.loading]="isImageLoading()"
+      />
+      <ion-button
+        fill="clear"
+        color="danger"
+        size="small"
+        class="clear-button"
+        (click)="clearImage()"
+      >
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
+    </div>
+    }
+
+    <!-- Detection Button -->
+    @if (selectedImage && isDetectorLoaded()) {
+    <ion-button
+      expand="block"
+      [disabled]="isDetectionInProgress()"
+      (click)="detectObjects()"
+      color="primary"
+      class="detect-button"
+    >
+      @if (isDetectionInProgress()) {
+      <ion-spinner name="crescent" slot="start"></ion-spinner>
+      } @else {
+      <ion-icon name="search" slot="start"></ion-icon>
+      }
+      {{ isDetectionInProgress() ? ('DETECTING' | transloco) : ('DETECT_OBJECTS' | transloco) }}
+    </ion-button>
+    }
+
+    <!-- Detection Loading Overlay -->
+    @if (isDetectionInProgress()) {
+    <div class="detection-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Detecting objects...</p>
+    </div>
+    }
+</ion-card-content>
+</ion-card>
