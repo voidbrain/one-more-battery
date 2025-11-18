@@ -26,6 +26,7 @@ log.txt
 
 # Compiled output
 /dist
+/docs
 /tmp
 /out-tsc
 /bazel-out
