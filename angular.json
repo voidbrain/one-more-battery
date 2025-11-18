@@ -48,7 +48,7 @@
                 }
               ],
               "outputHashing": "all",
-              "outputPath": "docs",
+              "outputPath": "root",
               "serviceWorker": "ngsw-config.json",
               "baseHref": "/one-more-battery/"
             },
