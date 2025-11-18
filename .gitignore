@@ -28,6 +28,7 @@ log.txt
 /dist
 /docs
 /tmp
+/docs
 /out-tsc
 /bazel-out
 
