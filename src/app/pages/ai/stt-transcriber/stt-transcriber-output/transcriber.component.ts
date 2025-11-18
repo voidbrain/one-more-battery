@@ -4,13 +4,12 @@ import { TranscriberService } from '@services/ai/stt-transcriber.service';
 import { TranscriberConfigStorage } from '@services/ai/stt-transcriber.config.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { IonCard, IonCardContent } from "@ionic/angular/standalone";
-import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: 'app-transcriber',
   templateUrl: './transcriber.component.html',
   standalone: true,
-  imports: [IonCardContent, TranslocoModule, IonCard, JsonPipe],
+  imports: [IonCardContent, TranslocoModule, IonCard]
 })
 export class TranscriberComponent implements OnInit {
   transcriptionComplete = output<string>();
