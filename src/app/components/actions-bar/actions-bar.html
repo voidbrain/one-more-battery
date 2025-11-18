@@ -1,0 +1,25 @@
+<div class="actions-bar">
+  <div class="actions-container">
+    <!-- QR Scanner Button -->
+    <button
+      class="action-btn qr-btn"
+      (click)="scanQrCode()"
+      [title]="'batteries.scanQr' | transloco"
+      type="button"
+    >
+      <ion-icon name="qr-code" class="action-icon"></ion-icon>
+      <span class="action-label">{{ 'batteries.scanQr' | transloco }}</span>
+    </button>
+
+    <!-- Take Photo Button -->
+    <button
+      class="action-btn photo-btn"
+      (click)="takePhoto()"
+      [title]="'batteries.takePhoto' | transloco"
+      type="button"
+    >
+      <ion-icon name="camera" class="action-icon"></ion-icon>
+      <span class="action-label">{{ 'batteries.takePhoto' | transloco }}</span>
+    </button>
+  </div>
+</div>

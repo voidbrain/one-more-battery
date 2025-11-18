@@ -35,8 +35,7 @@ jobs:
 
       - name: Disable Jekyll processing
         run: |
-          touch .nojekyll
-          touch ./docs/.nojekyll
+          touch ./docs/browser/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -44,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs
+          path: ./docs/browser
 
   deploy:
     environment:

@@ -1,34 +1,104 @@
-// src/app/app.config.ts
-import { environment, Environment } from '../environments/environment';
-import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
-import { routes } from './app.routes';
-import { AngularDelegate } from '@ionic/angular';
-import { provideIonicAngular, IonicRouteStrategy } from '@ionic/angular/standalone';
-import { RouteReuseStrategy, provideRouter } from '@angular/router';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+  isDevMode,
+} from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideTransloco } from '@jsverse/transloco';
+import { TranslocoHttpLoader } from './services/utils/transloco-loader';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  batteryCharging,
+  batteryHalf,
+  batteryDead,
+  close,
+  checkmarkCircle,
+  closeCircle,
+  alertCircle,
+  square,
+  diamond,
+  flag,
+  sunny,
+  moon,
+  checkmark,
+  chevronDown,
+  chevronUp,
+  qrCode,
+  camera,
+  images,
+  barChart,
+  informationCircle,
+  analytics,
+  settings,
+  pulse,
+  ellipsisVertical,
+  trash,
+  print,
+  eye,
+  eyeOff,
+  image,
+  search
+} from 'ionicons/icons';
+
+import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
-// import { FIREBASE_OPTIONS } from '@angular/fire/compat'; // Commented out Firebase
-// import { firebaseProviders } from './firebase.config'; // Commented out Firebase
-// import { provideFirebaseApp, initializeApp } from '@angular/fire/app'; // Commented out Firebase
-import { APP_BASE_HREF } from '@angular/common'; // Import APP_BASE_HREF
+
+// Register Ionicons
+addIcons({
+  'battery-charging': batteryCharging,
+  'battery-half': batteryHalf,
+  'battery-empty': batteryDead,
+  close: close,
+  'checkmark-circle': checkmarkCircle,
+  'close-circle': closeCircle,
+  'alert-circle': alertCircle,
+  square: square,
+  diamond: diamond,
+  flag: flag,
+  sunny: sunny,
+  moon: moon,
+  checkmark: checkmark,
+  'chevron-down': chevronDown,
+  'chevron-up': chevronUp,
+  'qr-code': qrCode,
+  camera: camera,
+  images: images,
+  'bar-chart': barChart,
+  'information-circle': informationCircle,
+  analytics: analytics,
+  settings: settings,
+  pulse: pulse,
+  'ellipsis-vertical': ellipsisVertical,
+  trash: trash,
+  print: print,
+  eye: eye,
+  'eye-off': eyeOff,
+  image: image,
+  search: search
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    AngularDelegate,
-    // { provide: FIREBASE_OPTIONS, useValue: (environment as Environment).firebase }, // Commented out Firebase
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideIonicAngular({ mode: 'ios' }),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(),
-    // provideFirebaseApp(() => initializeApp((environment as Environment).firebase)), // Commented out Firebase
-    // ...firebaseProviders, // Commented out Firebase
-    provideNoopAnimations(),
+    provideIonicAngular(),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'it'],
+        defaultLang: 'en',
+        reRenderOnLangChange: true,
+        prodMode: false,
+      },
+      loader: TranslocoHttpLoader,
+    }),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
-    { provide: APP_BASE_HREF, useValue: '/one-more-battery/' } // Explicitly provide APP_BASE_HREF
   ],
 };

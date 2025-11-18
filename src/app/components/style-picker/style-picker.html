@@ -1,0 +1,27 @@
+<ion-button fill="clear" (click)="togglePopover()" size="small">
+  <ion-icon [name]="getCurrentIcon()"></ion-icon>
+</ion-button>
+
+<ion-popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
+  <ng-template>
+    <ion-list>
+      @for (style of styleOptions; track style.value) {
+      <ion-item
+        button
+        (click)="setStyle(style.value)"
+        [class.selected]="style.value === currentStyle"
+      >
+        <ion-icon [name]="style.icon" slot="start"></ion-icon>
+        <ion-label>{{ style.label }}</ion-label>
+        @if (style.value === currentStyle) {
+        <ion-icon
+          name="checkmark"
+          slot="end"
+          color="primary"
+        ></ion-icon>
+        }
+      </ion-item>
+      }
+    </ion-list>
+  </ng-template>
+</ion-popover>

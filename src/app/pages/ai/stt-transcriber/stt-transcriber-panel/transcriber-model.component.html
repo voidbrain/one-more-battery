@@ -1,0 +1,30 @@
+<ion-card>
+  <ion-card-content>
+    <!-- Transcriber Model -->
+    <div class="ion-margin-bottom">
+      <ion-item lines="none">
+        <ion-label>
+          <h3>Load Whisper for Speech</h3>
+          <p>Speech-to-text transcription model</p>
+          <small class="text-muted">Current: {{ getCurrentModelName() }} ({{ getCurrentModelSize() }}MB)</small>
+        </ion-label>
+        <ion-button
+          slot="end"
+          [color]="isTranscriberLoaded() ? 'danger' : 'primary'"
+          [disabled]="isTranscriberLoading()"
+          (click)="isTranscriberLoaded() ? unloadTranscriber() : loadTranscriber()">
+          @if (isTranscriberLoading()) {
+            <ion-spinner slot="start"></ion-spinner>
+          }
+          {{ isTranscriberLoaded() ? 'Unload' : 'Load' }}
+        </ion-button>
+        <ion-button
+          slot="end"
+          fill="clear"
+          (click)="openTranscriberSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'batteries.qrCode' | transloco }} - {{ batteryLabel }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" fill="clear">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="qr-container">
+    <img [src]="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
+    <ion-text color="medium" class="qr-text">
+      <p>{{ qrText }}</p>
+    </ion-text>
+  </div>
+
+  <div class="action-buttons">
+    <ion-button (click)="downloadQrCode()" expand="block" fill="outline">
+      <ion-icon name="download" slot="start"></ion-icon>
+      {{ 'batteries.downloadQr' | transloco }}
+    </ion-button>
+  </div>
+</ion-content>

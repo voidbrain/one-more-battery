@@ -1,0 +1,17 @@
+<button
+  class="theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+  [attr.aria-pressed]="isDark()"
+>
+  <span class="icon" [class.dark]="isDark()">
+    @if (isDark()) {
+      ☀️
+    } @else {
+      🌙
+    }
+  </span>
+  <span class="label">
+    {{ isDark() ? 'Light' : 'Dark' }}
+  </span>
+</button>

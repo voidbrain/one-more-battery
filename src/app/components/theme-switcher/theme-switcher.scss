@@ -1,0 +1,48 @@
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--theme-bg, #f8f9fa);
+  border: 2px solid var(--theme-border, #dee2e6);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--theme-text, #333);
+
+  &:hover {
+    border-color: var(--theme-accent, #007bff);
+    background: var(--theme-hover, #e9ecef);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  }
+
+  .icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+
+    &.dark {
+      transform: rotate(180deg);
+    }
+  }
+
+  .label {
+    font-size: 0.85rem;
+    color: var(--theme-text-secondary, #666);
+  }
+}
+
+// Dark theme variables
+.dark-theme {
+  --theme-bg: #2d3748;
+  --theme-border: #4a5568;
+  --theme-text: #e2e8f0;
+  --theme-text-secondary: #a0aec0;
+  --theme-accent: #63b3ed;
+  --theme-hover: #4a5568;
+}

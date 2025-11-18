@@ -1,0 +1,4 @@
+ion-title,
+ion-card-title {
+  color: var(--ion-text-color, #000000); /* Ensure title is visible on dark backgrounds */
+}

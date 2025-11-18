@@ -1,0 +1,58 @@
+<ion-content [class.ion-padding]="deviceDetectorService.isMobile()">
+  <div
+    [ngClass]="{
+      'd-flex justify-content-center align-items-start min-vh-100 overflow-auto':
+        !deviceDetectorService.isMobile(),
+    }"
+  >
+    @if (IS_WEBGPU_AVAILABLE) {
+      <div [ngClass]="{ 'mt-5 w-50': !deviceDetectorService.isMobile() }">
+        <!-- Models Bar -->
+        <ion-card class="ion-margin-bottom">
+          <ion-card-header>
+            <ion-card-title>AI Models</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <!-- Embedder Model -->
+            <app-embedder></app-embedder>
+
+            <!-- Transcriber Model -->
+            <app-transcriber-model></app-transcriber-model>
+
+            <!-- Object Detection Model -->
+
+            <app-object-detector-model></app-object-detector-model>
+          </ion-card-content>
+        </ion-card>
+
+        [audio card]
+        <app-audio-manager-card
+          (transcribeClicked)="transcribe()"
+          (transcriptionProgressChanged)="setTranscriptionInProgress($event)"
+          (recordingComplete)="onRecordingComplete($event)"
+          (recordingStart)="onRecordingStarted()"
+        ></app-audio-manager-card>
+
+        <app-transcriber-card
+          [isTranscribeEnabled]="isTranscribeEnabled"
+          [audioBlob]="audioBlob"
+        ></app-transcriber-card>
+
+        [image card]
+        <app-object-detector></app-object-detector>
+        -
+      </div>
+    } @else {
+      <ion-card>
+        <ion-card-content>
+          {{ 'ai-model.ERR_WEBGPU_IS_NOT_SUPPORTED' | transloco }}
+        </ion-card-content>
+      </ion-card>
+    }
+
+    <app-input-card
+      [(inputText)]="inputText"
+      [(command)]="command"
+    ></app-input-card>
+  </div>
+</ion-content>

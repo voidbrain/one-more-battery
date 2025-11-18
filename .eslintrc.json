@@ -2,25 +2,21 @@
   "root": true,
   "ignorePatterns": ["projects/**/*"],
   "overrides": [
-
     {
       "files": ["*.ts"],
-      "parserOptions": {
-        "ecmaVersion": 2020, // Set the ECMAScript version to 2020 or higher to support modern JS
-        "sourceType": "module", // This ensures that ESLint recognizes ES modules
-        "project": ["tsconfig.json"],
-        "createDefaultProgram": true
-      },
       "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates",
-        "prettier"
+        "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "@angular-eslint/component-class-suffix": [
+        "@angular-eslint/directive-selector": [
           "error",
           {
-            "suffixes": ["Page", "Component"]
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
           }
         ],
         "@angular-eslint/component-selector": [
@@ -31,19 +27,23 @@
             "style": "kebab-case"
           }
         ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
+        "eslint-comments/no-unused-disable": "off"
+      },
+      "overrides": [
+        {
+          "files": ["src/app/services/sqlite.ts"],
+          "rules": {
+            "@typescript-eslint/no-explicit-any": "off"
           }
-        ]
-      }
+        }
+      ]
     },
     {
       "files": ["*.html"],
-      "extends": ["plugin:@angular-eslint/template/recommended", "prettier"],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended",
+        "plugin:@angular-eslint/template/accessibility"
+      ],
       "rules": {}
     }
   ]
