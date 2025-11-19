@@ -53,7 +53,7 @@ export class ObjectDetectorModel {
     const modal = await this.modalController.create({
       component: DetectorSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
-      backdropDismiss: false,
+      backdropDismiss: true, // Allow closing with ESC or clickout
     });
 
     await modal.present();

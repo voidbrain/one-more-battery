@@ -47,10 +47,20 @@ export class DetectorSettingsModalComponent {
 
   onModelChange(): void {
     this.checkForChanges();
+    // Immediately save settings when model changes
+    this.saveSettings();
   }
 
   onConfidenceChange(): void {
     this.checkForChanges();
+    // Immediately save settings when confidence changes
+    this.saveSettings();
+  }
+
+  private saveSettings(): void {
+    // Apply changes to storage without closing modal
+    this.detectorConfigStorage.setModelWithFallback(this.selectedModel);
+    this.detectorConfigStorage.confidence = this.selectedConfidence;
   }
 
   private checkForChanges(): void {
@@ -62,8 +72,7 @@ export class DetectorSettingsModalComponent {
 
   applySettings(): void {
     // Apply changes to storage
-    this.detectorConfigStorage.setModelWithFallback(this.selectedModel);
-    this.detectorConfigStorage.confidence = this.selectedConfidence;
+    this.saveSettings();
 
     this.modalController.dismiss({
       hasChanges: this.hasChanges

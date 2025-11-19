@@ -56,7 +56,7 @@ export class TranscriberModelComponent {
     const modal = await this.modalController.create({
       component: TranscriberSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
-      backdropDismiss: false,
+      backdropDismiss: true, // Allow closing with ESC or clickout
     });
 
     await modal.present();

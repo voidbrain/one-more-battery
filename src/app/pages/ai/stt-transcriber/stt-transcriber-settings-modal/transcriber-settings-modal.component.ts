@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { TranscriberConfigStorage } from '@services/ai/stt-transcriber.config.service';
 import { LLMConfigService } from '@services/ai/centralized-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
@@ -52,11 +52,16 @@ export class TranscriberSettingsModalComponent {
       }));
   }
 
-  applySettings(): void {
-    // Apply changes to storage
+  private saveSettings(): void {
+    // Apply changes to storage without closing modal
     this.transcriberConfigStorage.setModelWithFallback(this.selectedModel);
     this.transcriberConfigStorage.language = this.selectedLanguage;
     this.transcriberConfigStorage.isMultilingual = this.selectedIsMultilingual;
+  }
+
+  applySettings(): void {
+    // Apply changes to storage
+    this.saveSettings();
 
     this.modalController.dismiss({
       hasChanges: this.hasChanges
@@ -67,14 +72,20 @@ export class TranscriberSettingsModalComponent {
     this.selectedIsMultilingual = !this.selectedIsMultilingual;
     this.checkForChanges();
     this.filterModels();
+    // Immediately save settings when multilingual changes
+    this.saveSettings();
   }
 
   onModelChange(): void {
     this.checkForChanges();
+    // Immediately save settings when model changes
+    this.saveSettings();
   }
 
   onLanguageChange(): void {
     this.checkForChanges();
+    // Immediately save settings when language changes
+    this.saveSettings();
   }
 
   private checkForChanges(): void {

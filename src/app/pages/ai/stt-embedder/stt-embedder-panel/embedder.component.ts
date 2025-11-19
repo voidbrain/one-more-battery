@@ -53,7 +53,7 @@ export class EmbedderComponent {
     const modal = await this.modalController.create({
       component: EmbedderSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
-      backdropDismiss: false,
+      backdropDismiss: true, // Allow closing with ESC or clickout
     });
 
     await modal.present();
