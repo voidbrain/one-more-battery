@@ -92,7 +92,7 @@ export const appConfig: ApplicationConfig = {
         availableLangs: ['en', 'it'],
         defaultLang: 'en',
         reRenderOnLangChange: true,
-        prodMode: false,
+        prodMode: true,
       },
       loader: TranslocoHttpLoader,
     }),
