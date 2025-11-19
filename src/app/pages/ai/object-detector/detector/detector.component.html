@@ -52,6 +52,18 @@
     </div>
     }
 
+    <!-- Processed Image with Detection Overlays -->
+    @if (processedImage()) {
+    <div class="processed-image-container">
+      <h3> {{ 'ai-model.DETECTED_OBJECTS' | transloco }} </h3>
+      <img
+        [src]="processedImage()"
+        alt="Processed image with detection overlays"
+        class="processed-image"
+      />
+    </div>
+    }
+
     <!-- Detection Button -->
     @if (selectedImage && isDetectorLoaded()) {
     <ion-button
@@ -66,7 +78,7 @@
       } @else {
       <ion-icon name="search" slot="start"></ion-icon>
       }
-      {{ isDetectionInProgress() ? ('DETECTING' | transloco) : ('DETECT_OBJECTS' | transloco) }}
+      {{ isDetectionInProgress() ? ('ai-model.DETECTING' | transloco) : ('ai-model.DETECT_OBJECTS' | transloco) }}
     </ion-button>
     }
 

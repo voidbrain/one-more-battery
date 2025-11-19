@@ -79,6 +79,28 @@
   font-size: 0.9em;
 }
 
+.processed-image-container {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+
+  h3 {
+    text-align: center;
+    margin-bottom: 12px;
+    color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+}
+
+.processed-image {
+  max-width: 100%;
+  max-height: 300px;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 3px solid var(--ion-color-success);
+}
+
 ion-card {
   margin-bottom: 16px;
 }
