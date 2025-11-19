@@ -15,7 +15,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class EmbedderComponent {
   // Model management
-  isEmbedderLoaded = computed(() => this.embedderService.isLoaded);
+  isEmbedderLoaded = computed(() => this.embedderService.isModelLoaded);
   isEmbedderLoading = computed(() => this.embedderService.isModelLoading);
 
   private embedderService = inject(STTEmbedderService);
@@ -26,7 +26,7 @@ export class EmbedderComponent {
     if (this.isEmbedderLoaded()) return;
 
     try {
-      await this.embedderService.init();
+      await this.embedderService.load();
     } catch (error) {
       console.error('Failed to load embedder:', error);
     }

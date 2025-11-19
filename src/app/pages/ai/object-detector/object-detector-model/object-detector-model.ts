@@ -15,7 +15,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class ObjectDetectorModel {
   // Detection state
-  isDetectorLoaded = computed(() => this.detectorService.isLoaded);
+  isDetectorLoaded = computed(() => this.detectorService.isModelLoaded);
   isDetectorLoading = computed(() => this.detectorService.isModelLoading);
 
   private detectorService = inject(DetectorService);

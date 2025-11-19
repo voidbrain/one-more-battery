@@ -16,7 +16,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class TranscriberModelComponent {
   // Model management
-  isTranscriberLoaded = computed(() => this.transcriberService.isLoaded);
+  isTranscriberLoaded = computed(() => this.transcriberService.isModelLoaded);
   isTranscriberLoading = computed(() => this.transcriberService.isModelLoading);
 
   private transcriberService = inject(TranscriberService);

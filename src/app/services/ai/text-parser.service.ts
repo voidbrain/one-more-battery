@@ -3,10 +3,12 @@ import { PipelineFactory } from './centralized-pipeline-factory.service';
 import { LLMConfigService } from './centralized-ai-config.service';
 import { Command, CommandMatch } from '@interfaces/index';
 
+
 @Injectable({ providedIn: 'root' })
 export class STTEmbedderService {
   // Model loading process
   public isModelLoadingSignal: WritableSignal<boolean> = signal<boolean>(false);
+  public isModelLoadedSignal: WritableSignal<boolean> = signal<boolean>(false);
 
   private loadingPromise: Promise<void> | null = null;
   private llmConfig = inject(LLMConfigService);
@@ -17,14 +19,13 @@ export class STTEmbedderService {
     return PipelineFactory.getExistingInstance('embedder', recommendedModel.id);
   }
 
-  // Check if embedder is loaded
-  get isLoaded(): boolean {
-    return this.embedder !== null;
-  }
-
   // Getters for accessing signals in templates or codes
   get isModelLoading() {
     return this.isModelLoadingSignal();
+  }
+
+  get isModelLoaded() {
+    return this.isModelLoadedSignal();
   }
 
   // --- Command definitions ---
@@ -74,8 +75,8 @@ export class STTEmbedderService {
   private commandEmbeddings: { command: string; embedding: number[] }[] = [];
 
   /** --- Initialize Hugging Face embedder and precompute embeddings --- */
-  async init(): Promise<void> {
-    if (this.isLoaded) return;
+  async load(): Promise<void> {
+    if (this.isModelLoadedSignal()) return;
     if (this.loadingPromise) return this.loadingPromise;
 
     // Show loading state
@@ -111,6 +112,7 @@ export class STTEmbedderService {
       } finally {
         // Hide loading state
         this.isModelLoadingSignal.set(false);
+        this.isModelLoadedSignal.set(true);
       }
     })();
 
@@ -262,6 +264,7 @@ export class STTEmbedderService {
     this.commandEmbeddings = [];
     this.loadingPromise = null;
     this.isModelLoadingSignal.set(false);
+    this.isModelLoadedSignal.set(false);
     console.log('[STTEmbedderService] Embedder unloaded ✅');
   }
 
