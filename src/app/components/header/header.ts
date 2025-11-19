@@ -42,8 +42,8 @@ export class Header implements OnInit, OnDestroy {
 
   // Language options
   protected languageOptions: DropdownOption[] = [
-    { value: 'en', label: 'English', flag: 'flags/en.svg' },
-    { value: 'it', label: 'Italiano', flag: 'flags/it.svg' },
+    { value: 'en', label: 'English', flag: '/one-more-battery/flags/en.svg' },
+    { value: 'it', label: 'Italiano', flag: '/one-more-battery/flags/it.svg' },
   ];
 
   protected selectedLanguage = signal(this.translocoService.getActiveLang());
