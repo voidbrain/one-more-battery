@@ -8,6 +8,8 @@
           <p>{{ 'ai-model.TEXT_EMBEDDING_MODEL' | transloco }}</p>
           <small class="text-muted">Current: {{ getCurrentEmbedderModelName() }} ({{ getCurrentEmbedderModelSize() }}MB)</small>
         </ion-label>
+        isEmbedderLoading {{ isEmbedderLoading() }}<br />
+        isEmbedderLoaded {{ isEmbedderLoaded() }}
         <ion-button
           slot="end"
           [color]="isEmbedderLoaded() ? 'danger' : 'primary'"

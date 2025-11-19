@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { DetectorService } from '@services/ai/object-detector/detector.service';
 import { DetectorConfigStorage } from '@services/ai/object-detector/detector.config.service';
 import { LLMConfigService } from '@services/ai/centralized-ai-config.service';
@@ -15,26 +15,19 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class ObjectDetectorModel {
   // Detection state
-  isDetectorLoaded = signal(false);
-  isDetectorLoading = signal(false);
+  isDetectorLoaded = computed(() => this.detectorService.isLoaded);
+  isDetectorLoading = computed(() => this.detectorService.isModelLoading);
 
   private detectorService = inject(DetectorService);
   private detectorConfigStorage = inject(DetectorConfigStorage);
   private llmConfig = inject(LLMConfigService);
   private modalController = inject(ModalController);
 
-  constructor() {
-    // Initialize signal values
-    this.isDetectorLoaded.set(this.detectorService.isLoaded);
-    this.isDetectorLoading.set(this.detectorService.isModelLoading);
-  }
-
   async loadDetector() {
     if (this.isDetectorLoaded()) return;
 
     try {
       await this.detectorService.load();
-      this.isDetectorLoaded.set(true);
     } catch (error) {
       console.error('Failed to load detector:', error);
     }
@@ -43,7 +36,6 @@ export class ObjectDetectorModel {
   async unloadDetector() {
     try {
       await this.detectorService.unload();
-      this.isDetectorLoaded.set(false);
     } catch (error) {
       console.error('Failed to unload detector:', error);
     }

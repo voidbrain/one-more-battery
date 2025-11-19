@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { TranscriberService } from '@services/ai/stt-transcriber.service';
 import { LLMConfigService } from '@services/ai/centralized-ai-config.service';
 import { TranscriberConfigStorage } from '@services/ai/stt-transcriber.config.service';
@@ -16,37 +16,27 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class TranscriberModelComponent {
   // Model management
-  isTranscriberLoaded = signal(false);
-  isTranscriberLoading = signal(false);
+  isTranscriberLoaded = computed(() => this.transcriberService.isLoaded);
+  isTranscriberLoading = computed(() => this.transcriberService.isModelLoading);
 
   private transcriberService = inject(TranscriberService);
   private llmConfig = inject(LLMConfigService);
   public transcriberConfigStorage = inject(TranscriberConfigStorage);
   private modalController = inject(ModalController);
 
-  constructor() {
-    // Initialize with current state
-    this.isTranscriberLoaded.set(this.transcriberService.isLoaded);
-  }
-
   async loadTranscriber() {
     if (this.isTranscriberLoaded()) return;
 
-    this.isTranscriberLoading.set(true);
     try {
       await this.transcriberService.load();
-      this.isTranscriberLoaded.set(true);
     } catch (error) {
       console.error('Failed to load transcriber:', error);
-    } finally {
-      this.isTranscriberLoading.set(false);
     }
   }
 
   async unloadTranscriber() {
     try {
       await this.transcriberService.unload();
-      this.isTranscriberLoaded.set(false);
     } catch (error) {
       console.error('Failed to unload transcriber:', error);
     }
