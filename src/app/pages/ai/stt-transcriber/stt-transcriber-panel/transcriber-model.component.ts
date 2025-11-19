@@ -53,6 +53,8 @@ export class TranscriberModelComponent {
   }
 
   async openTranscriberSettings(): Promise<void> {
+    const initialModel = this.transcriberConfigStorage.model;
+
     const modal = await this.modalController.create({
       component: TranscriberSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
@@ -62,7 +64,8 @@ export class TranscriberModelComponent {
     await modal.present();
 
     const result = await modal.onWillDismiss();
-    if (result.data?.hasChanges) {
+    // Check if model changed (either from explicit apply or immediate save on change)
+    if (result.data?.hasChanges || this.transcriberConfigStorage.model !== initialModel) {
       // Reset transcriber loaded state if settings changed
       if (this.isTranscriberLoaded()) {
         await this.unloadTranscriber();

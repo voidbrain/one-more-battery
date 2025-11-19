@@ -50,6 +50,8 @@ export class ObjectDetectorModel {
   }
 
   async openDetectorSettings(): Promise<void> {
+    const initialModel = this.detectorConfigStorage.model;
+
     const modal = await this.modalController.create({
       component: DetectorSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
@@ -59,7 +61,8 @@ export class ObjectDetectorModel {
     await modal.present();
 
     const result = await modal.onWillDismiss();
-    if (result.data?.hasChanges) {
+    // Check if model changed (either from explicit apply or immediate save on change)
+    if (result.data?.hasChanges || this.detectorConfigStorage.model !== initialModel) {
       // Reset detector loaded state if settings changed
       if (this.isDetectorLoaded()) {
         await this.unloadDetector();
