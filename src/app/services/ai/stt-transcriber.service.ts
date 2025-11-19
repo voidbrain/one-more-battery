@@ -173,6 +173,7 @@ export class TranscriberService {
           }
           case 'ready': {
             this.isModelLoadingSignal.set(false);
+            this.isModelLoadedSignal.set(true);
             break;
           }
           case 'done': {
