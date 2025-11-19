@@ -8,6 +8,8 @@
           <p>Speech-to-text transcription model</p>
           <small class="text-muted">Current: {{ getCurrentModelName() }} ({{ getCurrentModelSize() }}MB)</small>
         </ion-label>
+        isTranscriberLoading {{ isTranscriberLoading() }}<br />
+      isTranscriberLoaded {{ isTranscriberLoaded() }}
         <ion-button
           slot="end"
           [color]="isTranscriberLoaded() ? 'danger' : 'primary'"

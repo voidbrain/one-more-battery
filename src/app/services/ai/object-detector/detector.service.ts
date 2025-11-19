@@ -4,9 +4,7 @@ import { PipelineFactory } from '../centralized-pipeline-factory.service';
 import { LoggerService } from '../../utils/logger.service';
 import { DetectionResult } from '@interfaces/index';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class DetectorService {
   // Detection process signals
   public isBusySignal: WritableSignal<boolean> = signal<boolean>(false);
@@ -15,6 +13,7 @@ export class DetectorService {
 
   // Model loading process
   public isModelLoadingSignal: WritableSignal<boolean> = signal<boolean>(false);
+  public isModelLoadedSignal: WritableSignal<boolean> = signal<boolean>(false);
   public progressItemsSignal: WritableSignal<unknown[]> = signal<unknown[]>([]);
 
   private detectorConfigStorage = inject(DetectorConfigStorage);
@@ -37,16 +36,16 @@ export class DetectorService {
     return this.isModelLoadingSignal();
   }
 
+  get isModelLoaded() {
+    return this.isModelLoadedSignal();
+  }
+
   get progressItems() {
     return this.progressItemsSignal();
   }
 
   get error() {
     return this.errorSignal();
-  }
-
-  get isLoaded() {
-    return this.detector !== null;
   }
 
   async detectObjects(imageData: ImageData | HTMLImageElement | HTMLCanvasElement): Promise<DetectionResult[] | null> {
@@ -223,6 +222,7 @@ export class DetectorService {
           }
           case 'ready': {
             this.isModelLoadingSignal.set(false);
+            this.isModelLoadedSignal.set(true);
             break;
           }
           case 'done': {
@@ -276,6 +276,7 @@ export class DetectorService {
             }
             case 'ready': {
               this.isModelLoadingSignal.set(false);
+              this.isModelLoadedSignal.set(true);
               break;
             }
             case 'done': {
@@ -308,6 +309,7 @@ export class DetectorService {
     await PipelineFactory.disposeInstance('detector', this.detectorConfigStorage.model);
     this.progressItemsSignal.set([]);
     this.isModelLoadingSignal.set(false);
+    this.isModelLoadedSignal.set(false);
     console.log('[DetectorService] Detector unloaded ✅');
   }
 }

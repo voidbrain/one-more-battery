@@ -45,7 +45,7 @@ export class TranscriberComponent implements OnInit {
     // await this.transcriberService.load(); // preload pipeline
 
     // Check if transcriber is loaded before attempting transcription
-    if (this.transcriberService.isLoaded && !this.transcriberService.isBusy && this.audioBlob()) {
+    if (this.transcriberService.isModelLoaded && !this.transcriberService.isBusy && this.audioBlob()) {
       this.startTranscription();
     }
   }

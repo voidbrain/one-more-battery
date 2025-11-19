@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { STTEmbedderService } from '@services/ai/text-parser.service';
 import { LLMConfigService } from '@services/ai/centralized-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
@@ -15,35 +15,26 @@ import { TranslocoModule } from '@jsverse/transloco';
 })
 export class EmbedderComponent {
   // Model management
-  isEmbedderLoaded = signal(false);
-  isEmbedderLoading = signal(false);
+  isEmbedderLoaded = computed(() => this.embedderService.isModelLoaded);
+  isEmbedderLoading = computed(() => this.embedderService.isModelLoading);
 
   private embedderService = inject(STTEmbedderService);
   private llmConfig = inject(LLMConfigService);
   private modalController = inject(ModalController);
 
-  constructor() {
-    // Initialize with current state - will be updated when component loads
-  }
-
   async loadEmbedder() {
     if (this.isEmbedderLoaded()) return;
 
-    this.isEmbedderLoading.set(true);
     try {
-      await this.embedderService.init();
-      this.isEmbedderLoaded.set(true);
+      await this.embedderService.load();
     } catch (error) {
       console.error('Failed to load embedder:', error);
-    } finally {
-      this.isEmbedderLoading.set(false);
     }
   }
 
   async unloadEmbedder() {
     try {
       await this.embedderService.unload();
-      this.isEmbedderLoaded.set(false);
     } catch (error) {
       console.error('Failed to unload embedder:', error);
     }
@@ -53,7 +44,7 @@ export class EmbedderComponent {
     const modal = await this.modalController.create({
       component: EmbedderSettingsModalComponent,
       cssClass: 'modal-lg modal-dialog-centered',
-      backdropDismiss: false,
+      backdropDismiss: true, // Allow closing with ESC or clickout
     });
 
     await modal.present();

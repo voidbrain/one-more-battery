@@ -23,6 +23,7 @@ export class TranscriberService {
 
   // downloading model files process
   public isModelLoadingSignal: WritableSignal<boolean> = signal<boolean>(false);
+  public isModelLoadedSignal: WritableSignal<boolean> = signal<boolean>(false);
   public progressItemsSignal: WritableSignal<whisperDownloadFilesProgress[]> = signal<whisperDownloadFilesProgress[]>([]);
 
   protected transcriberConfigStorage = inject(TranscriberConfigStorage);
@@ -45,16 +46,16 @@ export class TranscriberService {
     return this.isModelLoadingSignal();
   }
 
+  get isModelLoaded() {
+    return this.isModelLoadedSignal();
+  }
+
   get progressItems() {
     return this.progressItemsSignal();
   }
 
   get error() {
     return this.errorSignal();
-  }
-
-  get isLoaded() {
-    return this.transcriber !== null;
   }
 
   async startTranscription(audioBuffer: AudioBuffer): Promise<void> {
@@ -374,6 +375,7 @@ export class TranscriberService {
     this.streamer = null;
     this.progressItemsSignal.set([]);
     this.isModelLoadingSignal.set(false);
+    this.isModelLoadedSignal.set(false);
     console.log('[TranscriberService] Transcriber unloaded ✅');
   }
 }

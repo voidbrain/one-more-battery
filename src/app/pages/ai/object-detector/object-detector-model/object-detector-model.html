@@ -7,6 +7,8 @@
         <p>Object detection model</p>
         <small class="text-muted">Current: {{ getCurrentModelName() }} ({{ getCurrentModelSize() }}MB)</small>
       </ion-label>
+      isDetectorLoading {{ isDetectorLoading() }}<br />
+      isDetectorLoaded {{ isDetectorLoaded() }}
       <ion-button
         [disabled]="isDetectorLoading()"
         (click)="isDetectorLoaded() ? unloadDetector() : loadDetector()"

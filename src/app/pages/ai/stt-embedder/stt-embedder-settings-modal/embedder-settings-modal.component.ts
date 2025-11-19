@@ -17,6 +17,7 @@ export class EmbedderSettingsModalComponent {
   initialModel = '';
   hasChanges = false;
 
+
   private modalController = inject(ModalController);
   private llmConfig = inject(LLMConfigService);
 
@@ -38,6 +39,10 @@ export class EmbedderSettingsModalComponent {
 
   onModelChange(): void {
     this.hasChanges = this.selectedModel !== this.initialModel;
+    // Immediately apply settings when model changes
+    if (this.hasChanges) {
+      this.applySettings();
+    }
   }
 
   private checkForChanges(): void {

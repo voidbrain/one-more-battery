@@ -14,7 +14,7 @@ import { DetectionResult } from '@interfaces/index';
 })
 export class DetectorComponent {
   // Detection state - reactive computed signal from service
-  isDetectorLoaded = computed(() => this.detectorService.isLoaded);
+  isDetectorLoaded = computed(() => this.detectorService.isModelLoaded);
 
   isDetectionInProgress = signal(false);
   detectionResults = signal<DetectionResult[]>([]);
