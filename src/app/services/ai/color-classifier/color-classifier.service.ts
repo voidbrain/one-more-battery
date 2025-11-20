@@ -10,7 +10,7 @@ export class ColorClassifierService {
   // stripe detection process
   public isBusySignal: WritableSignal<boolean> = signal<boolean>(false);
   public errorSignal: WritableSignal<string | null> = signal<string | null>(null);
-  public detectionSignal: WritableSignal<StripeDetectionResult[] | null> = signal<
+  public colorDetectionSignal: WritableSignal<StripeDetectionResult[] | null> = signal<
     StripeDetectionResult[] | null
   >(null);
 
@@ -21,14 +21,14 @@ export class ColorClassifierService {
   private pipeline: Awaited<ReturnType<typeof PipelineFactory.getInstance>> | null = null;
   protected llmConfig = inject(LLMConfigService);
 
-  // Getter for classifier instance from centralized pipeline factory
+  // Getter for classifier instance - use local pipeline
   private get classifier(): Awaited<ReturnType<typeof PipelineFactory.getInstance>> | null {
-    return PipelineFactory.getExistingInstance('colorClassifier');
+    return this.pipeline; // Use local instance, not global factory lookup
   }
 
   // Getters for accessing signals in templates or codes
   get detection() {
-    return this.detectionSignal();
+    return this.colorDetectionSignal();
   }
 
   get isBusy() {
@@ -74,17 +74,24 @@ export class ColorClassifierService {
   public async load(): Promise<void> {
     // Reset and show loading state
     this.isModelLoadingSignal.set(true);
+    this.isModelLoadedSignal.set(false); // 🔍 Ensure we clear any previous successful load
+    console.log('[ColorClassifierService] Starting model load...');
 
     try {
       await this.initializeModel(); // This handles 'initiate', 'progress', 'done', 'ready'
+      console.log('[ColorClassifierService] Model load completed successfully ✅');
     } catch (err) {
-      console.error('Model loading failed:', err);
+      console.error('[ColorClassifierService] Model loading FAILED ❌:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+      });
       const errorMessage = err instanceof Error ? err.message : 'Unknown model loading error';
       this.errorSignal.set(errorMessage);
+      this.isModelLoadedSignal.set(false); // 🔍 Explicitly set false on failure
     } finally {
       // Hide loader once done
       this.isModelLoadingSignal.set(false);
-      this.isModelLoadedSignal.set(true);
     }
   }
 
@@ -96,10 +103,11 @@ export class ColorClassifierService {
     }
 
     try {
+      console.log("detectStripes")
       this.isBusySignal.set(true);
       this.errorSignal.set(null);
 
-      this.detectionSignal.set(null);
+      this.colorDetectionSignal.set(null);
 
       // First extract potential stripe regions
       const stripeRegions = this.extractStripeRegions(imageElement);
@@ -107,6 +115,7 @@ export class ColorClassifierService {
       const results: StripeDetectionResult[] = [];
 
       for (const region of stripeRegions) {
+        console.log("region")
         // Analyze color of each stripe region
         const colorResult = await this.analyzeRegionColor(region.canvas);
         const isHorizontal = this.determineOrientation(region.region);
@@ -122,8 +131,8 @@ export class ColorClassifierService {
           dominantColors: [colorResult],
         });
       }
-
-      this.detectionSignal.set(results);
+      console.log(results)
+      this.colorDetectionSignal.set(results);
       return results;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Stripe detection failed';

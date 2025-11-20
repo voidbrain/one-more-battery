@@ -7,10 +7,9 @@ import { DetectionResult } from '@interfaces/index';
 import { ImageUploadFormComponent } from '@pages/ai/image-parser/shared-components/image-upload-form/image-upload-form';
 import { SelectedImageComponent } from '@pages/ai/image-parser/shared-components/selected-image/selected-image.component';
 import { ProcessedImageComponent } from '@pages/ai/image-parser/shared-components/processed-image/processed-image.component';
-import { DetectionPromptPanelComponent } from '@pages/ai/image-parser/shared-components/detection-prompt-panel/detection-prompt-form';
 
 @Component({
-  selector: 'app-image-object-detector-prompt',
+  selector: 'app-image-prompt',
   templateUrl: './prompt.component.html',
   styleUrls: ['./prompt.component.scss'],
   standalone: true,
@@ -21,13 +20,13 @@ import { DetectionPromptPanelComponent } from '@pages/ai/image-parser/shared-com
     ImageUploadFormComponent,
     SelectedImageComponent,
     ProcessedImageComponent,
-    DetectionPromptPanelComponent,
   ],
 })
-export class ImageObjectDetectorComponent {
+export class ImageUploadComponent {
   // Detection state - computed signals for computed values, writable signals for mutable state
   isDetectorLoaded = computed(() => this.imageObjectDetectorService.isModelLoaded);
   isDetectionInProgress = signal(false);
+  selectedImageSignal = signal(false);
   isImageLoading = signal(false);
   processedImage = signal<string | null>(null);
   detectionResults = signal<DetectionResult[]>([]);
@@ -61,6 +60,7 @@ export class ImageObjectDetectorComponent {
         URL.revokeObjectURL(this.selectedImage!);
         this.selectedImage = e.target?.result as string;
         this.isImageLoading.set(false);
+        this.selectedImageSignal.set(true);
       };
       reader.readAsDataURL(file);
     }
@@ -111,6 +111,7 @@ export class ImageObjectDetectorComponent {
     this.processedImage.set(null);
     this.error.set(null);
     this.isImageLoading.set(false);
+    this.selectedImageSignal.set(false);
 
     // Reset file input to allow selecting the same file again
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;

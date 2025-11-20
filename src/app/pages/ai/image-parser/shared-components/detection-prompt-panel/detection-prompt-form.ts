@@ -1,7 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@jsverse/transloco';
+import { DetectorService } from '@services/ai/image-object-detector/detector.service';
 
 @Component({
   selector: 'app-detection-prompt-form',
@@ -11,9 +12,11 @@ import { TranslocoModule } from '@jsverse/transloco';
   imports: [CommonModule, IonicModule, TranslocoModule],
 })
 export class DetectionPromptPanelComponent {
-  selectedImage = input<string | null>(null);
-  isDetectorLoaded = input<boolean>(false);
-  isDetectionInProgress = input<boolean>(false);
+  // Project signals from detector service (using signals only, no inputs/outputs)
+  isModelLoaded = computed(() => this.detectorService.isModelLoaded);
+  isDetectionBusy = computed(() => this.detectorService.isBusy);
+  detectionResults = computed(() => this.detectorService.detection || []);
+  error = computed(() => this.detectorService.error);
 
-  detect = output<void>();
+  private detectorService = inject(DetectorService);
 }

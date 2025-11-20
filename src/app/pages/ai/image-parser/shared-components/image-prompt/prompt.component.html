@@ -7,7 +7,6 @@
     </ion-item>
 
     <app-image-upload-form
-      [isDetectorLoaded]="isDetectorLoaded()"
       (imageSelected)="onImageSelected($event)"
     />
 
@@ -18,12 +17,5 @@
     />
 
     <app-processed-image [processedImage]="processedImage()" />
-
-    <app-detection-prompt-form
-      [selectedImage]="selectedImage"
-      [isDetectorLoaded]="isDetectorLoaded()"
-      [isDetectionInProgress]="isDetectionInProgress()"
-      (detect)="detectObjects()"
-    />
   </ion-card-content>
 </ion-card>

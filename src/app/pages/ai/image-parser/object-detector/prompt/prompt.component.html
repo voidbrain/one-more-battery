@@ -2,7 +2,7 @@
   <ion-card-content>
     <ion-item lines="none">
       <ion-label>
-        <h3>Digit Section</h3>
+        <h3>Object Section</h3>
       </ion-label>
     </ion-item>{{isImageSelected() }}
     @if(isImageSelected()){
@@ -12,8 +12,9 @@
       isModelLoaded
     }
     <ion-button
-    (click)="detectDigits()">
-      DETECT_DIGITS
+    (click)="detectObjects()">
+      DETECT_OBJECTS
     </ion-button>
+    <app-detection-prompt-form />
   </ion-card-content>
 </ion-card>

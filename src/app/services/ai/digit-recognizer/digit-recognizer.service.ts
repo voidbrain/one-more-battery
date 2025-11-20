@@ -30,9 +30,9 @@ export class DigitRecognizerService {
 
   private pipeline: Awaited<ReturnType<typeof PipelineFactory.getInstance>> | null = null;
 
-  // Getter for digit recognizer instance from centralized pipeline factory
+  // Getter for digit recognizer instance - use local pipeline
   private get digitRecognizer(): Awaited<ReturnType<typeof PipelineFactory.getInstance>> | null {
-    return PipelineFactory.getExistingInstance('digitRecognizer');
+    return this.pipeline; // Use local instance, not global factory lookup
   }
 
   // Getters for accessing signals in templates or codes
@@ -82,16 +82,25 @@ export class DigitRecognizerService {
   public async load(): Promise<void> {
     // Reset and show loading state
     this.isModelLoadingSignal.set(true);
+    this.isModelLoadedSignal.set(false); // 🔍 Ensure we clear any previous successful load
+    console.log('[DigitRecognizerService] Starting model load...');
 
     try {
       await this.initializeModel(); // This handles 'initiate', 'progress', 'done', 'ready'
+      console.log('[DigitRecognizerService] Model load completed successfully ✅');
     } catch (err) {
-      console.error('Model loading failed:', err);
+      console.error('[DigitRecognizerService] Model loading FAILED ❌:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+      });
       const errorMessage = err instanceof Error ? err.message : 'Unknown model loading error';
       this.errorSignal.set(errorMessage);
+      this.isModelLoadedSignal.set(false); // 🔍 Explicitly set false on failure
     } finally {
       // Hide loader once done
       this.isModelLoadingSignal.set(false);
+      // ❌ Removed: this.isModelLoadedSignal.set(true) - let try/catch decide
     }
   }
 

@@ -2,8 +2,30 @@
   <ion-card-content>
     <ion-item lines="none">
       <ion-label>
-        <h3>Color Secttion</h3>
+        <h3>Color Section</h3>
       </ion-label>
-    </ion-item>
+    </ion-item>{{isImageSelected() }}
+    @if(isImageSelected()){
+      imageSelectedSignal
+    }
+    @if(isModelLoaded()){
+      isModelLoaded
+    }
+    <ion-button
+    (click)="recognizeColor()">
+      RECOGNIZE_COLOR
+    </ion-button>
+
+    @if(colorDetectionSignal()?.length){
+      <div>color:
+        @for(color of colorDetectionSignal(); track color) {
+          color.stripes - color.dominantColors
+        }
+      </div>
+    }
+    @if(colorDetectionSignal()?.length === 0) {
+      no colors
+    }
+
   </ion-card-content>
 </ion-card>

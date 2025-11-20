@@ -258,17 +258,27 @@ export class DetectorService {
   public async load(): Promise<void> {
     // Reset and show loading state
     this.isModelLoadingSignal.set(true);
+    this.isModelLoadedSignal.set(false); // 🔍 Ensure we clear any previous successful load
     this.progressItemsSignal.set([]);
+    console.log('[DetectorService] Starting model load...');
 
     try {
       await this.createDetector(); // This handles 'initiate', 'progress', 'done', 'ready'
+      console.log('[DetectorService] Model load completed successfully ✅');
     } catch (err) {
-      console.error('Model loading failed:', err);
+      console.error('[DetectorService] Model loading FAILED ❌:', {
+        error: err,
+        model: this.detectorConfigStorage.model,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+      });
       const errorMessage = err instanceof Error ? err.message : 'Unknown model loading error';
       this.errorSignal.set(errorMessage);
+      this.isModelLoadedSignal.set(false); // 🔍 Explicitly set false on failure
     } finally {
       // Hide loader once done
       this.isModelLoadingSignal.set(false);
+      // ❌ Removed: no always-true signal override
     }
   }
 

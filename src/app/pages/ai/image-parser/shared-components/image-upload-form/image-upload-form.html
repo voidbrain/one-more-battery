@@ -1,17 +1,16 @@
 <!-- Image Upload -->
 
-  <ion-item>
-    <ion-label position="stacked">{{ 'ai-model.SELECT_IMAGE' | transloco }}</ion-label>
-    <input
-      type="file"
-      accept="image/*"
-      (change)="onImageSelected($event)"
-      style="display: none"
-      #fileInput
-    />
-    <ion-button fill="outline" slot="end" (click)="fileInput.click()">
-      <ion-icon name="image" slot="start"></ion-icon>
-      {{ 'ai-model.CHOOSE_IMAGE' | transloco }}
-    </ion-button>
-  </ion-item>
-
+<ion-item>
+  <ion-label position="stacked">{{ 'ai-model.SELECT_IMAGE' | transloco }}</ion-label>
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onImageSelected($event)"
+    style="display: none"
+    #fileInput
+  />
+  <ion-button fill="outline" slot="end" (click)="fileInput.click()">
+    <ion-icon name="image" slot="start"></ion-icon>
+    {{ 'ai-model.CHOOSE_IMAGE' | transloco }}
+  </ion-button>
+</ion-item>

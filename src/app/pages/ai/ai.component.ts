@@ -7,7 +7,8 @@ import { AudioManagerCard } from '@pages/ai/text-parser/stt-transcriber/prompt/a
 import { TranscriberCard } from '@pages/ai/text-parser/stt-transcriber/prompt/prompt-card/prompt-card';
 import { InputCard } from '@pages/ai/text-parser/text-classifier/prompt/prompt';
 
-import { ImageObjectDetectorComponent } from '@pages/ai/image-parser/object-detector/prompt/prompt/prompt.component';
+import { ImageObjectDetectorComponent } from '@pages/ai/image-parser/object-detector/prompt/prompt.component';
+import { ImageUploadComponent } from '@pages/ai/image-parser/shared-components/image-prompt/prompt.component';
 import { TextClassifierService } from '@services/ai/text-classifier/text-classifier.service';
 import { ColorClassifierPrompt } from '@pages/ai/image-parser/color-recognizer/prompt/prompt';
 import { DigitClassifierPrompt } from '@pages/ai/image-parser/digit-classifier/prompt/prompt';
@@ -33,6 +34,7 @@ import { IonicModule } from '@ionic/angular';
     DigitClassifierPrompt,
     TranslocoModule,
     IonicModule,
+    ImageUploadComponent,
   ],
 })
 export class AiComponent {

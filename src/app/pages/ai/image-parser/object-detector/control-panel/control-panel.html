@@ -12,16 +12,16 @@
       isDetectorLoading {{ isDetectorLoading() }}<br />
       isDetectorLoaded {{ isDetectorLoaded() }}
       <ion-button
-          slot="end"
-          [color]="isDetectorLoaded() ? 'danger' : 'primary'"
-          [disabled]="isDetectorLoading()"
-          (click)="isDetectorLoaded() ? unloadDetector() : loadDetector()"
-        >
-          @if (isDetectorLoading()) {
-            <ion-spinner slot="start"></ion-spinner>
-          }
-          {{ isDetectorLoaded() ? 'Unload' : 'Load' }}
-        </ion-button>
+        slot="end"
+        [color]="isDetectorLoaded() ? 'danger' : 'primary'"
+        [disabled]="isDetectorLoading()"
+        (click)="isDetectorLoaded() ? unloadDetector() : loadDetector()"
+      >
+        @if (isDetectorLoading()) {
+          <ion-spinner slot="start"></ion-spinner>
+        }
+        {{ isDetectorLoaded() ? 'Unload' : 'Load' }}
+      </ion-button>
 
       <ion-button slot="end" fill="clear" (click)="openDetectorSettings()">
         <ion-icon name="settings"></ion-icon>
