@@ -2,19 +2,96 @@
   <ion-card-content>
     <ion-item lines="none">
       <ion-label>
-        <h3>Object Section</h3>
+        <h3>{{ 'ai.object_detector.title' | transloco }}</h3>
       </ion-label>
-    </ion-item>{{isImageSelected() }}
-    @if(isImageSelected()){
-      imageSelectedSignal
+    </ion-item>
+
+    <!-- Model Status -->
+    @if(isModelLoaded()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.object_detector.model_loaded' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.object_detector.model_not_loaded' | transloco }}</ion-label>
+      </ion-item>
     }
-    @if(isModelLoaded()){
-      isModelLoaded
+
+    <!-- Image Status -->
+    @if(isImageSelected()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.object_detector.image_selected' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.object_detector.image_not_selected' | transloco }}</ion-label>
+      </ion-item>
     }
+
+    <!-- Detection Button -->
     <ion-button
-    (click)="detectObjects()">
-      DETECT_OBJECTS
+      fill="solid"
+      color="primary"
+      (click)="detectObjects()"
+      [disabled]="!isImageSelected() || !isModelLoaded() || isDetectionBusy()">
+      <ion-icon name="eye" slot="start"></ion-icon>
+      {{ 'ai.object_detector.detect_objects' | transloco }}
     </ion-button>
+
     <app-detection-prompt-form />
+
+    <!-- Loading State -->
+    @if(isDetectionBusy()) {
+      <ion-item lines="none">
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        <ion-label>{{ 'ai.object_detector.processing' | transloco }}</ion-label>
+      </ion-item>
+    }
+
+    <!-- Error State -->
+    @if(error()) {
+      <ion-item lines="none">
+        <ion-icon name="close-circle" color="danger" slot="start"></ion-icon>
+        <ion-label color="danger">{{ error() }}</ion-label>
+      </ion-item>
+    }
+
+    <!-- Detection Results -->
+    @if(detectionResults() && detectionResults()!.length > 0) {
+      <ion-item lines="none">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        <ion-label>
+          <h3>{{ 'ai.object_detector.detected_objects' | transloco }}</h3>
+        </ion-label>
+      </ion-item>
+
+      @for(result of detectionResults(); track result) {
+        <ion-item lines="none">
+          <ion-chip color="primary" slot="start">
+            <ion-label>{{ result.label }}</ion-label>
+          </ion-chip>
+          <ion-label>
+            <small>{{ result.score | percent }}</small>
+          </ion-label>
+        </ion-item>
+      }
+    }
+
+    @if(detectionResults() && detectionResults()!.length === 0 && !isDetectionBusy() && !error()) {
+      <ion-item lines="none">
+        <ion-icon name="information-circle" color="medium" slot="start"></ion-icon>
+        <ion-label color="medium">
+          {{ 'ai.object_detector.no_objects_detected' | transloco }}
+        </ion-label>
+      </ion-item>
+    }
+
+    <!-- Processed Image -->
+    <app-processed-image [processedImage]="processedImage()" />
+
   </ion-card-content>
 </ion-card>

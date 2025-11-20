@@ -133,6 +133,12 @@ export class ColorClassifierService {
       }
       console.log(results)
       this.colorDetectionSignal.set(results);
+
+      // Create processed image with overlays if we have results
+      if (results.length > 0 && imageElement instanceof HTMLImageElement) {
+        this.createProcessedImageWithOverlays(imageElement, results);
+      }
+
       return results;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Stripe detection failed';
@@ -151,6 +157,80 @@ export class ColorClassifierService {
     this.isModelLoadingSignal.set(false);
     this.isModelLoadedSignal.set(false);
     console.log('[ColorClassifierService] Color classifier unloaded ✅');
+  }
+
+  private createProcessedImageWithOverlays(
+    originalImage: HTMLImageElement,
+    detections: StripeDetectionResult[],
+  ): void {
+    // Create new canvas for processed image
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Could not get canvas context for overlay processing');
+      return;
+    }
+
+    canvas.width = originalImage.width;
+    canvas.height = originalImage.height;
+
+    // Draw original image
+    ctx.drawImage(originalImage, 0, 0);
+
+    // Draw stripe overlays
+    detections.forEach((detection, index) => {
+      this.drawStripeOverlay(ctx, detection, index);
+    });
+
+    // Convert to data URL and log
+    const processedDataURL = canvas.toDataURL('image/png');
+    console.log('Setting processed color classification image:', processedDataURL.substring(0, 100) + '...');
+  }
+
+  private drawStripeOverlay(
+    ctx: CanvasRenderingContext2D,
+    detection: StripeDetectionResult,
+    index: number,
+  ): void {
+    const stripes = detection.stripes;
+    if (!stripes || stripes.length === 0) return;
+
+    stripes.forEach((stripe, stripeIndex) => {
+      const { position, color, isHorizontal } = stripe;
+
+      // Draw bounding rectangle
+      ctx.strokeStyle = '#00FF00'; // Green for stripes
+      ctx.lineWidth = 2;
+      ctx.strokeRect(position.x, position.y, position.width, position.height);
+
+      // Draw label background
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+      const directionText = isHorizontal ? 'Horizontal' : 'Vertical';
+      const labelText = `${color} ${directionText}`;
+      const fontSize = 14;
+      ctx.font = `${fontSize}px Arial`;
+      const textMetrics = ctx.measureText(labelText);
+      const textHeight = fontSize + 4;
+
+      const labelX = position.x;
+      const labelY = position.y - textHeight - 5;
+
+      // Make sure label doesn't go outside bounds
+      const labelBgWidth = textMetrics.width + 8;
+
+      ctx.fillRect(labelX, labelY, labelBgWidth, textHeight);
+
+      // Draw label text
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(labelText, labelX + 4, labelY + fontSize);
+
+      // Log the stripe detection
+      console.log(`Stripe ${stripeIndex} (${index}):`, {
+        position,
+        color: color,
+        isHorizontal,
+      });
+    });
   }
 
   private extractStripeRegions(imageElement: HTMLImageElement | HTMLCanvasElement): {

@@ -274,5 +274,47 @@
     "defaultThemeDescription": "Set your preferred theme (can still be changed with the theme switcher)",
     "styleTheme": "Style Theme",
     "styleThemeDescription": "Choose the visual style theme for the application"
+  },
+  "ai": {
+    "color_recognizer": {
+      "title": "Color Recognition",
+      "model_loaded": "AI Model Loaded",
+      "model_not_loaded": "AI Model Not Ready",
+      "image_selected": "Image Selected",
+      "image_not_selected": "Please select an image",
+      "recognize_color": "Recognize Colors",
+      "processing": "Processing image...",
+      "detected_stripes": "Detected Color Stripes",
+      "stripe": "Stripe",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical",
+      "no_stripes_detected": "No color stripes detected in the image",
+      "processed_image": "Processed Image"
+    },
+    "digit_recognizer": {
+      "title": "Digit Recognition",
+      "model_loaded": "AI Model Loaded",
+      "model_not_loaded": "AI Model Not Ready",
+      "image_selected": "Image Selected",
+      "image_not_selected": "Please select an image",
+      "detect_digits": "Detect Digits",
+      "processing": "Processing image...",
+      "detected_digits": "Detected Digits",
+      "extracted_value": "Extracted Value",
+      "no_digits_detected": "No digits detected in the image",
+      "processed_image": "Processed Image"
+    },
+    "object_detector": {
+      "title": "Object Detection",
+      "model_loaded": "AI Model Loaded",
+      "model_not_loaded": "AI Model Not Ready",
+      "image_selected": "Image Selected",
+      "image_not_selected": "Please select an image",
+      "detect_objects": "Detect Objects",
+      "processing": "Processing image...",
+      "detected_objects": "Detected Objects",
+      "no_objects_detected": "No objects detected in the image",
+      "processed_image": "Processed Image"
+    }
   }
 }

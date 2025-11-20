@@ -6,7 +6,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { DetectionResult } from '@interfaces/index';
 import { ImageUploadFormComponent } from '@pages/ai/image-parser/shared-components/image-upload-form/image-upload-form';
 import { SelectedImageComponent } from '@pages/ai/image-parser/shared-components/selected-image/selected-image.component';
-import { ProcessedImageComponent } from '@pages/ai/image-parser/shared-components/processed-image/processed-image.component';
+import { ImageService } from '@services/utils/image.service';
 
 @Component({
   selector: 'app-image-prompt',
@@ -19,7 +19,6 @@ import { ProcessedImageComponent } from '@pages/ai/image-parser/shared-component
     TranslocoModule,
     ImageUploadFormComponent,
     SelectedImageComponent,
-    ProcessedImageComponent,
   ],
 })
 export class ImageUploadComponent {
@@ -28,15 +27,16 @@ export class ImageUploadComponent {
   isDetectionInProgress = signal(false);
   selectedImageSignal = signal(false);
   isImageLoading = signal(false);
-  processedImage = signal<string | null>(null);
   detectionResults = signal<DetectionResult[]>([]);
   error = signal<string | null>(null);
+  processedImage = signal<string | null>(null);
 
   // Image handling
   selectedImage: string | null = null;
   imageFile: File | null = null;
 
   private imageObjectDetectorService = inject(DetectorService);
+  private imageService = inject(ImageService);
 
   constructor() {
     // Initialize other signal values
@@ -96,27 +96,6 @@ export class ImageUploadComponent {
     } catch (error) {
       console.error('Detection failed:', error);
       this.error.set('Detection failed');
-    }
-  }
-
-  clearImage() {
-    // Revoke object URL to free memory
-    if (this.selectedImage && this.selectedImage.startsWith('blob:')) {
-      URL.revokeObjectURL(this.selectedImage);
-    }
-
-    this.selectedImage = null;
-    this.imageFile = null;
-    this.detectionResults.set([]);
-    this.processedImage.set(null);
-    this.error.set(null);
-    this.isImageLoading.set(false);
-    this.selectedImageSignal.set(false);
-
-    // Reset file input to allow selecting the same file again
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
     }
   }
 
@@ -209,4 +188,27 @@ export class ImageUploadComponent {
       score: detection.score,
     });
   }
+
+  clearImage() {
+    // Revoke object URL to free memory
+    if (this.selectedImage && this.selectedImage.startsWith('blob:')) {
+      URL.revokeObjectURL(this.selectedImage);
+    }
+
+    this.selectedImage = null;
+    this.imageFile = null;
+    this.detectionResults.set([]);
+    this.imageService.processedImage.set(null);
+    this.error.set(null);
+    this.isImageLoading.set(false);
+    this.selectedImageSignal.set(false);
+
+    // Reset file input to allow selecting the same file again
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+
 }

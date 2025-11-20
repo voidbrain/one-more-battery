@@ -2,29 +2,117 @@
   <ion-card-content>
     <ion-item lines="none">
       <ion-label>
-        <h3>Color Section</h3>
+        <h3>{{ 'ai.color_recognizer.title' | transloco }}</h3>
       </ion-label>
-    </ion-item>{{isImageSelected() }}
-    @if(isImageSelected()){
-      imageSelectedSignal
+    </ion-item>
+
+    <!-- Model Status -->
+    @if(isModelLoaded()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.color_recognizer.model_loaded' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.color_recognizer.model_not_loaded' | transloco }}</ion-label>
+      </ion-item>
     }
-    @if(isModelLoaded()){
-      isModelLoaded
+
+    <!-- Image Status -->
+    @if(isImageSelected()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.color_recognizer.image_selected' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.color_recognizer.image_not_selected' | transloco }}</ion-label>
+      </ion-item>
     }
+
+
+
+    <!-- Recognition Button -->
     <ion-button
-    (click)="recognizeColor()">
-      RECOGNIZE_COLOR
+      fill="solid"
+      color="primary"
+      (click)="recognizeColor()"
+      [disabled]="!isImageSelected() || !isModelLoaded() || isDetectionBusy()">
+      <ion-icon name="color-palette" slot="start"></ion-icon>
+      {{ 'ai.color_recognizer.recognize_color' | transloco }}
     </ion-button>
 
-    @if(colorDetectionSignal()?.length){
-      <div>color:
-        @for(color of colorDetectionSignal(); track color) {
-          color.stripes - color.dominantColors
-        }
-      </div>
+    <!-- Loading State -->
+    @if(isDetectionBusy()) {
+      <ion-item lines="none">
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        <ion-label>{{ 'ai.color_recognizer.processing' | transloco }}</ion-label>
+      </ion-item>
     }
-    @if(colorDetectionSignal()?.length === 0) {
-      no colors
+
+    <!-- Error State -->
+    @if(error()) {
+      <ion-item lines="none">
+        <ion-icon name="close-circle" color="danger" slot="start"></ion-icon>
+        <ion-label color="danger">{{ error() }}</ion-label>
+      </ion-item>
+    }
+
+    <!-- Color Detection Results -->
+    @if(colorDetectionSignal() && colorDetectionSignal()!.length > 0) {
+      <ion-item lines="none">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        <ion-label>
+          <h3>{{ 'ai.color_recognizer.detected_stripes' | transloco }}</h3>
+        </ion-label>
+      </ion-item>
+
+      @for(detection of colorDetectionSignal(); track detection; let i = $index) {
+        <ion-card class="stripe-card">
+          <ion-card-content>
+            <ion-item lines="none">
+              <ion-label>
+                <strong>{{ 'ai.color_recognizer.stripe' | transloco }} {{ i + 1 }}</strong>
+              </ion-label>
+            </ion-item>
+
+            @for(stripe of detection.stripes; track stripe) {
+              <ion-item lines="none">
+                <ion-chip [color]="getColorClass(stripe.color.color)" slot="start">
+                  <ion-label>{{ stripe.color.color | titlecase }}</ion-label>
+                </ion-chip>
+                <ion-label>
+                  <small>
+                    {{ stripe.isHorizontal ? ('ai.color_recognizer.horizontal' | transloco) : ('ai.color_recognizer.vertical' | transloco) }}
+                    ({{ stripe.color.confidence | percent }})
+                  </small>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    }
+
+    @if(colorDetectionSignal() && colorDetectionSignal()!.length === 0 && !isDetectionBusy() && !error()) {
+      <ion-item lines="none">
+        <ion-icon name="information-circle" color="medium" slot="start"></ion-icon>
+        <ion-label color="medium">
+          {{ 'ai.color_recognizer.no_stripes_detected' | transloco }}
+        </ion-label>
+      </ion-item>
+    }
+
+    <!-- Processed Image -->
+    @if(processedImage()) {
+      <ion-item lines="none">
+        <ion-label>
+          <h3>{{ 'ai.color_recognizer.processed_image' | transloco }}</h3>
+        </ion-label>
+      </ion-item>
+      <app-processed-image [processedImage]="processedImage()" />
     }
 
   </ion-card-content>

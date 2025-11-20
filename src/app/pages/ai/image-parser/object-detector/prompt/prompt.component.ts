@@ -5,18 +5,22 @@ import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@jsverse/transloco';
 import { DetectionResult } from '@interfaces/index';
 import { DetectionPromptPanelComponent } from '@pages/ai/image-parser/shared-components/detection-prompt-panel/detection-prompt-form';
-import { ImageSignalService } from '@services/utils/image-signal.service';
+import { ImageService } from '@services/utils/image.service';
+import { ProcessedImageComponent } from '../../shared-components/processed-image/processed-image.component';
 
 @Component({
   selector: 'app-image-object-detector-prompt',
   templateUrl: './prompt.component.html',
   styleUrls: ['./prompt.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule, DetectionPromptPanelComponent],
+  imports: [CommonModule, IonicModule, TranslocoModule, DetectionPromptPanelComponent, ProcessedImageComponent],
 })
 export class ImageObjectDetectorComponent {
   private imageObjectDetectorService = inject(DetectorService);
-  private imageSignalService = inject(ImageSignalService);
+  private imageService = inject(ImageService);
+
+  selectedImageSignal = signal(false);
+  isImageLoading = signal(false);
 
   processedImage = signal<string | null>(null);
 
@@ -25,8 +29,8 @@ export class ImageObjectDetectorComponent {
   detectionResults = computed(() => this.imageObjectDetectorService.detection || []);
   error = computed(() => this.imageObjectDetectorService.error);
 
-  selectedFile = computed(() => this.imageSignalService.selectedFile());
-  isImageSelected = computed(() => this.imageSignalService.isImageSelected());
+  selectedFile = computed(() => this.imageService.selectedFile());
+  isImageSelected = computed(() => this.imageService.isImageSelected());
 
   async detectObjects() {
     if (!this.isImageSelected() || !this.isModelLoaded()) return;
@@ -154,4 +158,5 @@ export class ImageObjectDetectorComponent {
       score: detection.score,
     });
   }
+
 }

@@ -268,5 +268,47 @@
     "defaultThemeDescription": "Imposta il tuo tema preferito (può essere comunque modificato con il selettore del tema)",
     "styleTheme": "Tema Stile",
     "styleThemeDescription": "Scegli il tema visivo per l'applicazione"
+  },
+  "ai": {
+    "color_recognizer": {
+      "title": "Riconoscimento Colori",
+      "model_loaded": "Modello IA Caricato",
+      "model_not_loaded": "Modello IA Non Pronto",
+      "image_selected": "Immagine Selezionata",
+      "image_not_selected": "Seleziona un'immagine",
+      "recognize_color": "Riconosci Colori",
+      "processing": "Elaborazione immagine...",
+      "detected_stripes": "Strisce Colorate Rilevate",
+      "stripe": "Striscia",
+      "horizontal": "Orizzontale",
+      "vertical": "Verticale",
+      "no_stripes_detected": "Nessuna striscia colorata rilevata nell'immagine",
+      "processed_image": "Immagine Elaborata"
+    },
+    "digit_recognizer": {
+      "title": "Riconoscimento Cifre",
+      "model_loaded": "Modello IA Caricato",
+      "model_not_loaded": "Modello IA Non Pronto",
+      "image_selected": "Immagine Selezionata",
+      "image_not_selected": "Seleziona un'immagine",
+      "detect_digits": "Rileva Cifre",
+      "processing": "Elaborazione immagine...",
+      "detected_digits": "Cifre Rilevate",
+      "extracted_value": "Valore Estratto",
+      "no_digits_detected": "Nessuna cifra rilevata nell'immagine",
+      "processed_image": "Immagine Elaborata"
+    },
+    "object_detector": {
+      "title": "Rilevamento Oggetti",
+      "model_loaded": "Modello IA Caricato",
+      "model_not_loaded": "Modello IA Non Pronto",
+      "image_selected": "Immagine Selezionata",
+      "image_not_selected": "Seleziona un'immagine",
+      "detect_objects": "Rileva Oggetti",
+      "processing": "Elaborazione immagine...",
+      "detected_objects": "Oggetti Rilevati",
+      "no_objects_detected": "Nessun oggetto rilevato nell'immagine",
+      "processed_image": "Immagine Elaborata"
+    }
   }
 }

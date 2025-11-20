@@ -3,7 +3,10 @@ import { computed, Injectable, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class ImageSignalService {
+export class ImageService {
   selectedFile = signal<File | null>(null);
   isImageSelected = computed(() => !!this.selectedFile());
+  processedImage = signal<string | null>(null);
+
+
 }

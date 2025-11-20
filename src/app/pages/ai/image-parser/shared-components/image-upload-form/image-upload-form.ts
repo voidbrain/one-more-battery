@@ -2,7 +2,7 @@ import { Component, computed, inject, output, signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ImageSignalService } from '@services/utils/image-signal.service';
+import { ImageService } from '@services/utils/image.service';
 
 @Component({
   selector: 'app-image-upload-form',
@@ -12,7 +12,7 @@ import { ImageSignalService } from '@services/utils/image-signal.service';
   imports: [CommonModule, IonicModule, TranslocoModule],
 })
 export class ImageUploadFormComponent {
-  private imageSignalService = inject(ImageSignalService);
+  private ImageService = inject(ImageService);
 
   imageSelected = output<File>();
   selectedFile = signal<File | null>(null);
@@ -25,7 +25,7 @@ export class ImageUploadFormComponent {
     if (file) {
       this.selectedFile.set(file);
       this.imageSelected.emit(file);
-      this.imageSignalService.selectedFile.set(file); // Update service
+      this.ImageService.selectedFile.set(file); // Update service
 
     }
   }

@@ -2,18 +2,116 @@
   <ion-card-content>
     <ion-item lines="none">
       <ion-label>
-        <h3>Digit Section</h3>
+        <h3>{{ 'ai.digit_recognizer.title' | transloco }}</h3>
       </ion-label>
-    </ion-item>{{isImageSelected() }}
-    @if(isImageSelected()){
-      imageSelectedSignal
+    </ion-item>
+
+    <!-- Model Status -->
+    @if(isModelLoaded()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.digit_recognizer.model_loaded' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.digit_recognizer.model_not_loaded' | transloco }}</ion-label>
+      </ion-item>
     }
-    @if(isModelLoaded()){
-      isModelLoaded
+
+    <!-- Image Status -->
+    @if(isImageSelected()) {
+      <ion-item lines="none">
+        <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.digit_recognizer.image_selected' | transloco }}</ion-label>
+      </ion-item>
+    } @else {
+      <ion-item lines="none">
+        <ion-icon name="alert-circle" color="warning" slot="start"></ion-icon>
+        <ion-label>{{ 'ai.digit_recognizer.image_not_selected' | transloco }}</ion-label>
+      </ion-item>
     }
+
+    <!-- Recognition Button -->
     <ion-button
-    (click)="detectDigits()">
-      DETECT_DIGITS
+      fill="solid"
+      color="primary"
+      (click)="detectDigits()"
+      [disabled]="!isImageSelected() || !isModelLoaded() || isDetectionBusy()">
+      <ion-icon name="calculator" slot="start"></ion-icon>
+      {{ 'ai.digit_recognizer.detect_digits' | transloco }}
     </ion-button>
+
+    <!-- Loading State -->
+    @if(isDetectionBusy()) {
+      <ion-item lines="none">
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        <ion-label>{{ 'ai.digit_recognizer.processing' | transloco }}</ion-label>
+      </ion-item>
+    }
+
+    <!-- Error State -->
+    @if(error()) {
+      <ion-item lines="none">
+        <ion-icon name="close-circle" color="danger" slot="start"></ion-icon>
+        <ion-label color="danger">{{ error() }}</ion-label>
+      </ion-item>
+    }
+
+    <!-- Detection Results -->
+    @if(digitDetectionSignal() && digitDetectionSignal()!.length > 0) {
+      <ion-item lines="none">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        <ion-label>
+          <h3>{{ 'ai.digit_recognizer.detected_digits' | transloco }}</h3>
+        </ion-label>
+      </ion-item>
+
+      @for(result of digitDetectionSignal(); track result) {
+        <ion-card class="digit-card">
+          <ion-card-content>
+            <ion-item lines="none" *ngIf="result.extractedValue">
+              <ion-chip color="success" slot="start">
+                <ion-label>{{ result.extractedValue }}</ion-label>
+              </ion-chip>
+              <ion-label>
+                <small>{{ 'ai.digit_recognizer.extracted_value' | transloco }} ({{ result.confidence | percent }})</small>
+              </ion-label>
+            </ion-item>
+
+            @for(digit of result.recognizedDigits; track digit) {
+              <ion-item lines="none">
+                <ion-chip color="primary">
+                  <ion-label>{{ digit.digit }}</ion-label>
+                </ion-chip>
+                <ion-label>
+                  <small>{{ digit.confidence | percent }}</small>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    }
+
+    @if(digitDetectionSignal() && digitDetectionSignal()!.length === 0 && !isDetectionBusy() && !error()) {
+      <ion-item lines="none">
+        <ion-icon name="information-circle" color="medium" slot="start"></ion-icon>
+        <ion-label color="medium">
+          {{ 'ai.digit_recognizer.no_digits_detected' | transloco }}
+        </ion-label>
+      </ion-item>
+    }
+
+    <!-- Processed Image -->
+    @if(processedImage()) {
+      <ion-item lines="none">
+        <ion-label>
+          <h3>{{ 'ai.digit_recognizer.processed_image' | transloco }}</h3>
+        </ion-label>
+      </ion-item>
+      <app-processed-image [processedImage]="processedImage()" />
+    }
+
   </ion-card-content>
 </ion-card>
