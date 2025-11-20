@@ -502,6 +502,7 @@ export class Sqlite {
   }
 
   // Legacy methods for backward compatibility
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async execute(sql: string): Promise<any[]> {
     console.log('Executing SQL:', sql);
     return [];

@@ -8,8 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'ai',
-    loadComponent: () =>
-      import('./pages/ai/ai.component').then((m) => m.AiComponent),
+    loadComponent: () => import('./pages/ai/ai.component').then((m) => m.AiComponent),
   },
   {
     path: 'batteries',
@@ -18,9 +17,7 @@ export const routes: Routes = [
   {
     path: 'manage',
     loadComponent: () =>
-      import('./pages/battery-management/battery-management').then(
-        (m) => m.BatteryManagement,
-      ),
+      import('./pages/battery-management/battery-management').then((m) => m.BatteryManagement),
     children: [
       {
         path: '',

@@ -23,16 +23,16 @@
           <strong>{{ 'resistance.analytics.cells' | transloco }}:</strong> {{ cellData.length }}
         </div>
         @if (firstRecordDate) {
-        <div>
-          <strong>{{ 'resistance.analytics.firstRecord' | transloco }}:</strong><br />
-          {{ firstRecordDate }}
-        </div>
+          <div>
+            <strong>{{ 'resistance.analytics.firstRecord' | transloco }}:</strong><br />
+            {{ firstRecordDate }}
+          </div>
         }
         @if (lastRecordDate) {
-        <div>
-          <strong>{{ 'resistance.analytics.lastRecord' | transloco }}:</strong><br />
-          {{ lastRecordDate }}
-        </div>
+          <div>
+            <strong>{{ 'resistance.analytics.lastRecord' | transloco }}:</strong><br />
+            {{ lastRecordDate }}
+          </div>
         }
       </div>
     </ion-card-content>
@@ -55,34 +55,34 @@
 
   <!-- Cell Data Table -->
   @if (cellData.length > 0) {
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ 'resistance.table.title' | transloco }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid>
-        <ion-row style="font-weight: bold; background: var(--bg-secondary)">
-          <ion-col size="4">{{ 'resistance.table.cellName' | transloco }}</ion-col>
-          <ion-col size="4">{{ 'resistance.table.firstRead' | transloco }}</ion-col>
-          <ion-col size="4">{{ 'resistance.table.lastRead' | transloco }}</ion-col>
-        </ion-row>
-        @for (cell of cellData; track cell.name) {
-        <ion-row>
-          <ion-col size="4">{{ cell.name }}</ion-col>
-          <ion-col size="4">{{ cell.firstRead }}</ion-col>
-          <ion-col size="4">{{ cell.lastRead }}</ion-col>
-        </ion-row>
-        }
-        @if (averageData) {
-        <ion-row style="background: var(--bg-secondary); font-weight: bold">
-          <ion-col size="4">{{ averageData.name }}</ion-col>
-          <ion-col size="4">{{ averageData.firstRead }}</ion-col>
-          <ion-col size="4">{{ averageData.lastRead }}</ion-col>
-        </ion-row>
-        }
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ 'resistance.table.title' | transloco }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row style="font-weight: bold; background: var(--bg-secondary)">
+            <ion-col size="4">{{ 'resistance.table.cellName' | transloco }}</ion-col>
+            <ion-col size="4">{{ 'resistance.table.firstRead' | transloco }}</ion-col>
+            <ion-col size="4">{{ 'resistance.table.lastRead' | transloco }}</ion-col>
+          </ion-row>
+          @for (cell of cellData; track cell.name) {
+            <ion-row>
+              <ion-col size="4">{{ cell.name }}</ion-col>
+              <ion-col size="4">{{ cell.firstRead }}</ion-col>
+              <ion-col size="4">{{ cell.lastRead }}</ion-col>
+            </ion-row>
+          }
+          @if (averageData) {
+            <ion-row style="background: var(--bg-secondary); font-weight: bold">
+              <ion-col size="4">{{ averageData.name }}</ion-col>
+              <ion-col size="4">{{ averageData.firstRead }}</ion-col>
+              <ion-col size="4">{{ averageData.lastRead }}</ion-col>
+            </ion-row>
+          }
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
   }
 
   <!-- Add New Measurement Form -->
@@ -106,23 +106,23 @@
           </div>
 
           @for (value of newResistanceValues; track $index; let i = $index) {
-          <div style="margin-bottom: 8px">
-            <ion-item>
-              <ion-label position="stacked"
-                >{{ 'resistance.form.cellLabel' | transloco }} {{ i + 1 }} (mΩ)</ion-label
-              >
-              <ion-input
-                type="number"
-                step="0.01"
-                min="0"
-                [(ngModel)]="newResistanceValues[i]"
-                [name]="'cell' + i"
-                placeholder="0.00"
-                required
-              >
-              </ion-input>
-            </ion-item>
-          </div>
+            <div style="margin-bottom: 8px">
+              <ion-item>
+                <ion-label position="stacked"
+                  >{{ 'resistance.form.cellLabel' | transloco }} {{ i + 1 }} (mΩ)</ion-label
+                >
+                <ion-input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  [(ngModel)]="newResistanceValues[i]"
+                  [name]="'cell' + i"
+                  placeholder="0.00"
+                  required
+                >
+                </ion-input>
+              </ion-item>
+            </div>
           }
         </div>
 
@@ -130,7 +130,7 @@
         <div style="margin-top: 16px">
           <ion-button type="submit" expand="block" [disabled]="isSaving || hasInvalidValues()">
             @if (isSaving) {
-            <ion-icon name="hourglass" slot="start"></ion-icon>
+              <ion-icon name="hourglass" slot="start"></ion-icon>
             }
             {{
               isSaving

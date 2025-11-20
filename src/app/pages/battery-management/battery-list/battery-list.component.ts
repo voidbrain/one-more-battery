@@ -17,7 +17,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 
@@ -53,7 +53,8 @@ import { AlertController } from '@ionic/angular';
             label="Label"
             labelPlacement="floating"
             [(ngModel)]="currentBattery.label"
-            placeholder="Enter battery label">
+            placeholder="Enter battery label"
+          >
           </ion-input>
         </ion-item>
         <ion-item>
@@ -61,11 +62,12 @@ import { AlertController } from '@ionic/angular';
             label="Brand"
             labelPlacement="floating"
             [(ngModel)]="currentBattery.brandId"
-            placeholder="Select brand">
+            placeholder="Select brand"
+          >
             @for (brand of brands; track brand.id) {
-            <ion-select-option [value]="brand.id">
-              {{ brand.label }}
-            </ion-select-option>
+              <ion-select-option [value]="brand.id">
+                {{ brand.label }}
+              </ion-select-option>
             }
           </ion-select>
         </ion-item>
@@ -74,11 +76,12 @@ import { AlertController } from '@ionic/angular';
             label="Series"
             labelPlacement="floating"
             [(ngModel)]="currentBattery.seriesId"
-            placeholder="Select series">
+            placeholder="Select series"
+          >
             @for (series of series; track series.id) {
-            <ion-select-option [value]="series.id">
-              {{ series.label }}
-            </ion-select-option>
+              <ion-select-option [value]="series.id">
+                {{ series.label }}
+              </ion-select-option>
             }
           </ion-select>
         </ion-item>
@@ -87,11 +90,12 @@ import { AlertController } from '@ionic/angular';
             label="Type"
             labelPlacement="floating"
             [(ngModel)]="currentBattery.typeId"
-            placeholder="Select type">
+            placeholder="Select type"
+          >
             @for (type of types; track type.id) {
-            <ion-select-option [value]="type.id">
-              {{ type.label }}
-            </ion-select-option>
+              <ion-select-option [value]="type.id">
+                {{ type.label }}
+              </ion-select-option>
             }
           </ion-select>
         </ion-item>
@@ -100,7 +104,8 @@ import { AlertController } from '@ionic/angular';
             label="Model"
             labelPlacement="floating"
             [(ngModel)]="currentBattery.model"
-            placeholder="Enter model">
+            placeholder="Enter model"
+          >
           </ion-input>
         </ion-item>
         <ion-item>
@@ -109,7 +114,8 @@ import { AlertController } from '@ionic/angular';
             labelPlacement="floating"
             type="number"
             [(ngModel)]="currentBattery.cellsNumber"
-            placeholder="Enter cell count">
+            placeholder="Enter cell count"
+          >
           </ion-input>
         </ion-item>
         <ion-item>
@@ -118,16 +124,15 @@ import { AlertController } from '@ionic/angular';
             labelPlacement="floating"
             type="number"
             [(ngModel)]="currentBattery.mA"
-            placeholder="Enter mA">
+            placeholder="Enter mA"
+          >
           </ion-input>
         </ion-item>
         <ion-button expand="block" (click)="saveBattery()">
           {{ isEditing ? 'Update Battery' : 'Add Battery' }}
         </ion-button>
         @if (isEditing) {
-        <ion-button expand="block" fill="outline" (click)="cancelEdit()">
-          Cancel
-        </ion-button>
+          <ion-button expand="block" fill="outline" (click)="cancelEdit()"> Cancel </ion-button>
         }
       </ion-card-content>
     </ion-card>
@@ -141,21 +146,23 @@ import { AlertController } from '@ionic/angular';
       <ion-card-content>
         <ion-list>
           @for (battery of batteries; track battery.id) {
-          <ion-item (click)="editBattery(battery)">
-            <ion-label>
-              <h3>{{ battery.label }}</h3>
-              <p>{{ getBrandName(battery.brandId) }} - {{ getSeriesName(battery.seriesId) }} - {{ getTypeName(battery.typeId) }}</p>
-              <p>{{ battery.model }} - {{ battery.cellsNumber }} cells - {{ battery.mA }}mA</p>
-            </ion-label>
-            <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(battery)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-          </ion-item>
+            <ion-item (click)="editBattery(battery)">
+              <ion-label>
+                <h3>{{ battery.label }}</h3>
+                <p>
+                  {{ getBrandName(battery.brandId) }} - {{ getSeriesName(battery.seriesId) }} -
+                  {{ getTypeName(battery.typeId) }}
+                </p>
+                <p>{{ battery.model }} - {{ battery.cellsNumber }} cells - {{ battery.mA }}mA</p>
+              </ion-label>
+              <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(battery)">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>
+            </ion-item>
           }
         </ion-list>
       </ion-card-content>
     </ion-card>
-
   `,
 })
 export class BatteryListComponent {
@@ -183,8 +190,6 @@ export class BatteryListComponent {
     deleted: 0,
     enabled: 1,
   };
-
-
 
   resetForm() {
     this.currentBattery = {
@@ -283,14 +288,14 @@ export class BatteryListComponent {
   }
 
   getBrandName(brandId: number): string {
-    return this.brands.find(b => b.id === brandId)?.label || 'Unknown';
+    return this.brands.find((b) => b.id === brandId)?.label || 'Unknown';
   }
 
   getSeriesName(seriesId: number): string {
-    return this.series.find(s => s.id === seriesId)?.label || 'Unknown';
+    return this.series.find((s) => s.id === seriesId)?.label || 'Unknown';
   }
 
   getTypeName(typeId: number): string {
-    return this.types.find(t => t.id === typeId)?.label || 'Unknown';
+    return this.types.find((t) => t.id === typeId)?.label || 'Unknown';
   }
 }

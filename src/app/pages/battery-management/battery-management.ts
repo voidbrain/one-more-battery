@@ -98,7 +98,12 @@ export class BatteryManagement implements OnInit, OnDestroy {
         this.sqlite.getTypes(),
       ]);
 
-      console.log('Loading data:', { batteries: batteries.length, brands: brands.length, series: series.length, types: types.length });
+      console.log('Loading data:', {
+        batteries: batteries.length,
+        brands: brands.length,
+        series: series.length,
+        types: types.length,
+      });
       this.batteries.set(batteries);
       this.brands.set(brands);
       this.series.set(series);

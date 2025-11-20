@@ -1,0 +1,26 @@
+<!-- Selected Image Display -->
+@if (selectedImage()) {
+  <div class="image-container">
+    @if (isImageLoading()) {
+      <div class="image-loading">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading image...</p>
+      </div>
+    }
+    <img
+      [src]="selectedImage()"
+      alt="Selected image"
+      class="selected-image"
+      [class.loading]="isImageLoading()"
+    />
+    <ion-button
+      fill="clear"
+      color="danger"
+      size="small"
+      class="clear-button"
+      (click)="clearImage()"
+    >
+      <ion-icon name="close-circle"></ion-icon>
+    </ion-button>
+  </div>
+}

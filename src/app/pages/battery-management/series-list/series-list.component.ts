@@ -15,7 +15,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 
@@ -49,7 +49,8 @@ import { AlertController } from '@ionic/angular';
             label="Label"
             labelPlacement="floating"
             [(ngModel)]="currentSeries.label"
-            placeholder="Enter series label">
+            placeholder="Enter series label"
+          >
           </ion-input>
         </ion-item>
         <ion-item>
@@ -58,16 +59,15 @@ import { AlertController } from '@ionic/angular';
             labelPlacement="floating"
             type="color"
             [(ngModel)]="currentSeries.color"
-            placeholder="Select color">
+            placeholder="Select color"
+          >
           </ion-input>
         </ion-item>
         <ion-button expand="block" (click)="saveSeries()">
           {{ isEditing ? 'Update Series' : 'Add Series' }}
         </ion-button>
         @if (isEditing) {
-        <ion-button expand="block" fill="outline" (click)="cancelEdit()">
-          Cancel
-        </ion-button>
+          <ion-button expand="block" fill="outline" (click)="cancelEdit()"> Cancel </ion-button>
         }
       </ion-card-content>
     </ion-card>
@@ -81,24 +81,30 @@ import { AlertController } from '@ionic/angular';
       <ion-card-content>
         <ion-list>
           @for (seriesItem of series; track seriesItem.id) {
-          <ion-item (click)="editSeries(seriesItem)">
-            <ion-label>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <div
-                  style="width: 20px; height: 20px; border-radius: 50%; background-color: {{ seriesItem.color }}; border: 1px solid #ccc;">
+            <ion-item (click)="editSeries(seriesItem)">
+              <ion-label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div
+                    style="width: 20px; height: 20px; border-radius: 50%; background-color: {{
+                      seriesItem.color
+                    }}; border: 1px solid #ccc;"
+                  ></div>
+                  {{ seriesItem.label }}
                 </div>
-                {{ seriesItem.label }}
-              </div>
-            </ion-label>
-            <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(seriesItem)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-          </ion-item>
+              </ion-label>
+              <ion-button
+                slot="end"
+                fill="clear"
+                color="danger"
+                (click)="confirmDelete(seriesItem)"
+              >
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>
+            </ion-item>
           }
         </ion-list>
       </ion-card-content>
     </ion-card>
-
   `,
 })
 export class SeriesListComponent {
@@ -137,11 +143,18 @@ export class SeriesListComponent {
     try {
       if (this.isEditing && this.currentSeries.id) {
         // Update existing series
-        await this.sqlite.updateSeries(this.currentSeries.id, this.currentSeries.label, this.currentSeries.color || '#000000');
+        await this.sqlite.updateSeries(
+          this.currentSeries.id,
+          this.currentSeries.label,
+          this.currentSeries.color || '#000000',
+        );
         this.toast.showSeriesUpdated();
       } else {
         // Add new series
-        await this.sqlite.insertSeries(this.currentSeries.label, this.currentSeries.color || '#000000');
+        await this.sqlite.insertSeries(
+          this.currentSeries.label,
+          this.currentSeries.color || '#000000',
+        );
         this.toast.showSeriesCreated();
       }
 

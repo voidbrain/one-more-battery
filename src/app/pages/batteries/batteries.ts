@@ -401,8 +401,8 @@ export class Batteries implements OnInit {
         margin: 2,
         color: {
           dark: '#000000',
-          light: '#FFFFFF'
-        }
+          light: '#FFFFFF',
+        },
       });
 
       // Create a printable QR code document

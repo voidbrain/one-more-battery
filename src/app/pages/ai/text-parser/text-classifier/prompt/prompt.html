@@ -1,0 +1,19 @@
+<ion-card>
+  <ion-card-content>
+    <ion-item>
+      <ion-label position="stacked">{{ 'ai-model.Type_a_command' | transloco }}</ion-label>
+      <ion-input
+        [ngModel]="inputText"
+        (ngModelChange)="onInputTextChange($event)"
+        placeholder="{{ 'ai-model.Type_a_command' | transloco }}"
+      ></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="embedText()">
+      {{ 'ai-model.BUTTON_RUN_COMMAND' | transloco }}
+    </ion-button>
+    <ion-item>
+      <ion-label>Json object:</ion-label>
+      <pre>{{ command | json }}</pre>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

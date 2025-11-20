@@ -18,7 +18,9 @@ import {
   IonInput,
   IonGrid,
   IonRow,
-  IonCol, IonFooter } from '@ionic/angular/standalone';
+  IonCol,
+  IonFooter,
+} from '@ionic/angular/standalone';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Sqlite } from '@services/database/database.service';
 import { FormsModule } from '@angular/forms';
@@ -44,7 +46,8 @@ interface CellData {
   selector: 'app-resistance-modal',
   templateUrl: './resistance-modal.html',
   standalone: true,
-  imports: [IonFooter,
+  imports: [
+    IonFooter,
     CommonModule,
     IonHeader,
     IonToolbar,

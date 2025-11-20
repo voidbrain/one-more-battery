@@ -40,7 +40,7 @@ import {
   eye,
   eyeOff,
   image,
-  search
+  search,
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -77,7 +77,7 @@ addIcons({
   eye: eye,
   'eye-off': eyeOff,
   image: image,
-  search: search
+  search: search,
 });
 
 export const appConfig: ApplicationConfig = {

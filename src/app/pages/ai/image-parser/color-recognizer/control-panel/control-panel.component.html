@@ -1,0 +1,34 @@
+<ion-card>
+  <ion-card-content>
+    <!-- ColorClassifier Model -->
+    <div class="ion-margin-bottom">
+      <ion-item lines="none">
+        <ion-label>
+          <h3>{{ 'ai-model.LOAD_COLOR_CLASSIFIER' | transloco }}</h3>
+          <p>{{ 'ai-model.COLOR_CLASSIFIER_SETTINGSMODEL' | transloco }}</p>
+          <small class="text-muted"
+            >Current: {{ getCurrentColorClassifierModelName() }} ({{
+              getCurrentColorClassifierModelSize()
+            }}MB)</small
+          >
+        </ion-label>
+        isColorClassifierLoading {{ isColorClassifierLoading() }}<br />
+        isColorClassifierLoaded {{ isColorClassifierLoaded() }}
+        <ion-button
+          slot="end"
+          [color]="isColorClassifierLoaded() ? 'danger' : 'primary'"
+          [disabled]="isColorClassifierLoading()"
+          (click)="isColorClassifierLoaded() ? unloadColorClassifier() : loadColorClassifier()"
+        >
+          @if (isColorClassifierLoading()) {
+            <ion-spinner slot="start"></ion-spinner>
+          }
+          {{ isColorClassifierLoaded() ? 'Unload' : 'Load' }}
+        </ion-button>
+        <ion-button slot="end" fill="clear" (click)="openColorClassifierSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-card-content>
+</ion-card>

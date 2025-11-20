@@ -54,7 +54,7 @@
             <div class="ion-padding-top">
               <ion-button type="submit" expand="block" [disabled]="isSaving() || usageForm.invalid">
                 @if (isSaving()) {
-                <ion-icon name="hourglass" slot="start"></ion-icon>
+                  <ion-icon name="hourglass" slot="start"></ion-icon>
                 }
                 {{ isSaving() ? ('common.saving' | transloco) : ('common.save' | transloco) }}
               </ion-button>
@@ -162,7 +162,7 @@
             <div class="ion-padding-top">
               <ion-button type="submit" expand="block" [disabled]="isSaving() || appForm.invalid">
                 @if (isSaving()) {
-                <ion-icon name="hourglass" slot="start"></ion-icon>
+                  <ion-icon name="hourglass" slot="start"></ion-icon>
                 }
                 {{ isSaving() ? ('common.saving' | transloco) : ('common.save' | transloco) }}
               </ion-button>

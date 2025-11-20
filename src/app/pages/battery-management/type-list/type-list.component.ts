@@ -15,7 +15,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 
@@ -49,16 +49,15 @@ import { AlertController } from '@ionic/angular';
             label="Label"
             labelPlacement="floating"
             [(ngModel)]="currentType.label"
-            placeholder="Enter type label">
+            placeholder="Enter type label"
+          >
           </ion-input>
         </ion-item>
         <ion-button expand="block" (click)="saveType()">
           {{ isEditing ? 'Update Type' : 'Add Type' }}
         </ion-button>
         @if (isEditing) {
-        <ion-button expand="block" fill="outline" (click)="cancelEdit()">
-          Cancel
-        </ion-button>
+          <ion-button expand="block" fill="outline" (click)="cancelEdit()"> Cancel </ion-button>
         }
       </ion-card-content>
     </ion-card>
@@ -72,17 +71,16 @@ import { AlertController } from '@ionic/angular';
       <ion-card-content>
         <ion-list>
           @for (type of types; track type.id) {
-          <ion-item (click)="editType(type)">
-            <ion-label>{{ type.label }}</ion-label>
-            <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(type)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
-          </ion-item>
+            <ion-item (click)="editType(type)">
+              <ion-label>{{ type.label }}</ion-label>
+              <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(type)">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>
+            </ion-item>
           }
         </ion-list>
       </ion-card-content>
     </ion-card>
-
   `,
 })
 export class TypeListComponent {

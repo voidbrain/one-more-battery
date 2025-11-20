@@ -1,0 +1,31 @@
+<!-- Object Detector Model -->
+<ion-card>
+  <ion-card-content>
+    <ion-item lines="none">
+      <ion-label>
+        <h3>Load YOLO for Images Recognition</h3>
+        <p>Object detection model</p>
+        <small class="text-muted"
+          >Current: {{ getCurrentModelName() }} ({{ getCurrentModelSize() }}MB)</small
+        >
+      </ion-label>
+      isDetectorLoading {{ isDetectorLoading() }}<br />
+      isDetectorLoaded {{ isDetectorLoaded() }}
+      <ion-button
+          slot="end"
+          [color]="isDetectorLoaded() ? 'danger' : 'primary'"
+          [disabled]="isDetectorLoading()"
+          (click)="isDetectorLoaded() ? unloadDetector() : loadDetector()"
+        >
+          @if (isDetectorLoading()) {
+            <ion-spinner slot="start"></ion-spinner>
+          }
+          {{ isDetectorLoaded() ? 'Unload' : 'Load' }}
+        </ion-button>
+
+      <ion-button slot="end" fill="clear" (click)="openDetectorSettings()">
+        <ion-icon name="settings"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

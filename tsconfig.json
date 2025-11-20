@@ -22,7 +22,8 @@
       "@storage/*": ["src/app/services/*"],
       "@components/*": ["src/app/components/*"],
       "@interfaces/*": ["src/app/interfaces/*"],
-      "@ionic/*": ["node_modules/@ionic/*"]
+      "@ionic/*": ["node_modules/@ionic/*"],
+      "@utils/*": ["src/app/services/utils/*"]
     }
   },
   "angularCompilerOptions": {

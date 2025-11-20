@@ -30,7 +30,7 @@ import {
     IonSegmentButton,
     IonLabel,
   ],
-  templateUrl: './header.html'
+  templateUrl: './header.html',
 })
 export class Header implements OnInit, OnDestroy {
   private router = inject(Router);

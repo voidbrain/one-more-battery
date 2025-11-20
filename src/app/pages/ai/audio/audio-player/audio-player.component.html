@@ -1,8 +1,0 @@
-@if (audioUrl()) {
-  <ion-card>
-    <ion-card-content>
-    <p>{{ 'ai-model.RECORDING_COMPLETE_INFO' | transloco }}</p>
-    <audio [src]="audioUrl()" controls></audio>
-    </ion-card-content>
-  </ion-card>
-}

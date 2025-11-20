@@ -187,9 +187,13 @@ export class CyclesModalComponent implements OnInit, OnDestroy {
         plugins: {
           tooltip: {
             callbacks: {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              label: (context: any) => {
-                const status = context.raw;
+              label: (context) => {
+                const status =
+                  typeof context.raw === 'number'
+                    ? context.raw
+                    : typeof context.raw === 'string'
+                      ? parseFloat(context.raw)
+                      : 0;
                 switch (status) {
                   case 1:
                     return this.transloco.translate('batteries.status.discharged');

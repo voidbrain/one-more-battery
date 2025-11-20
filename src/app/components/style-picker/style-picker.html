@@ -6,21 +6,17 @@
   <ng-template>
     <ion-list>
       @for (style of styleOptions; track style.value) {
-      <ion-item
-        button
-        (click)="setStyle(style.value)"
-        [class.selected]="style.value === currentStyle"
-      >
-        <ion-icon [name]="style.icon" slot="start"></ion-icon>
-        <ion-label>{{ style.label }}</ion-label>
-        @if (style.value === currentStyle) {
-        <ion-icon
-          name="checkmark"
-          slot="end"
-          color="primary"
-        ></ion-icon>
-        }
-      </ion-item>
+        <ion-item
+          button
+          (click)="setStyle(style.value)"
+          [class.selected]="style.value === currentStyle"
+        >
+          <ion-icon [name]="style.icon" slot="start"></ion-icon>
+          <ion-label>{{ style.label }}</ion-label>
+          @if (style.value === currentStyle) {
+            <ion-icon name="checkmark" slot="end" color="primary"></ion-icon>
+          }
+        </ion-item>
       }
     </ion-list>
   </ng-template>

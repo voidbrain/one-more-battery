@@ -1,0 +1,34 @@
+<ion-card>
+  <ion-card-content>
+    <!-- TextClassifier Model -->
+    <div class="ion-margin-bottom">
+      <ion-item lines="none">
+        <ion-label>
+          <h3>{{ 'ai-model.LOAD_MINILM_COMMANDS' | transloco }}</h3>
+          <p>{{ 'ai-model.TEXT_CLASSIFIER_SETTINGSMODEL' | transloco }}</p>
+          <small class="text-muted"
+            >Current: {{ getCurrentTextClassifierModelName() }} ({{
+              getCurrentTextClassifierModelSize()
+            }}MB)</small
+          >
+        </ion-label>
+        isTextClassifierLoading {{ isTextClassifierLoading() }}<br />
+        isTextClassifierLoaded {{ isTextClassifierLoaded() }}
+        <ion-button
+          slot="end"
+          [color]="isTextClassifierLoaded() ? 'danger' : 'primary'"
+          [disabled]="isTextClassifierLoading()"
+          (click)="isTextClassifierLoaded() ? unloadTextClassifier() : loadTextClassifier()"
+        >
+          @if (isTextClassifierLoading()) {
+            <ion-spinner slot="start"></ion-spinner>
+          }
+          {{ isTextClassifierLoaded() ? 'Unload' : 'Load' }}
+        </ion-button>
+        <ion-button slot="end" fill="clear" (click)="openTextClassifierSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,29 @@
+<!-- Detection Button -->
+@if (selectedImage() && isDetectorLoaded()) {
+  <ion-button
+    expand="block"
+    [disabled]="isDetectionInProgress()"
+    (click)="detect.emit()"
+    color="primary"
+    class="detect-button"
+  >
+    @if (isDetectionInProgress()) {
+      <ion-spinner name="crescent" slot="start"></ion-spinner>
+    } @else {
+      <ion-icon name="search" slot="start"></ion-icon>
+    }
+    {{
+      isDetectionInProgress()
+        ? ('ai-model.DETECTING' | transloco)
+        : ('ai-model.DETECT_OBJECTS' | transloco)
+    }}
+  </ion-button>
+}
+
+<!-- Detection Loading Overlay -->
+@if (isDetectionInProgress()) {
+  <div class="detection-loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Detecting objects...</p>
+  </div>
+}

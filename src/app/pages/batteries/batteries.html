@@ -30,15 +30,15 @@
                   <ion-col size="12" size-md="6" size-lg="4">
                     <ion-card color="warning">
                       <ion-card-header>
-
                         <ion-card-title color="primary">
                           <div class="ion-float-start">
-                          <ion-icon [name]="getStatusIcon(battery.status)"></ion-icon>
-                          @if (battery.alertStatus !== 'green') {
-                            <ion-icon [name]="getAlertIcon(battery.alertStatus)"></ion-icon>
-                          }
-                        </div>
-                          Battery {{ battery.label }}</ion-card-title>
+                            <ion-icon [name]="getStatusIcon(battery.status)"></ion-icon>
+                            @if (battery.alertStatus !== 'green') {
+                              <ion-icon [name]="getAlertIcon(battery.alertStatus)"></ion-icon>
+                            }
+                          </div>
+                          Battery {{ battery.label }}</ion-card-title
+                        >
                         <ion-card-subtitle
                           >{{ battery.statusText }}
                           {{ formatTimeAgo(battery.daysSinceLastAction) }}</ion-card-subtitle
@@ -50,7 +50,8 @@
                             <p>{{ battery.brand?.label }}</p>
                             <p>{{ battery.model }}</p>
                             <p>
-                              {{ battery.type?.label }} {{ battery.cellsNumber }}S {{ battery.mA }}mA
+                              {{ battery.type?.label }} {{ battery.cellsNumber }}S
+                              {{ battery.mA }}mA
                             </p>
                           </ion-label>
                         </ion-item>

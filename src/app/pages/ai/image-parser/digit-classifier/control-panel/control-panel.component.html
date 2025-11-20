@@ -1,0 +1,34 @@
+<ion-card>
+  <ion-card-content>
+    <!-- TextClassifier Model -->
+    <div class="ion-margin-bottom">
+      <ion-item lines="none">
+        <ion-label>
+          <h3>{{ 'ai-model.LOAD_DIGIT_CLASSIFIER' | transloco }}</h3>
+          <p>{{ 'ai-model.DIGIT_CLASSIFIER_SETTINGSMODEL' | transloco }}</p>
+          <small class="text-muted"
+            >Current: {{ getCurrentDigitClassifierModelName() }} ({{
+              getCurrentDigitClassifierModelSize()
+            }}MB)</small
+          >
+        </ion-label>
+        isDigitClassifierLoading {{ isDigitClassifierLoading() }}<br />
+        isDigitClassifierLoaded {{ isDigitClassifierLoaded() }}
+        <ion-button
+          slot="end"
+          [color]="isDigitClassifierLoaded() ? 'danger' : 'primary'"
+          [disabled]="isDigitClassifierLoading()"
+          (click)="isDigitClassifierLoaded() ? unloadDigitClassifier() : loadDigitClassifier()"
+        >
+          @if (isDigitClassifierLoading()) {
+            <ion-spinner slot="start"></ion-spinner>
+          }
+          {{ isDigitClassifierLoaded() ? 'Unload' : 'Load' }}
+        </ion-button>
+        <ion-button slot="end" fill="clear" (click)="openDigitClassifierSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-card-content>
+</ion-card>

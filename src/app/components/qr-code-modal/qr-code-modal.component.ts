@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ModalController,
@@ -36,7 +36,7 @@ export class QrCodeModalComponent {
   @Input() batteryLabel!: string;
   @Input() qrText!: string;
 
-  constructor(private modalController: ModalController) {}
+  private modalController = inject(ModalController);
 
   dismiss() {
     this.modalController.dismiss();

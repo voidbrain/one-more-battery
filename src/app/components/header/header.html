@@ -49,11 +49,7 @@
       >
         <ion-label>{{ 'nav.settings' | transloco }}</ion-label>
       </ion-segment-button>
-      <ion-segment-button
-        value="ai"
-        routerLink="/ai"
-        [class.active]="activeSegment() === 'ai'"
-      >
+      <ion-segment-button value="ai" routerLink="/ai" [class.active]="activeSegment() === 'ai'">
         <ion-label>{{ 'nav.ai' | transloco }}</ion-label>
       </ion-segment-button>
     </ion-segment>

@@ -13,34 +13,43 @@
             <ion-card-title>AI Models</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <!-- Embedder Model -->
-            <app-embedder></app-embedder>
-
-            <!-- Transcriber Model -->
-            <app-transcriber-model></app-transcriber-model>
-
-            <!-- Object Detection Model -->
-
-            <app-object-detector-model></app-object-detector-model>
+            <app-ai-control-panels></app-ai-control-panels>
           </ion-card-content>
         </ion-card>
 
-        [audio card]
-        <app-audio-manager-card
-          (transcribeClicked)="transcribe()"
-          (transcriptionProgressChanged)="setTranscriptionInProgress($event)"
-          (recordingComplete)="onRecordingComplete($event)"
-          (recordingStart)="onRecordingStarted()"
-        ></app-audio-manager-card>
+        [VOICE & TEXT]<br />
+        - from audio<br />
+        - text input<br />
+        --------------<br />
+        <div class="">
+          <app-stt-transcriber-audio-prompt-card
+            (transcribeClicked)="transcribe()"
+            (transcriptionProgressChanged)="setTranscriptionInProgress($event)"
+            (recordingComplete)="onRecordingComplete($event)"
+            (recordingStart)="onRecordingStarted()"
+          ></app-stt-transcriber-audio-prompt-card>
 
-        <app-transcriber-card
-          [isTranscribeEnabled]="isTranscribeEnabled"
-          [audioBlob]="audioBlob"
-        ></app-transcriber-card>
+          <app-stt-transcriber-prompt-card
+            [isTranscribeEnabled]="isTranscribeEnabled"
+            [audioBlob]="audioBlob"
+          ></app-stt-transcriber-prompt-card>
 
-        [image card]
-        <app-object-detector></app-object-detector>
-        -
+          <app-text-classifier-prompt-text-input
+            [(inputText)]="inputText"
+            [(command)]="command"
+          ></app-text-classifier-prompt-text-input>
+        </div>
+
+        [IMAGE]<br />
+        - from image upload<br />
+        - find digits in image<br />
+        - find colors stripes in image<br />
+        --------------<br />
+        <div class="mt-4">
+          <app-image-object-detector-prompt></app-image-object-detector-prompt>
+          <app-digit-classifier-prompt></app-digit-classifier-prompt>
+          <app-color-classifier-prompt></app-color-classifier-prompt>
+        </div>
       </div>
     } @else {
       <ion-card>
@@ -49,10 +58,5 @@
         </ion-card-content>
       </ion-card>
     }
-
-    <app-input-card
-      [(inputText)]="inputText"
-      [(command)]="command"
-    ></app-input-card>
   </div>
 </ion-content>

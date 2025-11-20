@@ -32,7 +32,8 @@
         [brands]="brands()"
         [series]="series()"
         [types]="types()"
-        (dataChanged)="refreshData()">
+        (dataChanged)="refreshData()"
+      >
       </app-battery-list>
     } @else if (activeTab() === 'brands') {
       <app-brand-list [brands]="brands()" (dataChanged)="refreshData()"></app-brand-list>

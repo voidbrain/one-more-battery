@@ -106,7 +106,12 @@ export interface ToastState {
 export interface LLMModel {
   id: string;
   name: string;
-  type: 'embedder' | 'transcriber' | 'detector';
+  type:
+    | 'textClassifier'
+    | 'sttTranscriber'
+    | 'imageObjectDetector'
+    | 'colorClassifier'
+    | 'digitRecognizer';
   size: number; // in MB
   description: string;
   compatibility: 'universal' | 'chrome-compatible' | 'safari-compatible';
@@ -139,4 +144,22 @@ export interface DetectionResult {
   label: string;
   score: number;
   box: [number, number, number, number]; // [x1, y1, x2, y2]
+}
+
+// Interface for color classification results
+export interface ColorClassificationResult {
+  color: 'red' | 'yellow' | 'blue' | 'green' | 'black' | 'unknown';
+  confidence: number;
+  rgb: [number, number, number];
+}
+
+export interface StripeDetectionResult {
+  stripes: StripeResult[];
+  dominantColors: ColorClassificationResult[];
+}
+
+export interface StripeResult {
+  position: { x: number; y: number; width: number; height: number };
+  color: ColorClassificationResult;
+  isHorizontal: boolean;
 }

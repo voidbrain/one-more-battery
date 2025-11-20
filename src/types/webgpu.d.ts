@@ -104,18 +104,18 @@ interface GPUQueue {
     bufferOffset: GPUSize64,
     data: BufferSource | SharedArrayBuffer,
     dataOffset?: GPUSize64,
-    size?: GPUSize64
+    size?: GPUSize64,
   ): void;
   writeTexture(
     destination: GPUImageCopyTexture,
     data: BufferSource | SharedArrayBuffer,
     dataLayout: GPUImageDataLayout,
-    size: GPUExtent3D
+    size: GPUExtent3D,
   ): void;
   copyExternalImageToTexture(
     source: GPUImageCopyExternalImage,
     destination: GPUImageCopyTexture,
-    copySize: GPUExtent3D
+    copySize: GPUExtent3D,
   ): void;
 }
 

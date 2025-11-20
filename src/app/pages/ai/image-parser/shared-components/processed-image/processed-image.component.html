@@ -1,0 +1,11 @@
+<!-- Processed Image with Detection Overlays -->
+@if (processedImage()) {
+  <div class="processed-image-container">
+    <h3>{{ 'ai-model.DETECTED_OBJECTS' | transloco }}</h3>
+    <img
+      [src]="processedImage()"
+      alt="Processed image with detection overlays"
+      class="processed-image"
+    />
+  </div>
+}

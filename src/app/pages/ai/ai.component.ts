@@ -3,16 +3,16 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { AudioManagerCard } from '@pages/ai/audio/audio-manager-card/audio-manager-card';
-import { TranscriberCard } from '@pages/ai/stt-transcriber/transcriber-card/transcriber-card';
-import { InputCard } from '@pages/ai/stt-transcriber/input-card/input-card';
+import { AudioManagerCard } from '@pages/ai/text-parser/stt-transcriber/prompt/audio-panel/audio-prompt-card/audio-prompt-card';
+import { TranscriberCard } from '@pages/ai/text-parser/stt-transcriber/prompt/prompt-card/prompt-card';
+import { InputCard } from '@pages/ai/text-parser/text-classifier/prompt/prompt';
 
-import { DetectorComponent } from '@pages/ai/object-detector/detector/detector.component';
-import { ObjectDetectorModel } from '@pages/ai/object-detector/object-detector-model/object-detector-model';
-import { EmbedderComponent } from '@pages/ai/stt-embedder/stt-embedder-panel/embedder.component';
-import { TranscriberModelComponent } from '@pages/ai/stt-transcriber/stt-transcriber-panel/transcriber-model.component';
-import { STTEmbedderService } from '@services/ai/text-parser.service';
+import { ImageObjectDetectorComponent } from '@pages/ai/image-parser/object-detector/prompt/prompt/prompt.component';
+import { TextClassifierService } from '@services/ai/text-classifier/text-classifier.service';
+import { ColorClassifierPrompt } from '@pages/ai/image-parser/color-recognizer/prompt/prompt';
+import { DigitClassifierPrompt } from '@pages/ai/image-parser/digit-classifier/prompt/prompt';
 import { CommandMatch } from '@interfaces/index';
+import { AiControlPanelsComponent } from '@pages/ai/control-panels/control-panels';
 
 import { TranslocoModule } from '@jsverse/transloco';
 import { IonicModule } from '@ionic/angular';
@@ -27,10 +27,10 @@ import { IonicModule } from '@ionic/angular';
     AudioManagerCard,
     TranscriberCard,
     InputCard,
-    ObjectDetectorModel,
-    DetectorComponent,
-    EmbedderComponent,
-    TranscriberModelComponent,
+    AiControlPanelsComponent,
+    ImageObjectDetectorComponent,
+    ColorClassifierPrompt,
+    DigitClassifierPrompt,
     TranslocoModule,
     IonicModule,
   ],
@@ -46,7 +46,7 @@ export class AiComponent {
   command: CommandMatch | null = null;
 
   protected deviceDetectorService = inject(DeviceDetectorService);
-  private embedderService = inject(STTEmbedderService);
+  private textClassifierService = inject(TextClassifierService);
 
   async onTranscriptionComplete(transcribedText: string) {
     this.inputText = transcribedText; // optional: show in input
@@ -54,8 +54,7 @@ export class AiComponent {
   }
 
   async embedText() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.command = await (this.embedderService as any).parseCommand(this.inputText);
+    this.command = await this.textClassifierService.parseCommand(this.inputText);
     console.log('command:', this.command);
   }
 

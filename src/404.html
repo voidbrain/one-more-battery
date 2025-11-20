@@ -1,20 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Redirecting...</title>
-  <script type="text/javascript">
-    var path = window.location.pathname;
-    var query = window.location.search;
-    var fragment = window.location.hash;
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+      var path = window.location.pathname;
+      var query = window.location.search;
+      var fragment = window.location.hash;
 
-    // Store the original full path in session storage
-    sessionStorage.setItem('redirectPath', path + query + fragment);
-    // Redirect to the base index.html, using the known base path for the Angular app
-    window.location.replace('/one-more-battery/index.html');
-  </script>
-</head>
-<body>
-  If you are not redirected automatically, follow this <a href="/one-more-battery/index.html">link</a>.
-</body>
+      // Store the original full path in session storage
+      sessionStorage.setItem('redirectPath', path + query + fragment);
+      // Redirect to the base index.html, using the known base path for the Angular app
+      window.location.replace('/one-more-battery/index.html');
+    </script>
+  </head>
+  <body>
+    If you are not redirected automatically, follow this
+    <a href="/one-more-battery/index.html">link</a>.
+  </body>
 </html>

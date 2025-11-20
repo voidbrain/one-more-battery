@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'ai-model.TEXT_CLASSIFIER_SETTINGS' | transloco }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-select
+        label="{{ 'ai-model.SELECT_MODEL' | transloco }}"
+        [(ngModel)]="selectedModel"
+        (ionChange)="onModelChange()"
+        interface="popover"
+      >
+        @for (model of models; track model.name) {
+          <ion-select-option [value]="model.name"
+            >{{ model.name }} ({{ model.size }} MB)</ion-select-option
+          >
+        }
+      </ion-select>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">{{ 'ai-model.BUTTON_CANCEL' | transloco }}</ion-button>
+      <ion-button (click)="applySettings()">{{ 'ai-model.BUTTON_SAVE' | transloco }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

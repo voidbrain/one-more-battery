@@ -18,36 +18,31 @@
   </button>
 
   @if (isOpen()) {
-  <div class="dropdown-menu" [class.open]="isOpen()" [style]="dropdownStyle()">
-    <!-- Test comment for live update verification -->
-    @for (option of options(); track option.value) {
-    <button
-      class="dropdown-item"
-      (click)="selectOption(option)"
-      (keydown.enter)="selectOption(option)"
-      (keydown.space)="selectOption(option)"
-      [class.selected]="option.value === selectedValue()"
-      type="button"
-      [attr.aria-label]="option.label"
-    >
-      <div class="item-content">
-        @if (option.icon) {
-          <ion-icon [name]="option.icon" class="option-icon"></ion-icon>
-        } @else if (option.flag) {
-          <img [src]="option.flag" [alt]="option.label" class="flag-icon" />
-        }
-        <span class="option-label">{{ option.label }}</span>
-      </div>
-      @if (option.value === selectedValue()) {
-      <ion-icon
-        name="checkmark"
-        class="checkmark-icon"
-        color="primary"
-      >
-      </ion-icon>
+    <div class="dropdown-menu" [class.open]="isOpen()" [style]="dropdownStyle()">
+      <!-- Test comment for live update verification -->
+      @for (option of options(); track option.value) {
+        <button
+          class="dropdown-item"
+          (click)="selectOption(option)"
+          (keydown.enter)="selectOption(option)"
+          (keydown.space)="selectOption(option)"
+          [class.selected]="option.value === selectedValue()"
+          type="button"
+          [attr.aria-label]="option.label"
+        >
+          <div class="item-content">
+            @if (option.icon) {
+              <ion-icon [name]="option.icon" class="option-icon"></ion-icon>
+            } @else if (option.flag) {
+              <img [src]="option.flag" [alt]="option.label" class="flag-icon" />
+            }
+            <span class="option-label">{{ option.label }}</span>
+          </div>
+          @if (option.value === selectedValue()) {
+            <ion-icon name="checkmark" class="checkmark-icon" color="primary"> </ion-icon>
+          }
+        </button>
       }
-    </button>
-    }
-  </div>
-}
+    </div>
+  }
 </div>
