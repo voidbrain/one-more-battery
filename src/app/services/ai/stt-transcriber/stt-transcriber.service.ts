@@ -247,6 +247,8 @@ export class TranscriberService {
             }
             case 'ready': {
               this.isModelLoadingSignal.set(false);
+              this.isModelLoadedSignal.set(true);
+              console.log('[SttTranscriberService] STT transcriber loaded ✅');
               break;
             }
             case 'done': {

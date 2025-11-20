@@ -37,7 +37,7 @@ export class PipelineFactory {
     },
     imageObjectDetector: {
       task: 'object-detection',
-      model: 'onnx-community/yolov11n', // Default to nano model
+      model: 'Xenova/detr-resnet-50', // Default to reliable DETR model
       options: {
         dtype: 'fp32',
         device: 'webgpu',

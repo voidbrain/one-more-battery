@@ -310,6 +310,8 @@ export class DetectorService {
             case 'ready': {
               this.isModelLoadingSignal.set(false);
               this.isModelLoadedSignal.set(true);
+              console.log('[ObjectDetectorService] Detector loaded ✅');
+
               break;
             }
             case 'done': {
@@ -370,6 +372,7 @@ export class DetectorService {
             case 'ready': {
               this.isModelLoadingSignal.set(false);
               this.isModelLoadedSignal.set(true);
+              console.log('[ObjectDetectorService] Detector loaded ✅');
               break;
             }
             case 'done': {

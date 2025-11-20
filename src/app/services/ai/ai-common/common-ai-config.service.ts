@@ -83,20 +83,10 @@ export class LLMConfigService {
       description: 'DETR object detection model with ResNet-50 backbone',
       compatibility: 'universal',
       provider: 'Xenova',
-      fallbackPriority: 2,
+      fallbackPriority: 1,
     },
 
     // YOLO Models for object detection (faster, more modern)
-    {
-      id: 'onnx-community/yolov11n',
-      name: 'YOLOv11 Nano',
-      type: 'imageObjectDetector',
-      size: 6,
-      description: 'Ultralytics YOLOv11 nano model - fastest and lightest',
-      compatibility: 'universal',
-      provider: 'onnx-community',
-      fallbackPriority: 1,
-    },
     {
       id: 'onnx-community/yolov11s',
       name: 'YOLOv11 Small',
@@ -105,7 +95,7 @@ export class LLMConfigService {
       description: 'Ultralytics YOLOv11 small model - good balance of speed and accuracy',
       compatibility: 'universal',
       provider: 'onnx-community',
-      fallbackPriority: 3,
+      fallbackPriority: 2,
     },
     {
       id: 'onnx-community/yolov8n',
@@ -115,7 +105,7 @@ export class LLMConfigService {
       description: 'Ultralytics YOLOv8 nano model - very fast detection',
       compatibility: 'universal',
       provider: 'onnx-community',
-      fallbackPriority: 4,
+      fallbackPriority: 3,
     },
     {
       id: 'onnx-community/yolov10n',
@@ -123,6 +113,16 @@ export class LLMConfigService {
       type: 'imageObjectDetector',
       size: 7,
       description: 'Ultralytics YOLOv10 nano model - efficient NMS-free detection',
+      compatibility: 'universal',
+      provider: 'onnx-community',
+      fallbackPriority: 4,
+    },
+    {
+      id: 'onnx-community/yolov11n',
+      name: 'YOLOv11 Nano',
+      type: 'imageObjectDetector',
+      size: 6,
+      description: 'Ultralytics YOLOv11 nano model - fastest and lightest (may have access issues)',
       compatibility: 'universal',
       provider: 'onnx-community',
       fallbackPriority: 5,

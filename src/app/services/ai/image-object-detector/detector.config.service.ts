@@ -5,7 +5,7 @@ import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.servic
   providedIn: 'root',
 })
 export class DetectorConfigStorage {
-  model = 'onnx-community/yolov11n'; // Default to faster YOLOv11n model
+  model = 'Xenova/detr-resnet-50'; // Default to reliable DETR model
   confidence = 0.5; // Default confidence threshold
 
   private llmConfig = inject(LLMConfigService);
