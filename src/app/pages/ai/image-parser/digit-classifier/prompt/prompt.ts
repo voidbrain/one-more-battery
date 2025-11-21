@@ -22,7 +22,7 @@ export class DigitClassifierPrompt {
   processedImage = signal<string | null>(null);
 
   isModelLoaded = computed(() => this.digitRecognizerService.isModelLoaded);
-  isDetectionBusy = computed(() => this.digitRecognizerService.isBusy);
+  isDetectionBusy = computed(() => this.digitRecognizerService.isBusySignal());
   error = computed(() => this.digitRecognizerService.error);
   digitDetectionSignal = computed(() => this.digitRecognizerService.recognition);
 
@@ -51,11 +51,12 @@ export class DigitClassifierPrompt {
           const detections: DigitExtractResult[] = await this.digitRecognizerService.recognizeDigits(canvas);
           if (detections && detections.length > 0) {
             console.log('Detection results:', detections);
-
-            // Create processed image with overlays - flatten all stripes from all detections
-            const allStripes = detections;
-            this.createProcessedImageWithOverlays(img, allStripes);
+          } else {
+            console.log('No digits detected in the image');
           }
+
+          // Always create processed image, even when no digits detected
+          this.createProcessedImageWithOverlays(img, detections || []);
         };
         const file = this.selectedFile();
         if (!file) return;
@@ -105,7 +106,7 @@ export class DigitClassifierPrompt {
   ): void {
     // For digit recognition, we display text overlays showing the recognized digits
     // Since digit recognition works differently from object detection (no bounding boxes),
-    // we'll draw a simple text label at the center of the canvas with the extracted value
+    // we position overlays vertically to avoid overlapping
 
     // Note: The service doesn't provide bounding box coordinates for individual digits
     // so we can't draw bounding boxes like in object detection
@@ -114,28 +115,30 @@ export class DigitClassifierPrompt {
     const label = digitResult.extractedValue || digitResult.recognizedDigits.map(d => d.digit).join('');
     const confidence = Math.round(digitResult.confidence * 100);
 
-    // Draw label background at the top-center of the canvas
+    // Draw label background at the top-center of the canvas, spaced vertically
     ctx.fillStyle = 'rgba(0, 100, 255, 0.8)'; // Blue background for digits
     const labelText = `${label} (${confidence}%)`;
     const fontSize = 18;
     ctx.font = `${fontSize}px Arial`;
     const textMetrics = ctx.measureText(labelText);
-    const textHeight = fontSize + 4;
+    const textHeight = fontSize + 6;
 
     const canvasWidth = ctx.canvas.width;
 
-    const labelX = (canvasWidth - textMetrics.width) / 2;
-    const labelY = 30; // Top of canvas
+    const labelX = Math.max(0, (canvasWidth - textMetrics.width) / 2); // Ensure it doesn't go off-left
+    const labelY = 30 + index * (textHeight + 5); // Space overlays vertically
 
     // Make sure label doesn't go outside bounds
     const labelBgWidth = textMetrics.width + 8;
     const labelBgHeight = textHeight;
 
-    ctx.fillRect(labelX, labelY, labelBgWidth, labelBgHeight);
+    // Ensure background doesn't exceed canvas width
+    const clampedBgWidth = Math.min(labelBgWidth, canvasWidth - labelX);
+    ctx.fillRect(labelX, labelY, clampedBgWidth, labelBgHeight);
 
     // Draw label text
     ctx.fillStyle = '#FFFFFF'; // White text
-    ctx.fillText(labelText, labelX + 4, labelY + fontSize);
+    ctx.fillText(labelText, Math.max(4, labelX + 4), labelY + fontSize);
 
     // Also log the digit extraction result
     console.log(`Digit extraction ${index + 1}:`, {

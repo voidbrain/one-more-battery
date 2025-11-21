@@ -20,6 +20,52 @@ export class DetectorService {
 
   private detectorConfigStorage = inject(DetectorConfigStorage);
 
+  // Web Worker for processing results
+  private worker: Worker | null = null;
+
+  constructor() {
+    this.initializeWorker();
+  }
+
+  private initializeWorker(): void {
+    try {
+      this.worker = new Worker(new URL('./object-detection.worker.ts', import.meta.url), {
+        type: 'module'
+      });
+
+      this.worker.onmessage = (event) => {
+        const { type, data } = event.data;
+
+        switch (type) {
+          case 'WORKER_READY':
+            console.log('[DetectorService] Web worker ready ✅');
+            break;
+
+          case 'PROCESS_DETECTION_SUCCESS':
+            this.detectionSignal.set(data);
+            this.errorSignal.set(null);
+            this.isBusySignal.set(false);
+            break;
+
+          case 'PROCESS_DETECTION_ERROR':
+            this.errorSignal.set(data.error);
+            console.error('Worker error:', data.error);
+            this.isBusySignal.set(false);
+            break;
+        }
+      };
+
+      this.worker.onerror = (error) => {
+        console.error('Worker error:', error);
+        this.errorSignal.set('Object detection worker error');
+        this.isBusySignal.set(false);
+      };
+    } catch (error) {
+      console.error('Failed to initialize worker:', error);
+      this.errorSignal.set('Failed to initialize object detection worker');
+    }
+  }
+
   // Getter for detector instance from centralized pipeline factory
   private get detector(): unknown {
     return PipelineFactory.getExistingInstance(
@@ -62,9 +108,7 @@ export class DetectorService {
 
     const detections = await this.runDetection(imageData);
 
-    this.detectionSignal.set(detections);
-    this.isBusySignal.set(false);
-
+    // Note: Detection signal is set by the worker when results are processed
     return detections;
   }
 
@@ -81,16 +125,53 @@ export class DetectorService {
         threshold: this.detectorConfigStorage.confidence,
       });
 
-      // Process the result into our DetectionResult format
-      const detections = this.processDetectionResults(result);
+      // Delegate result processing to web worker
+      const detections = await this.processDetectionResultsWithWorker(result);
       return detections;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown detection error';
       this.errorSignal.set(errorMessage);
       LoggerService.logError('Detection error');
       console.error(error);
+      this.isBusySignal.set(false); // Clear busy state on error
       return null;
     }
+  }
+
+  private async processDetectionResultsWithWorker(result: unknown): Promise<DetectionResult[]> {
+    if (!this.worker) {
+      throw new Error('Web worker not initialized');
+    }
+
+    this.worker.postMessage({
+      type: 'PROCESS_DETECTION_RESULTS',
+      data: {
+        rawResults: result,
+        confidenceThreshold: this.detectorConfigStorage.confidence
+      }
+    });
+
+    return new Promise<DetectionResult[]>((resolve, reject) => {
+      const messageHandler = (event: MessageEvent) => {
+        const { type, data } = event.data;
+
+        if (type === 'PROCESS_DETECTION_SUCCESS') {
+          this.worker!.removeEventListener('message', messageHandler);
+          resolve(data);
+        } else if (type === 'PROCESS_DETECTION_ERROR') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(data.error));
+        }
+      };
+
+      this.worker!.addEventListener('message', messageHandler);
+
+      // Timeout after 30 seconds
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('Detection result processing timed out'));
+      }, 30000);
+    });
   }
 
   private processDetectionResults(result: unknown): DetectionResult[] {
@@ -415,6 +496,13 @@ export class DetectorService {
   async unload(): Promise<void> {
     // Dispose of the detector using centralized pipeline factory
     await PipelineFactory.disposeInstance('imageObjectDetector', this.detectorConfigStorage.model);
+
+    // Terminate the web worker
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+
     this.progressItemsSignal.set([]);
     this.isModelLoadingSignal.set(false);
     this.isModelLoadedSignal.set(false);

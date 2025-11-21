@@ -12,6 +12,45 @@ export class TextClassifierService {
   private loadingPromise: Promise<void> | null = null;
   private llmConfig = inject(LLMConfigService);
 
+  // Web Worker for similarity calculations and command parsing
+  private worker: Worker | null = null;
+
+  constructor() {
+    this.initializeWorker();
+  }
+
+  private initializeWorker(): void {
+    try {
+      this.worker = new Worker(new URL('./text-classifier.worker.ts', import.meta.url), {
+        type: 'module'
+      });
+
+      this.worker.onmessage = (event) => {
+        const { type, data } = event.data;
+
+        switch (type) {
+          case 'WORKER_READY':
+            console.log('[TextClassifierService] Web worker ready ✅');
+            break;
+
+          case 'PARSE_COMMAND_SUCCESS':
+            console.log('[TextClassifierService] Command parsed successfully');
+            break;
+
+          case 'PARSE_COMMAND_ERROR':
+            console.error('Worker command parsing error:', data.error);
+            break;
+        }
+      };
+
+      this.worker.onerror = (error) => {
+        console.error('Worker error:', error);
+      };
+    } catch (error) {
+      console.error('Failed to initialize text classifier worker:', error);
+    }
+  }
+
   // Getter for text-classifier instance from centralized pipeline factory
   private get textClassifier(): unknown {
     const recommendedModel = this.llmConfig.getRecommendedModelForBrowser('textClassifier');
@@ -80,6 +119,7 @@ export class TextClassifierService {
 
     // Show loading state
     this.isModelLoadingSignal.set(true);
+    this.isModelLoadedSignal.set(false); // Reset loaded state
 
     this.loadingPromise = (async () => {
       try {
@@ -225,11 +265,24 @@ export class TextClassifierService {
       return { command: null, params: {} };
     }
 
+    // Get embedding in main thread (ML inference must stay here)
     const inputEmb = await this.embed(text);
     if (!inputEmb.length) return { command: null, params: {} };
 
+    // Use Web Worker for similarity calculations and parsing
+    if (!this.worker) {
+      console.warn('[STTTextClassifierService] Web worker not available, falling back to main thread');
+      return await this.parseCommandInMainThread(text, inputEmb);
+    }
+
+    return await this.parseCommandWithWorker(text);
+  }
+
+  private async parseCommandInMainThread(text: string, inputEmb: number[]): Promise<CommandMatch> {
+    // Fallback to main thread processing if worker is not available
     let bestScore = -1;
     let bestCommand: string | null = null;
+
     for (const cmd of this.commandEmbeddings) {
       const score = this.cosineSim(inputEmb, cmd.embedding);
       if (score > bestScore) {
@@ -237,6 +290,7 @@ export class TextClassifierService {
         bestCommand = cmd.command;
       }
     }
+
     console.log(
       '[STTTextClassifierService] Best match:',
       bestCommand,
@@ -244,6 +298,47 @@ export class TextClassifierService {
       bestScore.toFixed(3),
     );
 
+    // Extract parameters using the helper method
+    return this.extractCommandParams(text, bestCommand);
+  }
+
+  private async parseCommandWithWorker(text: string): Promise<CommandMatch> {
+    if (!this.worker) {
+      throw new Error('Web worker not initialized');
+    }
+
+    this.worker.postMessage({
+      type: 'PARSE_COMMAND',
+      data: {
+        text,
+        commandEmbeddings: this.commandEmbeddings
+      }
+    });
+
+    return new Promise<CommandMatch>((resolve, reject) => {
+      const messageHandler = (event: MessageEvent) => {
+        const { type, data } = event.data;
+
+        if (type === 'PARSE_COMMAND_SUCCESS') {
+          this.worker!.removeEventListener('message', messageHandler);
+          resolve(data);
+        } else if (type === 'PARSE_COMMAND_ERROR') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(data.error));
+        }
+      };
+
+      this.worker!.addEventListener('message', messageHandler);
+
+      // Timeout after 5 seconds for command parsing
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('Command parsing timed out'));
+      }, 5000);
+    });
+  }
+
+  private extractCommandParams(text: string, command: string | null): CommandMatch {
     // --- Extract batteryId ---
     const ids = text.match(/\b\d+\b/g)?.map(Number) || [];
     const batteryId = ids.length === 1 ? ids[0] : ids;
@@ -266,7 +361,7 @@ export class TextClassifierService {
       if (match) series = match[1].toLowerCase();
     }
 
-    return { command: bestCommand, params: { batteryId, series } };
+    return { command, params: { batteryId, series } };
   }
 
   /** --- Unload text-classifier to free memory --- */

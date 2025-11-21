@@ -30,6 +30,63 @@ export class TranscriberService {
 
   protected transcriberConfigStorage = inject(TranscriberConfigStorage);
 
+  // Web Worker for audio processing and result handling
+  private worker: Worker | null = null;
+
+  constructor() {
+    this.initializeWorker();
+  }
+
+  private initializeWorker(): void {
+    try {
+      this.worker = new Worker(new URL('./stt-worker.ts', import.meta.url), {
+        type: 'module'
+      });
+
+      this.worker.onmessage = (event) => {
+        const { type, data } = event.data;
+
+        switch (type) {
+          case 'WORKER_READY':
+            console.log('[TranscriberService] Web worker ready ✅');
+            // Don't set loaded here - wait for actual model loading via load() method
+            break;
+
+          case 'PROCESS_AUDIO_SUCCESS':
+            // Audio processing is complete, this result will be used by transcribe()
+            console.log('[TranscriberService] Audio processed successfully');
+            break;
+
+          case 'PROCESS_AUDIO_ERROR':
+            console.error('Worker audio processing error:', data.error);
+            this.errorSignal.set(data.error);
+            this.isBusySignal.set(false);
+            break;
+
+          case 'PROCESS_TRANSCRIPTION_SUCCESS':
+            this.transcriptSignal.set(data);
+            this.isBusySignal.set(false);
+            break;
+
+          case 'PROCESS_TRANSCRIPTION_ERROR':
+            this.errorSignal.set(data.error);
+            console.error('Worker transcription error:', data.error);
+            this.isBusySignal.set(false);
+            break;
+        }
+      };
+
+      this.worker.onerror = (error) => {
+        console.error('Worker error:', error);
+        this.errorSignal.set('STT worker error');
+        this.isBusySignal.set(false);
+      };
+    } catch (error) {
+      console.error('Failed to initialize worker:', error);
+      this.errorSignal.set('Failed to initialize STT worker');
+    }
+  }
+
   // Getter for transcriber instance from centralized pipeline factory
   private get transcriber(): unknown {
     return PipelineFactory.getExistingInstance(
@@ -68,29 +125,109 @@ export class TranscriberService {
     this.errorSignal.set(null);
     this.isBusySignal.set(true);
 
-    const audio = this.getAudio(audioBuffer);
-    const transcript = await this.transcribe(audio);
+    try {
+      // Extract audio data for transfer to worker
+      const leftChannel = audioBuffer.getChannelData(0);
+      const rightChannel = audioBuffer.numberOfChannels === 2 ?
+        audioBuffer.getChannelData(1) : undefined;
 
-    this.transcriptSignal.set(transcript);
-    this.isBusySignal.set(false);
+      // Use worker for audio processing
+      const processedAudio = await this.processAudioWithWorker({
+        leftChannel,
+        rightChannel,
+        sampleRate: audioBuffer.sampleRate,
+        numberOfChannels: audioBuffer.numberOfChannels,
+        length: audioBuffer.length
+      });
+
+      // Continue with transcription
+      const transcript = await this.transcribe(processedAudio);
+      this.transcriptSignal.set(transcript);
+      this.isBusySignal.set(false);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Audio processing failed';
+      this.errorSignal.set(errorMessage);
+      console.error('Audio processing error:', error);
+      this.isBusySignal.set(false);
+    }
   }
 
-  private getAudio(audioBuffer: AudioBuffer): Float32Array {
-    if (audioBuffer.numberOfChannels === 2) {
-      const SCALING_FACTOR = Math.sqrt(2);
-
-      const left = audioBuffer.getChannelData(0);
-      const right = audioBuffer.getChannelData(1);
-
-      const audio = new Float32Array(left.length);
-      for (let i = 0; i < audioBuffer.length; ++i) {
-        audio[i] = (SCALING_FACTOR * (left[i] + right[i])) / 2;
-      }
-      return audio;
-    } else {
-      // If the audio is not stereo, we can just use the first channel:
-      return audioBuffer.getChannelData(0);
+  private async processAudioWithWorker(audioData: {
+    leftChannel: Float32Array;
+    rightChannel?: Float32Array;
+    sampleRate: number;
+    numberOfChannels: number;
+    length: number;
+  }): Promise<Float32Array> {
+    if (!this.worker) {
+      throw new Error('Web worker not initialized');
     }
+
+    this.worker.postMessage({
+      type: 'PROCESS_AUDIO',
+      data: audioData
+    }, { transfer: [audioData.leftChannel.buffer, audioData.rightChannel?.buffer].filter(ArrayBuffer.isView) as ArrayBuffer[] });
+
+    return new Promise<Float32Array>((resolve, reject) => {
+      const messageHandler = (event: MessageEvent) => {
+        const { type, data } = event.data;
+
+        if (type === 'PROCESS_AUDIO_SUCCESS') {
+          this.worker!.removeEventListener('message', messageHandler);
+          resolve(data);
+        } else if (type === 'PROCESS_AUDIO_ERROR') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(data.error));
+        }
+      };
+
+      this.worker!.addEventListener('message', messageHandler);
+
+      // Timeout after 10 seconds for audio processing
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('Audio processing timed out'));
+      }, 10000);
+    });
+  }
+
+  private async processTranscriptionResultWithWorker(
+    transcriptionData: unknown
+  ): Promise<TranscriberData> {
+    if (!this.worker) {
+      throw new Error('Web worker not initialized');
+    }
+
+    this.worker.postMessage({
+      type: 'PROCESS_TRANSCRIPTION',
+      data: {
+        transcriptionResult: transcriptionData,
+        language: this.transcriberConfigStorage.language,
+        model: this.transcriberConfigStorage.model
+      }
+    });
+
+    return new Promise<TranscriberData>((resolve, reject) => {
+      const messageHandler = (event: MessageEvent) => {
+        const { type, data } = event.data;
+
+        if (type === 'PROCESS_TRANSCRIPTION_SUCCESS') {
+          this.worker!.removeEventListener('message', messageHandler);
+          resolve(data);
+        } else if (type === 'PROCESS_TRANSCRIPTION_ERROR') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(data.error));
+        }
+      };
+
+      this.worker!.addEventListener('message', messageHandler);
+
+      // Timeout after 30 seconds for result processing
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('Transcription result processing timed out'));
+      }, 30000);
+    });
   }
 
   async transcribe(audio: Float32Array): Promise<TranscriberData | null> {
@@ -138,6 +275,7 @@ export class TranscriberService {
   public async load(): Promise<void> {
     // Reset and show loading state
     this.isModelLoadingSignal.set(true);
+    this.isModelLoadedSignal.set(false); // Reset loaded state
     this.progressItemsSignal.set([]);
 
     try {
@@ -394,6 +532,13 @@ export class TranscriberService {
   async unload(): Promise<void> {
     // Dispose of the transcriber using centralized pipeline factory
     await PipelineFactory.disposeInstance('sttTranscriber', this.transcriberConfigStorage.model);
+
+    // Terminate the web worker
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+
     this.streamer = null;
     this.progressItemsSignal.set([]);
     this.isModelLoadingSignal.set(false);

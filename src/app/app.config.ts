@@ -41,6 +41,8 @@ import {
   eyeOff,
   image,
   search,
+  calculator,
+  colorPalette
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -78,6 +80,8 @@ addIcons({
   'eye-off': eyeOff,
   image: image,
   search: search,
+  calculator: calculator,
+  'color-palette': colorPalette
 });
 
 export const appConfig: ApplicationConfig = {
