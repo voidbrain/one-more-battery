@@ -19,6 +19,8 @@ export class ColorClassifierService {
   // Web Worker
   private worker: Worker | null = null;
 
+
+
   private initializeWorker(): void {
     try {
       this.worker = new Worker(new URL('./color-recognition.worker.ts', import.meta.url), {
@@ -90,8 +92,7 @@ export class ColorClassifierService {
 
   // Simplified load method - worker is always ready
   public async load(): Promise<void> {
-    this.isModelLoadedSignal.set(false);
-    this.initializeWorker();
+    this.initializeWorker()
     console.log('[ColorClassifierService] Service loaded (using web worker) ✅');
   }
 

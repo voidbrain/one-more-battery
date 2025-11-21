@@ -29,8 +29,6 @@ export class DigitRecognizerService {
   // Web Worker
   private worker: Worker | null = null;
 
-
-
   private initializeWorker(): void {
     try {
       this.worker = new Worker(new URL('./digit-recognition.worker.ts', import.meta.url), {

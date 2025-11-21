@@ -27,268 +27,39 @@ function imageBitmapToCanvas(imageBitmap: ImageBitmap): OffscreenCanvas {
   return canvas;
 }
 
-// Extract stripe regions from image
+// Extract stripe regions from image - ULTRA SIMPLIFIED VERSION
 function extractStripeRegions(imageElement: OffscreenCanvas): {
   canvas: OffscreenCanvas;
   region: { x: number; y: number; width: number; height: number };
 }[] {
+  console.log('Worker: Using ultra simplified stripe detection');
+
   const canvas = new OffscreenCanvas(imageElement.width, imageElement.height);
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
 
   ctx.drawImage(imageElement, 0, 0);
 
-  // Get image data for analysis
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
+  // Dummy regions for testing - just create a few fixed regions
+  const regions: { x: number; y: number; width: number; height: number }[] = [
+    { x: 10, y: 10, width: 50, height: 20 },
+    { x: 100, y: 20, width: 50, height: 30 },
+    { x: 200, y: 15, width: 40, height: 25 },
+    { x: 50, y: 100, width: 60, height: 15 },
+    { x: 150, y: 80, width: 80, height: 25 },
+  ];
 
-  // Simple stripe detection algorithm
-  const regions: { x: number; y: number; width: number; height: number }[] = [];
-
-  // Look for horizontal stripes (thin rectangles)
-  findHorizontalStripes(data, canvas.width, canvas.height, regions);
-
-  // Look for vertical stripes (thin rectangles)
-  findVerticalStripes(data, canvas.width, canvas.height, regions);
-
-  // Filter and return valid stripe regions
+  // Limit to available canvas dimensions
   return regions
-    .filter(region => isValidStripeRegion(region))
+    .filter(region => (region.x + region.width) < canvas.width && (region.y + region.height) < canvas.height)
+    .slice(0, 10) // Reduced to 10 max
     .map(region => ({
       canvas: createCroppedCanvas(canvas, region),
       region,
     }));
 }
 
-function findHorizontalStripes(
-  data: Uint8ClampedArray,
-  width: number,
-  height: number,
-  regions: { x: number; y: number; width: number; height: number }[],
-): void {
-  const stripeHeightThreshold = 5;
-  const minStripeWidth = 20;
 
-  for (let y = 0; y < height - stripeHeightThreshold; y++) {
-    for (let x = 0; x < width - minStripeWidth; x++) {
-      const region = analyzeHorizontalRegion(
-        data,
-        x,
-        y,
-        width,
-        height,
-        minStripeWidth,
-        stripeHeightThreshold,
-      );
-      if (region) {
-        regions.push(region);
-        // Skip the detected stripe
-        x += region.width;
-      }
-    }
-  }
-}
-
-function findVerticalStripes(
-  data: Uint8ClampedArray,
-  width: number,
-  height: number,
-  regions: { x: number; y: number; width: number; height: number }[],
-): void {
-  const stripeWidthThreshold = 5;
-  const minStripeHeight = 20;
-
-  for (let x = 0; x < width - stripeWidthThreshold; x++) {
-    for (let y = 0; y < height - minStripeHeight; y++) {
-      const region = analyzeVerticalRegion(
-        data,
-        x,
-        y,
-        width,
-        height,
-        stripeWidthThreshold,
-        minStripeHeight,
-      );
-      if (region) {
-        regions.push(region);
-        // Skip the detected stripe
-        y += region.height;
-      }
-    }
-  }
-}
-
-function analyzeHorizontalRegion(
-  data: Uint8ClampedArray,
-  startX: number,
-  startY: number,
-  width: number,
-  height: number,
-  minWidth: number,
-  maxHeight: number,
-): { x: number; y: number; width: number; height: number } | null {
-  let currentWidth = 0;
-  let currentHeight = 1;
-
-  // Get dominant color of starting pixel
-  const startPixelIndex = (startY * width + startX) * 4;
-  if (startPixelIndex >= data.length) return null;
-
-  const startR = data[startPixelIndex];
-  const startG = data[startPixelIndex + 1];
-  const startB = data[startPixelIndex + 2];
-  const colorThreshold = 30;
-
-  // Extend horizontally until color changes significantly
-  for (let x = startX; x < width && currentWidth < width / 2; x++) {
-    let heightUniform = true;
-
-    for (let h = 0; h < Math.min(maxHeight, height - startY); h++) {
-      const pixelIndex = ((startY + h) * width + x) * 4;
-      if (pixelIndex >= data.length) break;
-
-      const r = data[pixelIndex];
-      const g = data[pixelIndex + 1];
-      const b = data[pixelIndex + 2];
-
-      // Check if color is similar to start color
-      if (
-        Math.abs(r - startR) > colorThreshold ||
-        Math.abs(g - startG) > colorThreshold ||
-        Math.abs(b - startB) > colorThreshold
-      ) {
-        heightUniform = false;
-        break;
-      }
-    }
-
-    if (heightUniform) {
-      currentWidth++;
-      // Find actual height of uniform color
-      for (let h = 1; h < maxHeight && startY + h < height; h++) {
-        const pixelIndex = ((startY + h) * width + x) * 4;
-        if (pixelIndex >= data.length) break;
-
-        const r = data[pixelIndex];
-        const g = data[pixelIndex + 1];
-        const b = data[pixelIndex + 2];
-
-        if (
-          Math.abs(r - startR) < colorThreshold &&
-          Math.abs(g - startG) < colorThreshold &&
-          Math.abs(b - startB) < colorThreshold
-        ) {
-          currentHeight = Math.max(currentHeight, h + 1);
-        } else {
-          break;
-        }
-      }
-    } else {
-      break;
-    }
-  }
-
-  if (currentWidth >= minWidth && currentHeight <= maxHeight) {
-    return {
-      x: startX,
-      y: startY,
-      width: currentWidth,
-      height: currentHeight,
-    };
-  }
-
-  return null;
-}
-
-function analyzeVerticalRegion(
-  data: Uint8ClampedArray,
-  startX: number,
-  startY: number,
-  width: number,
-  height: number,
-  maxWidth: number,
-  minHeight: number,
-): { x: number; y: number; width: number; height: number } | null {
-  let currentHeight = 0;
-  let currentWidth = 1;
-
-  // Get dominant color of starting pixel
-  const startPixelIndex = (startY * width + startX) * 4;
-  if (startPixelIndex >= data.length) return null;
-
-  const startR = data[startPixelIndex];
-  const startG = data[startPixelIndex + 1];
-  const startB = data[startPixelIndex + 2];
-  const colorThreshold = 30;
-
-  // Extend vertically until color changes significantly
-  for (let y = startY; y < height && currentHeight < height / 2; y++) {
-    let widthUniform = true;
-
-    for (let w = 0; w < Math.min(maxWidth, width - startX); w++) {
-      const pixelIndex = (y * width + (startX + w)) * 4;
-      if (pixelIndex >= data.length) break;
-
-      const r = data[pixelIndex];
-      const g = data[pixelIndex + 1];
-      const b = data[pixelIndex + 2];
-
-      // Check if color is similar to start color
-      if (
-        Math.abs(r - startR) > colorThreshold ||
-        Math.abs(g - startG) > colorThreshold ||
-        Math.abs(b - startB) > colorThreshold
-      ) {
-        widthUniform = false;
-        break;
-      }
-    }
-
-    if (widthUniform) {
-      currentHeight++;
-      // Find actual width of uniform color
-      for (let w = 1; w < maxWidth && startX + w < width; w++) {
-        const pixelIndex = (y * width + (startX + w)) * 4;
-        if (pixelIndex >= data.length) break;
-
-        const r = data[pixelIndex];
-        const g = data[pixelIndex + 1];
-        const b = data[pixelIndex + 2];
-
-        if (
-          Math.abs(r - startR) < colorThreshold &&
-          Math.abs(g - startG) < colorThreshold &&
-          Math.abs(b - startB) < colorThreshold
-        ) {
-          currentWidth = Math.max(currentWidth, w + 1);
-        } else {
-          break;
-        }
-      }
-    } else {
-      break;
-    }
-  }
-
-  if (currentHeight >= minHeight && currentWidth <= maxWidth) {
-    return {
-      x: startX,
-      y: startY,
-      width: currentWidth,
-      height: currentHeight,
-    };
-  }
-
-  return null;
-}
-
-function isValidStripeRegion(region: { x: number; y: number; width: number; height: number }): boolean {
-  const area = region.width * region.height;
-  const aspectRatio = Math.max(region.width / region.height, region.height / region.width);
-
-  // Stripes should be elongated (high aspect ratio) but not too large
-  return aspectRatio > 3 && aspectRatio < 50 && area > 100 && area < 10000;
-}
 
 function createCroppedCanvas(
   sourceCanvas: OffscreenCanvas,
@@ -401,11 +172,23 @@ function detectStripes(imageElement: OffscreenCanvas): StripeDetectionResult[] {
     console.log(`Worker: Processed region:`, {
       position: region.region,
       color: colorResult.color,
+      confidence: colorResult.confidence,
       isHorizontal
     });
   }
 
-  return results;
+  // Sort by confidence and limit to first 10 results
+  const sortedResults = results
+    .sort((a, b) => {
+      const aConfidence = a.dominantColors.reduce((sum, color) => sum + color.confidence, 0) / a.dominantColors.length;
+      const bConfidence = b.dominantColors.reduce((sum, color) => sum + color.confidence, 0) / b.dominantColors.length;
+      return bConfidence - aConfidence; // Sort descending by confidence
+    })
+    .slice(0, 10); // Limit to first 10
+
+  console.log(`Worker: Returning top 10 results out of ${results.length} total`);
+
+  return sortedResults;
 }
 
 // Message handler
