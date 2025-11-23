@@ -1,0 +1,87 @@
+.training-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  ion-button {
+    min-width: 200px;
+  }
+}
+
+ion-progress-bar {
+  margin-bottom: 1rem;
+}
+
+ion-card {
+  margin-bottom: 1.5rem;
+}
+
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--ion-color-light-shade);
+  border-radius: 8px;
+  background: var(--ion-color-light-contrast);
+
+  .decision-boundary-canvas {
+    border: 2px solid var(--ion-color-primary);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+  }
+
+  .canvas-overlay {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+
+    .canvas-legend {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+
+      .point-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+
+        &.inside {
+          color: var(--ion-color-success);
+        }
+
+        &.outside {
+          color: var(--ion-color-tertiary);
+        }
+      }
+
+      .circle-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        color: var(--ion-color-light-shade);
+      }
+    }
+  }
+}
+
+ion-dark {
+  .canvas-container {
+    border-color: var(--ion-color-dark);
+    background: var(--ion-color-dark-contrast);
+
+    .decision-boundary-canvas {
+      border-color: var(--ion-color-primary);
+    }
+
+    .canvas-legend {
+      .circle-indicator {
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}

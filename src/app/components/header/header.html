@@ -52,6 +52,13 @@
       <ion-segment-button value="ai" routerLink="/ai" [class.active]="activeSegment() === 'ai'">
         <ion-label>{{ 'nav.ai' | transloco }}</ion-label>
       </ion-segment-button>
+      <ion-segment-button
+        value="train-ml"
+        routerLink="/train-ml"
+        [class.active]="activeSegment() === 'train-ml'"
+      >
+        <ion-label>🧠 ML Train</ion-label>
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>

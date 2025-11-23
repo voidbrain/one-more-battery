@@ -42,7 +42,9 @@ import {
   image,
   search,
   calculator,
-  colorPalette
+  colorPalette,
+  play,
+  bulb
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -81,7 +83,9 @@ addIcons({
   image: image,
   search: search,
   calculator: calculator,
-  'color-palette': colorPalette
+  'color-palette': colorPalette,
+  play: play,
+  bulb: bulb
 });
 
 export const appConfig: ApplicationConfig = {

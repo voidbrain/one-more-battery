@@ -1,0 +1,437 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>🔬 Browser ML Training</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>🧠 Train ML Models in Your Browser</ion-card-title>
+      <ion-card-subtitle>Powered by Hugging Face Transformers</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>This page demonstrates browser-based machine learning training using a simple neural network. No data leaves your browser!</p>
+
+      <!-- Training Configuration -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>⚙️ Training Configuration</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <form>
+            <ion-item>
+              <ion-label position="stacked">Epochs</ion-label>
+              <ion-input
+                type="number"
+                [(ngModel)]="epochs"
+                name="epochs"
+                min="1"
+                max="50"
+                placeholder="5">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Learning Rate</ion-label>
+              <ion-input
+                type="number"
+                [(ngModel)]="learningRate"
+                name="learningRate"
+                step="0.001"
+                min="0.001"
+                max="1.0"
+                placeholder="0.01">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Batch Size</ion-label>
+              <ion-input
+                type="number"
+                [(ngModel)]="batchSize"
+                name="batchSize"
+                min="1"
+                max="128"
+                placeholder="32">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Training Samples</ion-label>
+              <ion-input
+                type="number"
+                [(ngModel)]="trainingSamples"
+                name="trainingSamples"
+                min="10"
+                max="1000"
+                placeholder="100"
+                (ionChange)="onSamplesChanged()">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Network Architecture: [{{ layers().join(', ') }}]</ion-label>
+            </ion-item>
+          </form>
+
+          <ion-item lines="none">
+            <ion-label>
+              <strong>Synthetic Data:</strong> Generated {{ trainingSamples() }} random 2D points, labeled as inside/outside a circle (radius 0.5).
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Training Controls -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>🚀 Training Controls</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="training-controls">
+            @if (!isTraining()) {
+              <ion-button
+                fill="solid"
+                color="primary"
+                size="large"
+                (click)="startTraining()">
+                <ion-icon name="play" slot="start"></ion-icon>
+                Start Training
+              </ion-button>
+            } @else {
+              <ion-button
+                fill="solid"
+                color="danger"
+                size="large"
+                (click)="stopTraining()">
+                <ion-icon name="stop" slot="start"></ion-icon>
+                Stop Training
+              </ion-button>
+            }
+
+            @if (isModelTrained) {
+              <ion-item lines="none" color="success">
+                <ion-icon name="checkmark-circle" color="success" slot="start"></ion-icon>
+                <ion-label>Model trained successfully!</ion-label>
+              </ion-item>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Training Progress -->
+      <div *ngIf="isTraining()">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📊 Training Progress</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-progress-bar
+              value="{{ progress() / 100 }}"
+              color="primary">
+            </ion-progress-bar>
+            <ion-item lines="none">
+              <ion-label>{{ progress() | number:'1.0-0' }}% Complete</ion-label>
+            </ion-item>
+
+            <!-- Loss and Accuracy -->
+            <div *ngIf="metrics() && metrics().length > 0">
+              <ion-item lines="none">
+                <ion-label>
+                  <strong>Latest Metrics:</strong>
+                </ion-label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label color="primary">
+                  <small>Epoch: {{ metrics()[metrics().length - 1].epoch }}</small>
+                </ion-label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label color="secondary">
+                  <small>Loss: {{ metrics()[metrics().length - 1].loss | number:'1.4-4' }}</small>
+                </ion-label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label color="tertiary">
+                  <small>Accuracy: {{ metrics()[metrics().length - 1].accuracy | percent:'1.1-1' }}</small>
+                </ion-label>
+              </ion-item>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Training Metrics Graph -->
+      @if (metrics() && metrics().length > 0) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📈 Training Metrics Evolution</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <div class="chart-container">
+              <canvas
+                #metricsChartCanvas
+                class="metrics-chart-canvas"
+                width="400"
+                height="200">
+              </canvas>
+            </div>
+
+            <ion-item lines="none">
+              <ion-label color="success">
+                <small><strong>Loss Line:</strong> Red - Decreasing over epochs (better learning)</small>
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label color="tertiary">
+                <small><strong>Accuracy Line:</strong> Blue - Increasing over epochs (better predictions)</small>
+              </ion-label>
+            </ion-item>
+
+            @if (!isTraining()) {
+              <ion-item lines="none">
+                <ion-label>
+                  <strong>Final Training Results:</strong>
+                  <br>- Total Epochs: {{ metrics().length }}
+                  <br>- Final Loss: {{ metrics()[metrics().length - 1].loss | number:'1.4-4' }}
+                  <br>- Final Accuracy: {{ metrics()[metrics().length - 1].accuracy | percent:'1.1-1' }}
+                  <br>- Model Status: {{ isTrained ? '✅ Successfully Trained' : '❌ Training Failed' }}
+                </ion-label>
+              </ion-item>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Confusion Matrix -->
+      @if (isTrained) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📊 Confusion Matrix</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p><strong>What is this?</strong> Shows how many predictions were correct/incorrect for each category.</p>
+
+            <div class="confusion-matrix-container">
+              <canvas
+                #confusionMatrixCanvas
+                class="confusion-matrix-canvas"
+                width="300"
+                height="250">
+              </canvas>
+            </div>
+
+            <ion-item lines="none">
+              <ion-label>
+                <strong>Legend:</strong>
+                <br>🟢 True Positive (Inside, predicted Inside): {{ confusionMatrix().truePos }}
+                <br>🔴 False Negative (Inside, predicted Outside): {{ confusionMatrix().falseNeg }}
+                <br>🟡 False Positive (Outside, predicted Inside): {{ confusionMatrix().falsePos }}
+                <br>🔵 True Negative (Outside, predicted Outside): {{ confusionMatrix().trueNeg }}
+                <br>
+                <br><strong>Precision:</strong> {{ confusionMatrix().precision | percent:'1.1-1' }} (How accurate positive predictions are)
+                <br><strong>Recall:</strong> {{ confusionMatrix().recall | percent:'1.1-1' }} (How well it finds positive cases)
+                <br><strong>F1-Score:</strong> {{ confusionMatrix().f1Score | number:'1.3-3' }} (Balanced measure of precision & recall)
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>
+                <small>
+                  <strong>Why is this useful?</strong> Shows if the model is balanced across both classes.
+                  High numbers on the diagonal = good predictions. Off-diagonal shows errors.
+                </small>
+              </ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Visual Canvas -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>📊 Decision Boundary Visualization</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="canvas-container">
+            <canvas
+              #visualizationCanvas
+              class="decision-boundary-canvas"
+              width="300"
+              height="300">
+            </canvas>
+            <div class="canvas-overlay">
+              <div class="canvas-legend">
+                @if (isModelTrained) {
+                  <span class="point-indicator" [class]="prediction() === 0 ? 'inside' : 'outside'">
+                    ⚫ Test Point
+                  </span>
+                  <span class="circle-indicator">⚪ Boundary (Radius 0.5)</span>
+                } @else {
+                  <span class="training-notice">Train a model first to see visualization</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          @if (!isModelTrained) {
+            <ion-item lines="none">
+              <ion-label color="medium">
+                <small>Train a neural network above to visualize the circle classification boundary.</small>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Model Testing -->
+      @if (isModelTrained) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>🧪 Test Your Model</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p>Test the trained model with custom input values:</p>
+
+            <div class="test-examples">
+              <p><strong>Quick Test Examples:</strong></p>
+              <ion-chip color="success" (click)="testKnownPoint(0, 0)">
+                (0,0) → Inside Circle
+              </ion-chip>
+              <ion-chip color="danger" (click)="testKnownPoint(0.8, 0)">
+                (0.8,0) → Outside Circle
+              </ion-chip>
+              <ion-chip color="warning" (click)="testKnownPoint(0.3, 0.3)">
+                (0.3,0.3) → Inside Circle
+              </ion-chip>
+            </div>
+
+            <ion-item>
+              <ion-label position="stacked">X Coordinate</ion-label>
+              <ion-input
+                type="number"
+                [value]="testInputX"
+                name="testX"
+                step="0.1"
+                min="-1"
+                max="1"
+                placeholder="0.0"
+                (ionInput)="updateXCoord($event)">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Y Coordinate</ion-label>
+              <ion-input
+                type="number"
+                [value]="testInputY"
+                name="testY"
+                step="0.1"
+                min="-1"
+                max="1"
+                placeholder="0.0"
+                (ionInput)="updateYCoord($event)">
+              </ion-input>
+            </ion-item>
+
+            <ion-button
+              fill="outline"
+              color="secondary"
+              (click)="makePrediction()">
+              <ion-icon name="bulb" slot="start"></ion-icon>
+              Make Prediction
+            </ion-button>
+
+            @if (prediction() !== null) {
+              <ion-item lines="none" [color]="prediction() === 0 ? 'success' : 'tertiary'">
+                <ion-icon [name]="prediction() === 0 ? 'checkmark-circle' : 'close-circle'" slot="start"></ion-icon>
+                <ion-label>
+                  <strong>Prediction:</strong> Inside Circle ({{ prediction() === 0 ? 'Yes' : 'No' }})
+                </ion-label>
+              </ion-item>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Training Metrics Chart -->
+      @if (metrics() && metrics().length > 0) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>📈 Training History</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-list>
+              @for (metric of metrics(); track metric.epoch) {
+                <ion-item lines="full">
+                  <ion-label>
+                    <h3>Epoch {{ metric.epoch }}</h3>
+                    <p>Loss: {{ metric.loss | number:'1.4-4' }} | Accuracy: {{ metric.accuracy | percent:'1.1-1' }}</p>
+                  </ion-label>
+                  <ion-badge [color]="metric.accuracy > 0.7 ? 'success' : 'warning'" slot="end">
+                    {{ metric.accuracy | percent:'1.0-0' }}
+                  </ion-badge>
+                </ion-item>
+              }
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Technical Details -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>🔧 Technical Details</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-item-group>
+            <ion-item lines="none">
+              <ion-label>
+                <strong>Network Architecture:</strong> {{ layers().join(' → ') }} neurons
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>
+                <strong>Activation Functions:</strong> ReLU (hidden) + Sigmoid (output)
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>
+                <strong>Loss Function:</strong> Binary Cross-Entropy
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>
+                <strong>Optimization:</strong> Stochastic Gradient Descent
+              </ion-label>
+            </ion-item>
+          </ion-item-group>
+
+          <ion-item lines="none">
+            <ion-label color="medium" class="ion-text-wrap">
+              <small>
+                All computation happens in your browser using Web Workers.
+                This is a simplified neural network implementation for educational purposes.
+              </small>
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
