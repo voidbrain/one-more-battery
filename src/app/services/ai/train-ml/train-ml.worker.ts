@@ -289,8 +289,12 @@ async function trainModel(config: TrainingConfig, trainingData: TrainingData[]):
   return model.getModel();
 }
 
+type LoadModelMessage = WorkerMessage<{
+  model: TrainedModel;
+}>;
+
 // Message handler
-ctx.onmessage = async (event: MessageEvent<StartTrainingMessage | MakePredictionMessage>) => {
+ctx.onmessage = async (event: MessageEvent<StartTrainingMessage | MakePredictionMessage | LoadModelMessage>) => {
   const { type, data } = event.data;
 
   if (type === 'START_TRAINING') {
@@ -312,6 +316,29 @@ ctx.onmessage = async (event: MessageEvent<StartTrainingMessage | MakePrediction
       ctx.postMessage({
         type: 'TRAINING_ERROR',
         data: { error: error instanceof Error ? error.message : 'Unknown training error' }
+      });
+    }
+  }
+
+  if (type === 'LOAD_MODEL') {
+    try {
+      const modelData = (data as { model: TrainedModel }).model;
+
+      // Initialize model with the architecture from the saved model
+      trainedModel = new SimpleNeuralNetwork(modelData.architecture);
+      trainedModel.loadModel(modelData);
+
+      console.log('Worker: Model loaded successfully');
+
+      ctx.postMessage({
+        type: 'MODEL_LOADED',
+        data: { success: true }
+      });
+    } catch (error) {
+      console.error('Loading model failed:', error);
+      ctx.postMessage({
+        type: 'MODEL_LOAD_ERROR',
+        data: { error: error instanceof Error ? error.message : 'Unknown model load error' }
       });
     }
   }

@@ -7,6 +7,10 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'ai',
+      loadComponent: () => import('./pages/ai/ai.component').then((m) => m.AiComponent),
+  },
+  {
     path: 'train-ml',
     loadComponent: () => import('./pages/train-ml/train-ml.component').then((m) => m.TrainMlComponent),
   },

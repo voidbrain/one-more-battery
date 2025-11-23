@@ -44,7 +44,8 @@ import {
   calculator,
   colorPalette,
   play,
-  bulb
+  bulb,
+  cloudDownload
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -85,7 +86,8 @@ addIcons({
   calculator: calculator,
   'color-palette': colorPalette,
   play: play,
-  bulb: bulb
+  bulb: bulb,
+  'cloud-download': cloudDownload
 });
 
 export const appConfig: ApplicationConfig = {

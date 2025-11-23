@@ -47,6 +47,7 @@ export class TrainMlComponent implements AfterViewInit, OnDestroy {
   isTraining = signal<boolean>(false);
   progress = signal<number>(0);
   metrics = signal<TrainingMetrics[]>([]);
+  hasSavedModel = signal<boolean>(!!localStorage.getItem('saved_ml_model'));
 
   // Test prediction
   testInput = signal<{ x: number, y: number }>({ x: 0, y: 0 });
@@ -159,6 +160,45 @@ export class TrainMlComponent implements AfterViewInit, OnDestroy {
   stopTraining(): void {
     this.trainMlService.stopTraining();
   }
+
+  /**
+   * Save trained model to local storage
+   */
+  saveModel(): void {
+    const model = this.trainMlService.trainedModel();
+    if (model) {
+      try {
+        localStorage.setItem('saved_ml_model', JSON.stringify(model));
+        this.hasSavedModel.set(true);
+        console.log('Model saved to local storage');
+        // You might want to show a toast or alert here
+      } catch (error) {
+        console.error('Failed to save model:', error);
+      }
+    }
+  }
+
+  /**
+   * Load model from local storage
+   */
+  async loadModel(): Promise<void> {
+    const savedModelStr = localStorage.getItem('saved_ml_model');
+    if (savedModelStr) {
+      try {
+        const model = JSON.parse(savedModelStr);
+        await this.trainMlService.loadModel(model);
+        console.log('Model loaded from local storage');
+
+        // Re-run prediction and visualization
+        this.makePrediction();
+        this.drawVisualization();
+      } catch (error) {
+        console.error('Failed to load model:', error);
+      }
+    }
+  }
+
+
 
   /**
    * Make a prediction with trained model

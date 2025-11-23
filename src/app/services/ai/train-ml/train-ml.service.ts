@@ -151,6 +151,44 @@ export class TrainMlService {
   }
 
   /**
+   * Load a pre-trained model
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async loadModel(modelData: any): Promise<void> {
+    if (!this.worker) {
+      throw new Error('Training worker not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const messageHandler = (event: MessageEvent) => {
+        const { type, data } = event.data;
+
+        if (type === 'MODEL_LOADED') {
+          this.worker!.removeEventListener('message', messageHandler);
+          this.trainedModel.set(modelData);
+          resolve();
+        } else if (type === 'MODEL_LOAD_ERROR') {
+          this.worker!.removeEventListener('message', messageHandler);
+          reject(new Error(data.error));
+        }
+      };
+
+      this.worker!.addEventListener('message', messageHandler);
+
+      this.worker!.postMessage({
+        type: 'LOAD_MODEL',
+        data: { model: modelData }
+      });
+
+      // Timeout after 5 seconds
+      setTimeout(() => {
+        this.worker!.removeEventListener('message', messageHandler);
+        reject(new Error('Model load timeout'));
+      }, 5000);
+    });
+  }
+
+  /**
    * Make prediction with trained model
    */
   async predict(features: number[]): Promise<number> {
