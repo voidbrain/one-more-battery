@@ -59,6 +59,13 @@
       >
         <ion-label>🧠 ML Train</ion-label>
       </ion-segment-button>
+      <ion-segment-button
+        value="glass-showcase"
+        routerLink="/glass-showcase"
+        [class.active]="activeSegment() === 'glass-showcase'"
+      >
+        <ion-label>✨ Glass UI</ion-label>
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>

@@ -45,7 +45,11 @@ import {
   colorPalette,
   play,
   bulb,
-  cloudDownload
+  cloudDownload,
+  colorPaletteOutline,
+  layersOutline,
+  sparklesOutline
+
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -87,7 +91,10 @@ addIcons({
   'color-palette': colorPalette,
   play: play,
   bulb: bulb,
-  'cloud-download': cloudDownload
+  'cloud-download': cloudDownload,
+  'color-palette-outline': colorPaletteOutline,
+  'layers-outline': layersOutline,
+  'sparkles-outline': sparklesOutline
 });
 
 export const appConfig: ApplicationConfig = {

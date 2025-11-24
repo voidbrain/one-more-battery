@@ -1,0 +1,113 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Glass Morphism Showcase</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+
+  <!-- Hero Section -->
+  <div class="hero-container">
+    <div class="glass-card hero-card">
+      <div class="aurora-container">
+        <app-aurora-text
+          text="GLASS MORPHISM"
+          className="hero-aurora">
+        </app-aurora-text>
+      </div>
+      <p class="hero-subtitle">Modern UI with Aurora animations</p>
+    </div>
+  </div>
+
+  <!-- Glass Cards Grid -->
+  <div class="cards-grid">
+    <!-- Card 1 -->
+    <div class="glass-card animated-card" style="animation-delay: 0s;">
+      <div class="card-header">
+        <ion-icon name="color-palette-outline" size="large" color="primary"></ion-icon>
+      </div>
+      <h3>Backdrop Blur</h3>
+      <p>Advanced CSS backdrop filters create stunning glass effects</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="glass-card animated-card" style="animation-delay: 0.2s;">
+      <div class="card-header">
+        <app-aurora-text text="🌊" className="small-aurora"></app-aurora-text>
+      </div>
+      <h3>Aurora Animation</h3>
+      <p>Dynamic color-shifting text with smooth gradients</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="glass-card animated-card" style="animation-delay: 0.4s;">
+      <div class="card-header">
+        <ion-icon name="layers-outline" size="large" color="secondary"></ion-icon>
+      </div>
+      <h3>Layer Effects</h3>
+      <p>Multiple translucent layers with depth and shadows</p>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="glass-card animated-card" style="animation-delay: 0.6s;">
+      <div class="card-header">
+        <ion-icon name="sparkles-outline" size="large" color="tertiary"></ion-icon>
+      </div>
+      <h3>Premium Feel</h3>
+      <p>Modern aesthetics with smooth micro-interactions</p>
+    </div>
+  </div>
+
+  <!-- Interactive Demo -->
+  <div class="demo-container">
+    <div class="glass-card demo-card">
+      <h3>Interactive Demo</h3>
+      <div class="control-row">
+        <ion-label>Opacity</ion-label>
+        <ion-range
+          min="0.1"
+          max="1"
+          step="0.1"
+          value="0.8"
+          (ionChange)="updateOpacity($event)"
+          color="primary">
+        </ion-range>
+      </div>
+      <div class="control-row">
+        <ion-label>Blur</ion-label>
+        <ion-range
+          min="0"
+          max="20"
+          step="2"
+          value="10"
+          (ionChange)="updateBlur($event)"
+          color="secondary">
+        </ion-range>
+      </div>
+      <div class="test-card" [style]="'--opacity: ' + opacity + '; --blur: ' + blur + 'px;'">
+        <app-aurora-text text="PREVIEW" className="preview-aurora"></app-aurora-text>
+        <p>Glass morphism effects</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aurora Text Variations -->
+  <div class="variations-section">
+    <h3>Aurora Text Variations</h3>
+    <div class="variations-grid">
+      <div class="glass-card small">
+        <app-aurora-text text="HELLO" className="var-hello"></app-aurora-text>
+      </div>
+      <div class="glass-card small">
+        <app-aurora-text text="MODERN" className="var-modern"></app-aurora-text>
+      </div>
+      <div class="glass-card small">
+        <app-aurora-text text="DESIGN" className="var-design"></app-aurora-text>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

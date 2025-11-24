@@ -1,0 +1,192 @@
+/* Glass Morphism Styles */
+* {
+  font-family: Geist, sans-serif;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.hero-container {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.hero-card {
+  padding: 40px 24px;
+  margin: 0 auto;
+  max-width: 400px;
+}
+
+.aurora-container {
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+.animated-card {
+  animation: fadeInUp 0.8s ease both;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-card h3 {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.glass-card p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.demo-container {
+  margin-bottom: 32px;
+}
+
+.demo-card {
+  padding: 32px 24px;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  ion-label {
+    flex: 0 0 80px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+  }
+
+  ion-range {
+    flex: 1;
+    --background: rgba(255, 255, 255, 0.2);
+    --bar-background: rgba(255, 255, 255, 0.3);
+    --bar-background-active: rgba(255, 255, 255, 0.6);
+    --knob-background: #ffffff;
+    --knob-size: 16px;
+  }
+}
+
+.test-card {
+  background: rgba(255, 255, 255, var(--opacity, 0.8));
+  backdrop-filter: blur(var(--blur, 10px));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.test-card p {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.variations-section {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.variations-section h3 {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 24px;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.variations-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.glass-card.small {
+  padding: 16px;
+  text-align: center;
+}
+
+/* Aurora text specific variations */
+.hero-aurora {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.small-aurora {
+  font-size: 32px;
+}
+
+.preview-aurora {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.var-hello, .var-modern, .var-design {
+  font-size: 16px;
+  font-weight: 600;
+}
