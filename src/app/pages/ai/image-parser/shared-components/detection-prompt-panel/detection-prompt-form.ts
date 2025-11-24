@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 import { DetectorService } from '@services/ai/image-object-detector/detector.service';
 
@@ -9,7 +9,7 @@ import { DetectorService } from '@services/ai/image-object-detector/detector.ser
   templateUrl: './detection-prompt-form.html',
   styleUrls: ['./detection-prompt-form.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class DetectionPromptPanelComponent {
   // Project signals from detector service (using signals only, no inputs/outputs)

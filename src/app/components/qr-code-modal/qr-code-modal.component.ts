@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   ModalController,
   IonHeader,
@@ -19,7 +19,6 @@ import { TranslocoModule } from '@jsverse/transloco';
   styleUrls: ['./qr-code-modal.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -28,8 +27,8 @@ import { TranslocoModule } from '@jsverse/transloco';
     IonContent,
     IonIcon,
     IonText,
-    TranslocoModule,
-  ],
+    TranslocoModule
+],
 })
 export class QrCodeModalComponent {
   @Input() qrCodeDataUrl!: string;

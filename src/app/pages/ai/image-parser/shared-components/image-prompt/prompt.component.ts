@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { DetectorService } from '@services/ai/image-object-detector/detector.service';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 import { DetectionResult } from '@interfaces/index';
 import { ImageUploadFormComponent } from '@pages/ai/image-parser/shared-components/image-upload-form/image-upload-form';
@@ -14,12 +14,11 @@ import { ImageService } from '@services/utils/image.service';
   styleUrls: ['./prompt.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     IonicModule,
     TranslocoModule,
     ImageUploadFormComponent,
-    SelectedImageComponent,
-  ],
+    SelectedImageComponent
+],
 })
 export class ImageUploadComponent {
   // Detection state - computed signals for computed values, writable signals for mutable state

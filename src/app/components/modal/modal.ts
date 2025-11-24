@@ -8,11 +8,11 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-modal',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './modal.html',
   styleUrl: './modal.scss',
 })

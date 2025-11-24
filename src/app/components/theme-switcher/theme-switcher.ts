@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Theme, ThemeType } from '@services/ui/theme';
 
 @Component({
   selector: 'app-theme-switcher',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './theme-switcher.html',
   styleUrl: './theme-switcher.scss',
 })

@@ -3,7 +3,7 @@ import { TextClassifierService } from '@services/ai/text-classifier/text-classif
 import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TextClassifierSettingsModalComponent } from '@pages/ai/text-parser/text-classifier/modal/modal.component';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
@@ -11,7 +11,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './control-panel.component.html',
   styleUrls: ['./control-panel.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class TextClassifierControlPanelComponent {
   // Model management

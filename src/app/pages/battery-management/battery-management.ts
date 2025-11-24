@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -27,7 +27,6 @@ import { TypeListComponent } from './type-list/type-list.component';
 @Component({
   selector: 'app-battery-management',
   imports: [
-    CommonModule,
     IonItem,
     IonHeader,
     IonToolbar,
@@ -41,8 +40,8 @@ import { TypeListComponent } from './type-list/type-list.component';
     BatteryListComponent,
     BrandListComponent,
     SeriesListComponent,
-    TypeListComponent,
-  ],
+    TypeListComponent
+],
   templateUrl: './battery-management.html',
   styleUrl: './battery-management.scss',
 })

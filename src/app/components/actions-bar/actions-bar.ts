@@ -1,5 +1,5 @@
 import { Component, inject, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ActionSheetController, IonIcon } from '@ionic/angular/standalone';
 import { QrScannerService } from '@services/utils/qr-scanner';
@@ -8,7 +8,7 @@ import { PhotoResult } from '@interfaces/index';
 
 @Component({
   selector: 'app-actions-bar',
-  imports: [CommonModule, TranslocoModule, IonIcon],
+  imports: [TranslocoModule, IonIcon],
   templateUrl: './actions-bar.html',
   styleUrl: './actions-bar.scss',
 })

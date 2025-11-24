@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Series } from '@interfaces/index';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -22,7 +22,6 @@ import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-series-list',
   imports: [
-    CommonModule,
     FormsModule,
     TranslocoModule,
     IonList,
@@ -34,8 +33,8 @@ import { AlertController } from '@ionic/angular';
     IonCard,
     IonCardHeader,
     IonCardTitle,
-    IonCardContent,
-  ],
+    IonCardContent
+],
   template: `
     <ion-card class="glass-card">
       <ion-card-header>

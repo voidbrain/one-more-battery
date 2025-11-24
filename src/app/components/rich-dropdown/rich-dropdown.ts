@@ -9,13 +9,13 @@ import {
   inject,
   effect,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IonIcon } from '@ionic/angular/standalone';
 import { DropdownOption } from '@interfaces/index';
 
 @Component({
   selector: 'app-rich-dropdown',
-  imports: [CommonModule, IonIcon],
+  imports: [IonIcon],
   templateUrl: './rich-dropdown.html',
   styleUrl: './rich-dropdown.scss',
 })

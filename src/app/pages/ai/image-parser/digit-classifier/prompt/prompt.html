@@ -38,14 +38,18 @@
       color="primary"
       (click)="detectDigits()"
       [disabled]="!isImageSelected() || !isModelLoaded() || isDetectionBusy()">
-      <ion-icon
-        slot="start"
-        name="calculator"
-        *ngIf="!isDetectionBusy()"></ion-icon>
-      <ion-spinner
-        slot="start"
-        name="crescent"
-        *ngIf="isDetectionBusy()"></ion-spinner>
+      @if (!isDetectionBusy()) {
+        <ion-icon
+          slot="start"
+          name="calculator"
+        ></ion-icon>
+      }
+      @if (isDetectionBusy()) {
+        <ion-spinner
+          slot="start"
+          name="crescent"
+        ></ion-spinner>
+      }
       {{ 'ai.digit_recognizer.detect_digits' | transloco }}
     </ion-button>
 
@@ -77,14 +81,16 @@
       @for(result of digitDetectionSignal(); track result) {
         <ion-card class="digit-card">
           <ion-card-content>
-            <ion-item lines="none" *ngIf="result.extractedValue">
-              <ion-chip color="success" slot="start">
-                <ion-label>{{ result.extractedValue }}</ion-label>
-              </ion-chip>
-              <ion-label>
-                <small>{{ 'ai.digit_recognizer.extracted_value' | transloco }} ({{ result.confidence | percent }})</small>
-              </ion-label>
-            </ion-item>
+            @if (result.extractedValue) {
+              <ion-item lines="none">
+                <ion-chip color="success" slot="start">
+                  <ion-label>{{ result.extractedValue }}</ion-label>
+                </ion-chip>
+                <ion-label>
+                  <small>{{ 'ai.digit_recognizer.extracted_value' | transloco }} ({{ result.confidence | percent }})</small>
+                </ion-label>
+              </ion-item>
+            }
 
             @for(digit of result.recognizedDigits; track digit) {
               <ion-item lines="none">

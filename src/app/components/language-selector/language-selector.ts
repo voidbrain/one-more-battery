@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-language-selector',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule],
   templateUrl: './language-selector.html',
   styleUrl: './language-selector.scss',
 })

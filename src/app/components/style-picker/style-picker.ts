@@ -9,11 +9,11 @@ import {
   IonItem,
   IonLabel,
 } from '@ionic/angular/standalone';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-style-picker',
-  imports: [CommonModule, IonButton, IonIcon, IonPopover, IonList, IonItem, IonLabel],
+  imports: [IonButton, IonIcon, IonPopover, IonList, IonItem, IonLabel],
   templateUrl: './style-picker.html',
   styleUrl: './style-picker.scss',
 })

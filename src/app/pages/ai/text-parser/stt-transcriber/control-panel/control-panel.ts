@@ -4,7 +4,7 @@ import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.servic
 import { TranscriberConfigStorage } from '@services/ai/stt-transcriber/stt-transcriber.config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranscriberSettingsModalComponent } from '@pages/ai/text-parser/stt-transcriber/modal/modal';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
@@ -12,7 +12,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './control-panel.html',
   styleUrls: ['./control-panel.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class TranscriberPanelComponent {
   // Model management

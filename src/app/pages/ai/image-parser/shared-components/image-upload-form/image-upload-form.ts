@@ -1,6 +1,6 @@
 import { Component, computed, inject, output, signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 import { ImageService } from '@services/utils/image.service';
 
@@ -9,7 +9,7 @@ import { ImageService } from '@services/utils/image.service';
   templateUrl: './image-upload-form.html',
   styleUrls: ['./image-upload-form.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class ImageUploadFormComponent {
   private ImageService = inject(ImageService);

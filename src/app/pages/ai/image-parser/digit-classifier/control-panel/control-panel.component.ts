@@ -3,7 +3,7 @@ import { DigitRecognizerService } from '@services/ai/digit-recognizer/digit-reco
 import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { DigitClassifierSettingsModalComponent } from '@pages/ai/image-parser/digit-classifier/modal/modal.component';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
@@ -11,7 +11,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './control-panel.component.html',
   styleUrls: ['./control-panel.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class DigitClassifierControlPanelComponent {
   // Model management

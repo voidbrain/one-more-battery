@@ -3,7 +3,7 @@ import { ColorClassifierService } from '@services/ai/color-classifier/color-clas
 import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { ColorClassifierSettingsModalComponent } from '@pages/ai/image-parser/color-recognizer/modal/modal.component';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
@@ -11,7 +11,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './control-panel.component.html',
   styleUrls: ['./control-panel.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule],
+  imports: [IonicModule, TranslocoModule],
 })
 export class ColorClassifierControlPanelComponent {
   // Model management

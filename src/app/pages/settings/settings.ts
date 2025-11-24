@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Sqlite } from '@services/database/database.service';
 import { Theme, ThemeType } from '@services/ui/theme';
@@ -34,7 +34,6 @@ import {
 @Component({
   selector: 'app-settings',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TranslocoModule,
     IonHeader,
@@ -56,8 +55,8 @@ import {
     IonToggle,
     IonInput,
     IonText,
-    IonSpinner,
-  ],
+    IonSpinner
+],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })

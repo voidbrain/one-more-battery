@@ -8,7 +8,7 @@ import {
   inject,
   ChangeDetectorRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   ModalController,
   IonHeader,
@@ -48,7 +48,6 @@ interface UsageRecord {
   templateUrl: './cycles-modal.html',
   standalone: true,
   imports: [
-    CommonModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -65,8 +64,8 @@ interface UsageRecord {
     IonItem,
     IonLabel,
     IonBadge,
-    TranslocoModule,
-  ],
+    TranslocoModule
+],
 })
 export class CyclesModalComponent implements OnInit, OnDestroy {
   @Input() batteryId = 0;

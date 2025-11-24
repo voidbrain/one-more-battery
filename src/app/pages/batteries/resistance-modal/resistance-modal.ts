@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   ModalController,
   IonHeader,
@@ -48,7 +48,6 @@ interface CellData {
   standalone: true,
   imports: [
     IonFooter,
-    CommonModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -67,8 +66,8 @@ interface CellData {
     IonRow,
     IonCol,
     TranslocoModule,
-    FormsModule,
-  ],
+    FormsModule
+],
 })
 export class ResistanceModalComponent implements OnInit, OnDestroy {
   @Input() batteryId = 0;

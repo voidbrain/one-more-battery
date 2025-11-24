@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { DetectorConfigStorage } from '@services/ai/image-object-detector/detector.config.service';
 import { LLMConfigService } from '@services/ai/ai-common/common-ai-config.service';
 import { ModalController, IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoModule } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './modal.html',
   styleUrls: ['./modal.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslocoModule, FormsModule],
+  imports: [IonicModule, TranslocoModule, FormsModule],
 })
 export class DetectorSettingsModalComponent {
   models: { name: string; size: number }[] = [];
