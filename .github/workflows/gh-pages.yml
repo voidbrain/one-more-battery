@@ -28,7 +28,7 @@ jobs:
           node-version: '22.12.0'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build -- --configuration production
