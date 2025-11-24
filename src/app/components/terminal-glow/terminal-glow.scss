@@ -1,0 +1,235 @@
+/* Terminal Glow Component Styles */
+.terminal-container {
+  background: rgba(0, 10, 0, 0.9);
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  font-family: 'Courier New', 'Monaco', monospace;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 20px rgba(0, 255, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #00ff00 50%,
+    transparent 100%);
+  animation: scanline 2s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes scanline {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.terminal-header {
+  background: linear-gradient(90deg, #002200 0%, #004400 50%, #002200 100%);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #00ff00;
+}
+
+.terminal-buttons {
+  display: flex;
+  gap: 6px;
+  margin-right: 12px;
+}
+
+.terminal-buttons span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.terminal-buttons .red {
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  box-shadow: 0 0 4px rgba(255, 68, 68, 0.6);
+}
+
+.terminal-buttons .yellow {
+  background: linear-gradient(135deg, #ffcc44, #cc8800);
+  box-shadow: 0 0 4px rgba(255, 204, 68, 0.6);
+}
+
+.terminal-buttons .green {
+  background: linear-gradient(135deg, #44ff44, #00cc00);
+  box-shadow: 0 0 4px rgba(68, 255, 68, 0.6);
+}
+
+.terminal-title {
+  color: #00ff00;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 0 0 8px currentColor;
+  margin: 0;
+}
+
+.terminal-body {
+  padding: 16px;
+  background: linear-gradient(180deg,
+    rgba(0, 16, 0, 0.95) 0%,
+    rgba(0, 8, 0, 0.98) 100%);
+  min-height: 300px;
+  position: relative;
+}
+
+.terminal-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(transparent, rgba(0, 200, 0, 0.2));
+  pointer-events: none;
+}
+
+.terminal-output {
+  color: #00ff00;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+  animation: textGlow 2s ease-in-out infinite alternate;
+  white-space: pre-wrap;
+}
+
+@keyframes textGlow {
+  from {
+    text-shadow: 0 0 8px #00ff00, 0 0 16px #00ff00;
+  }
+  to {
+    text-shadow: 0 0 12px #00ff00, 0 0 24px #00ff00, 0 0 36px #00ff00;
+  }
+}
+
+/* Terminal Colors */
+.green-text {
+  color: #00ff00;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.yellow-text {
+  color: #ffff00;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.red-text {
+  color: #ff4444;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.blue-text {
+  color: #00aaff;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.orange-text {
+  color: #ff6600;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.magenta-text {
+  color: #ff00ff;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.status-line {
+  margin-bottom: 4px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.command-line {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cursor {
+  color: #ffffff;
+  animation: blink 1s infinite;
+  font-weight: bold;
+  text-shadow: 0 0 8px currentColor;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Glow mode enhancement */
+.glow-mode {
+  animation: terminalPulse 3s ease-in-out infinite;
+  box-shadow:
+    0 0 20px rgba(0, 255, 0, 0.8),
+    0 0 40px rgba(0, 255, 0, 0.4),
+    inset 0 0 40px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes terminalPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(0, 255, 0, 0.8),
+      0 0 40px rgba(0, 255, 0, 0.4),
+      inset 0 0 40px rgba(0, 0, 0, 0.9);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(0, 255, 0, 1),
+      0 0 60px rgba(0, 255, 0, 0.6),
+      inset 0 0 40px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* CRT Monitor Effect */
+.terminal-container::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(0, 32, 0, 0.03) 50%,
+    transparent 52%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.5;
+  animation: crtScan 0.1s linear infinite;
+}
+
+@keyframes crtScan {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .terminal-title {
+    font-size: 11px;
+  }
+
+  .terminal-output {
+    font-size: 12px;
+  }
+
+  .terminal-container {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,40 @@
+<div class="terminal-container glass-card" [ngClass]="{ 'glow-mode': glowMode }">
+  <div class="terminal-header">
+    <div class="terminal-buttons">
+      <span class="red"></span>
+      <span class="yellow"></span>
+      <span class="green"></span>
+    </div>
+    <div class="terminal-title">One More Battery Terminal</div>
+  </div>
+  <div class="terminal-body" #terminalBody>
+    <div class="terminal-output">
+      {{asciiBanner}}
+      <div class="status-line">
+        <span class="green-text">Welcome to One More Battery Interface</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">----------------------------------</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">System Status:</span> <span class="yellow-text">ONLINE</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">AI Module:</span> <span class="red-text">DIGIT RECOGNITION ACTIVE</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">UI Framework:</span> <span class="blue-text">ANGULAR 21</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">Display Mode:</span> <span class="orange-text">GLASS MORPHISM</span>
+      </div>
+      <div class="status-line">
+        <span class="green-text">Aurora Text:</span> <span class="magenta-text">ENABLED</span>
+      </div>
+      <div class="command-line">
+        <span class="green-text">[user@one-more-battery ~/]$</span>
+        <span class="cursor">▊</span>
+      </div>
+    </div>
+  </div>
+</div>

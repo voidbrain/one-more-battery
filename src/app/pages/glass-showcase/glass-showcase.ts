@@ -11,6 +11,7 @@ import {
   IonRange
 } from '@ionic/angular/standalone';
 import { AuroraText } from '@components/aurora-text/aurora-text';
+import { TerminalGlow } from '@components/terminal-glow/terminal-glow';
 
 @Component({
   selector: 'app-glass-showcase',
@@ -27,7 +28,8 @@ import { AuroraText } from '@components/aurora-text/aurora-text';
     IonIcon,
     IonLabel,
     IonRange,
-    AuroraText
+    AuroraText,
+    TerminalGlow
   ]
 })
 export class GlassShowcase implements OnInit {
