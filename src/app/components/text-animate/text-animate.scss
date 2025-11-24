@@ -1,0 +1,22 @@
+.text-animate-container {
+  display: inline-block;
+  font-family: 'Fira Code', Consolas, 'Courier New', monospace;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+.cursor {
+  animation: blink 1s infinite;
+  font-family: 'Iosevka', monospace;
+  color: var(--accent-color, #007bff);
+  font-weight: 600;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}

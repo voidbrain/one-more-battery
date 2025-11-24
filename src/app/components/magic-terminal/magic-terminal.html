@@ -1,0 +1,33 @@
+<div class="magic-terminal">
+  <div class="terminal-header">
+    <div class="terminal-buttons">
+      <span class="terminal-button close"></span>
+      <span class="terminal-button minimize"></span>
+      <span class="terminal-button maximize"></span>
+    </div>
+    <div class="terminal-title">Gemini CLI Terminal</div>
+  </div>
+  <div class="terminal-body">
+    @for (cmd of commands; track cmd.command; let i = $index) {
+      <div class="command-block">
+        <div class="command-line">
+          <span class="prompt">{{cmd.prompt}}</span>
+          <app-text-animate
+            [text]="cmd.command"
+            [speed]="50"
+            [delay]="i * 1000"
+            [cursor]="true">
+          </app-text-animate>
+        </div>
+        <div class="command-output">
+          <app-text-animate
+            [text]="cmd.output"
+            [speed]="30"
+            [delay]="(i * 1000) + 1000"
+            [cursor]="false">
+          </app-text-animate>
+        </div>
+      </div>
+    }
+  </div>
+</div>

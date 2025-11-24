@@ -59,6 +59,32 @@
       <h3>Premium Feel</h3>
       <p>Modern aesthetics with smooth micro-interactions</p>
     </div>
+
+    <!-- Gemini CLI Card -->
+    <div class="glass-card gemini-cli-card animated-card" style="animation-delay: 0.8s;">
+      <div class="card-header">
+        <span class="gemini-icon">⚡</span>
+      </div>
+      <h3 style="font-family: 'Fira Code', Consolas, 'Courier New', monospace; color: #4285f4;">Gemini CLI</h3>
+      <p style="font-family: 'Iosevka', Consolas, 'Courier New', monospace;">
+        <app-text-animate
+          text="Experience the power of Google's AI through command line."
+          [speed]="50"
+          [delay]="1000"
+          [cursor]="true"
+          [loop]="false">
+        </app-text-animate>
+      </p>
+    </div>
+
+    <!-- Shine Border Card -->
+    <app-shine-border class="animated-card" style="animation-delay: 1.0s;">
+      <div class="card-header">
+        <ion-icon name="diamond-outline" size="large" style="color: #00ff88;"></ion-icon>
+      </div>
+      <h3>Magic UI Shine</h3>
+      <p>Dazzling animated borders that shine like precious gems</p>
+    </app-shine-border>
   </div>
 
   <!-- Interactive Demo -->
@@ -99,6 +125,13 @@
     <h3>CLI-Inspired Terminal Interface</h3>
     <app-terminal-glow [glowMode]="true"></app-terminal-glow>
     <p class="terminal-caption">Glow aesthetic with CRT effects and ASCII banners</p>
+  </div>
+
+  <!-- Magic UI Terminal -->
+  <div class="magic-terminal-section">
+    <h3>Magic UI Terminal</h3>
+    <app-magic-terminal></app-magic-terminal>
+    <p class="terminal-caption">Typewriter animation with Fira Code and Iosevka fonts</p>
   </div>
 
   <!-- Aurora Text Variations -->

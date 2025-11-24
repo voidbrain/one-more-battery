@@ -12,6 +12,9 @@ import {
 } from '@ionic/angular/standalone';
 import { AuroraText } from '@components/aurora-text/aurora-text';
 import { TerminalGlow } from '@components/terminal-glow/terminal-glow';
+import { TextAnimateComponent } from '@components/text-animate/text-animate';
+import { ShineBorderComponent } from '@components/shine-border/shine-border';
+import { MagicTerminalComponent } from '@components/magic-terminal/magic-terminal';
 
 @Component({
   selector: 'app-glass-showcase',
@@ -29,7 +32,10 @@ import { TerminalGlow } from '@components/terminal-glow/terminal-glow';
     IonLabel,
     IonRange,
     AuroraText,
-    TerminalGlow
+    TerminalGlow,
+    TextAnimateComponent,
+    ShineBorderComponent,
+    MagicTerminalComponent
   ]
 })
 export class GlassShowcase implements OnInit {
