@@ -1,69 +1,82 @@
-transcribercomponent
-@if (audioBlob()) {
-  <ion-card>
-    <ion-card-content>
-      @if (transcriberService.isBusy) {
-        <div class="d-flex align-items-center">
-          <div class="spinner-border spinner-border-sm text-primary mx-2"></div>
-          <span>{{ 'ai-model.TRANSCRIPTION_PROGRESS_INFO' | transloco }}</span>
-        </div>
-      }
-      @if (audioProgress) {
-        {{ 'ai-model.RECORDING_TO_AUDIO_PROGRESS_INFO' | transloco }}
-        <div class="progress">
-          <div
-            class="progress-bar progress-bar-striped progress-bar-animated"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            [attr.aria-valuenow]="audioProgress"
-            [style.width.%]="audioProgress"
-          ></div>
+<ion-card>
+  <ion-card-content>
+    <!-- Browser Support Check -->
+    @if (errorMessage()) {
+      <div class="alert alert-warning">
+        <ion-icon name="warning-outline" class="me-2"></ion-icon>
+        {{ errorMessage() }}
+      </div>
+    } @else {
+      <!-- Recording Controls -->
+      <div class="d-flex justify-content-center mb-3">
+        @if (!isRecording()) {
+          <ion-button
+            fill="solid"
+            color="primary"
+            (click)="startRecording()"
+            [disabled]="isProcessing()">
+            <ion-icon slot="start" name="mic-outline"></ion-icon>
+            Start Recording
+          </ion-button>
+        } @else {
+          <ion-button
+            fill="solid"
+            color="danger"
+            (click)="stopRecording()">
+            <ion-icon slot="start" name="stop-circle-outline"></ion-icon>
+            Stop Recording
+          </ion-button>
+        }
+      </div>
+
+      <!-- Recording Status -->
+      @if (isRecording()) {
+        <div class="text-center mb-3">
+          <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+          <span class="text-muted">Listening... Speak clearly into your microphone</span>
         </div>
       }
 
-      @if (transcriberService.transcript) {
-        <div class="d-flex flex-column">
-          <span class="fs-4 ps-2">{{ 'ai-model.TRANSCRIPTION_RESULT_TITLE' | transloco }}</span>
-          <div class="border border-1 rounded border-secondary m-2 p-2">
-            <span class="fs-5">{{ 'ai-model.MODEL' | transloco }}</span
-            >:
-            {{ transcriberService.transcript.model || 'no' }}
-          </div>
+      <!-- Processing Status -->
+      @if (isProcessing()) {
+        <div class="text-center mb-3">
+          <div class="spinner-border spinner-border-sm text-info me-2"></div>
+          <span class="text-muted">Processing speech...</span>
+        </div>
+      }
 
-          <div class="border border-1 rounded border-secondary m-2 p-2">
-            <span class="fs-4 ps-2">{{ 'settings.language' | transloco }}</span
-            >:
-            {{ transcriberService.transcript.language || 'no' }}
-          </div>
-          <div class="border border-1 rounded border-secondary m-2 p-2">
-            <span class="fs-5">{{ 'ai-model.FULL_TEXT_TITLE' | transloco }}</span>
-            <div>{{ transcriberService.transcript.text }}</div>
-          </div>
-          <div class="border border-1 rounded border-secondary m-2 p-2">
-            <span class="fs-5">{{ 'ai-model.CHUNKS_TITLE' | transloco }}</span>
-            <div>
-              @for (chunk of transcriberService.transcript.chunks; track chunk.timestamp[0]) {
-                <div class="row">
-                  <div class="col-3">
-                    <strong>{{ 'ai-model.TIMESTAMP_TITLE' | transloco }}</strong>
-                    {{ formatAudioTimestamp(chunk.timestamp[0]) }}
-                  </div>
-                  <div class="col-9">
-                    <strong>{{ 'ai-model.TEXT_TITLE' | transloco }}</strong> {{ chunk.text }}
-                  </div>
-                </div>
-              }
+      <!-- Transcription Results -->
+      @if (transcribedText() || interimText()) {
+        <div class="border border-1 rounded border-secondary m-2 p-2">
+          <h6 class="text-primary">
+            <ion-icon name="text-outline" class="me-2"></ion-icon>
+            Live Transcription
+          </h6>
+
+          <!-- Final text -->
+          @if (transcribedText()) {
+            <div class="mb-2">
+              <strong>Transcribed Text:</strong>
+              <div class="transcribed-text">{{ transcribedText() }}</div>
             </div>
-          </div>
+          }
+
+          <!-- Interim text -->
+          @if (interimText()) {
+            <div class="text-muted">
+              <strong>Processing:</strong> {{ interimText() }}
+            </div>
+          }
         </div>
       }
-      @if (transcriberService.error) {
-        <div>
-          <span class="fs-5">{{ 'ai-model.ERROR_TITLE' | transloco }}</span>
-          {{ transcriberService.error }}
+
+      <!-- Instructions -->
+      @if (!isRecording() && !transcribedText() && !interimText()) {
+        <div class="text-center text-muted mt-3">
+          <ion-icon name="information-circle-outline" size="large"></ion-icon>
+          <p class="mb-0">Click "Start Recording" and begin speaking. Make sure your browser supports speech recognition and microphone access is enabled.</p>
         </div>
       }
-    </ion-card-content>
-  </ion-card>
-}
+    }
+  </ion-card-content>
+</ion-card>

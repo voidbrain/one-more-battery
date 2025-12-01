@@ -29,10 +29,7 @@
             (recordingStart)="onRecordingStarted()"
           ></app-stt-transcriber-audio-prompt-card>
 
-          <app-stt-transcriber-prompt-card
-            [isTranscribeEnabled]="isTranscribeEnabled"
-            [audioBlob]="audioBlob"
-          ></app-stt-transcriber-prompt-card>
+          <app-stt-transcriber-prompt-card></app-stt-transcriber-prompt-card>
 
           <app-text-classifier-prompt-text-input
             [(inputText)]="inputText"

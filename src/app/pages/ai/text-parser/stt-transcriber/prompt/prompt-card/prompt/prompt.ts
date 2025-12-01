@@ -1,104 +1,121 @@
-import { Component, effect, input, OnInit, output, inject } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { NotificationService } from '@services/ui/notification.service';
-import { TranscriberService } from '@services/ai/stt-transcriber/stt-transcriber.service';
-import { TranscriberConfigStorage } from '@services/ai/stt-transcriber/stt-transcriber.config.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-stt-transcriber-prompt',
   templateUrl: './prompt.html',
   standalone: true,
-  imports: [IonCardContent, TranslocoModule, IonCard],
+  imports: [IonCardContent, TranslocoModule, IonCard, IonButton, IonIcon, CommonModule],
 })
-export class TranscriberComponent implements OnInit {
+export class TranscriberComponent {
   transcriptionComplete = output<string>();
-  protected audioProgress: number | undefined = 0;
-  audioBlob = input.required<Blob>();
   isTranscriptionInProgress = output<boolean>();
 
+  protected isRecording = signal(false);
+  protected isProcessing = signal(false);
+  protected transcribedText = signal('');
+  protected interimText = signal('');
+  protected errorMessage = signal('');
+
+  private recognition: SpeechRecognition | null = null;
   private notificationService = inject(NotificationService);
-  public transcriberService = inject(TranscriberService);
-  protected transcriberConfigStorage = inject(TranscriberConfigStorage);
   private transloco = inject(TranslocoService);
 
   constructor() {
-    effect(() => {
-      this.isTranscriptionInProgress.emit(this.transcriberService.isBusy);
-    });
-
-    effect(() => {
-      const result = this.transcriberService.transcript;
-      if (result && result.chunks && !this.transcriberService.isBusy) {
-        // Concatenate all chunk texts
-        const finalText = result.chunks
-          .map((c) => c.text)
-          .join(' ')
-          .trim();
-        this.transcriptionComplete.emit(finalText);
-      }
-    });
+    this.initializeSpeechRecognition();
   }
 
-  async ngOnInit(): Promise<void> {
-    // DISABLED: Automatic loading - user must load Whisper model manually first
-    // await this.transcriberService.load(); // preload pipeline
-
-    // Check if transcriber is loaded before attempting transcription
-    if (
-      this.transcriberService.isModelLoaded &&
-      !this.transcriberService.isBusy &&
-      this.audioBlob()
-    ) {
-      this.startTranscription();
+  private initializeSpeechRecognition(): void {
+    // Check if Web Speech API is supported
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      this.errorMessage.set('Speech recognition is not supported in this browser');
+      this.notificationService.showError('Speech recognition not supported');
+      return;
     }
-  }
 
-  async startTranscription(): Promise<void> {
-    const audioBuffer = await this.setAudioFromRecording();
-    if (audioBuffer) {
-      this.notificationService.showInfo('Transcription started');
-      await this.transcriberService.startTranscription(audioBuffer);
-      this.notificationService.showInfo('Transcription ended');
+    // Initialize speech recognition
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    this.recognition = new SpeechRecognition();
+
+    if (!this.recognition) {
+      this.errorMessage.set('Failed to initialize speech recognition');
+      return;
     }
-  }
 
-  async setAudioFromRecording(): Promise<AudioBuffer | undefined> {
-    return new Promise<AudioBuffer | undefined>((resolve) => {
-      this.audioProgress = 0;
-      const fileReader = new FileReader();
-      fileReader.onprogress = (event) => {
-        this.audioProgress = event.loaded / event.total || 0;
-      };
-      fileReader.onloadend = async () => {
-        try {
-          const audioCtx = new AudioContext({
-            sampleRate: this.transcriberConfigStorage.samplingRate,
-          });
-          const arrayBuffer = fileReader.result as ArrayBuffer;
-          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-          this.audioProgress = undefined;
-          resolve(audioBuffer);
-        } catch (error) {
-          this.notificationService.showError(this.transloco.translate('ai-model.ERR_READING_FILE'));
-          console.log(error);
-          resolve(undefined);
+    // Configure recognition settings
+    this.recognition.continuous = true;
+    this.recognition.interimResults = true;
+    this.recognition.lang = 'en-US'; // Default language, can be made configurable
+
+    // Event handlers
+    this.recognition.onstart = () => {
+      this.isRecording.set(true);
+      this.isTranscriptionInProgress.emit(true);
+      this.transcribedText.set('');
+      this.interimText.set('');
+      this.errorMessage.set('');
+      this.notificationService.showInfo('Listening...');
+    };
+
+    this.recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
         }
-      };
-      fileReader.readAsArrayBuffer(this.audioBlob());
-    });
+      }
+
+      this.transcribedText.update(text => text + finalTranscript);
+      this.interimText.set(interimTranscript);
+    };
+
+    this.recognition.onend = () => {
+      this.isRecording.set(false);
+      this.isTranscriptionInProgress.emit(false);
+      this.isProcessing.set(false);
+
+      // Combine final and interim text
+      const finalText = (this.transcribedText() + this.interimText()).trim();
+      if (finalText) {
+        this.transcriptionComplete.emit(finalText);
+        this.notificationService.showInfo('Speech recognition completed');
+      }
+    };
+
+    this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      this.errorMessage.set(`Speech recognition error: ${event.error}`);
+      this.isRecording.set(false);
+      this.isProcessing.set(false);
+      this.isTranscriptionInProgress.emit(false);
+      this.notificationService.showError(`Speech recognition error: ${event.error}`);
+    };
   }
 
-  formatAudioTimestamp(time: number): string {
-    const hours = (time / (60 * 60)) | 0;
-    time -= hours * (60 * 60);
-    const minutes = (time / 60) | 0;
-    time -= minutes * 60;
-    const seconds = time | 0;
-    return `${hours ? this.padTime(hours) + ':' : ''}${this.padTime(minutes)}:${this.padTime(seconds)}`;
+  startRecording(): void {
+    if (!this.recognition) {
+      this.notificationService.showError('Speech recognition not available');
+      return;
+    }
+
+    try {
+      this.recognition.start();
+    } catch (error) {
+      this.errorMessage.set('Failed to start speech recognition');
+      this.notificationService.showError('Failed to start recording');
+    }
   }
 
-  padTime(time: number): string {
-    return String(time).padStart(2, '0');
+  stopRecording(): void {
+    if (this.recognition && this.isRecording()) {
+      this.recognition.stop();
+    }
   }
 }

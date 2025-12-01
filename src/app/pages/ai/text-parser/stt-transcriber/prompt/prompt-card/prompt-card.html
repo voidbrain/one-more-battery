@@ -1,9 +1,5 @@
-@if (isTranscribeEnabled && audioBlob) {
-  <div class="ion-padding">
-    <app-stt-transcriber-prompt
-      [audioBlob]="audioBlob"
-      (isTranscriptionInProgress)="setTranscriptionInProgress($event)"
-      (transcriptionComplete)="onTranscriptionComplete($event)"
-    ></app-stt-transcriber-prompt>
-  </div>
-}
+<div class="ion-padding">
+  <app-stt-transcriber-prompt
+    (transcriptionComplete)="onTranscriptionComplete($event)"
+  ></app-stt-transcriber-prompt>
+</div>
