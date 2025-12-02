@@ -9,20 +9,6 @@
         (selectionChange)="onLanguageChange($event)"
       >
       </app-rich-dropdown>
-      <app-rich-dropdown
-        [options]="themeOptions"
-        [selectedValue]="selectedTheme()"
-        triggerLabel="Select Theme"
-        (selectionChange)="onThemeChange($event)"
-      >
-      </app-rich-dropdown>
-      <app-rich-dropdown
-        [options]="styleOptions"
-        [selectedValue]="selectedStyle()"
-        triggerLabel="Select Style"
-        (selectionChange)="onStyleChange($event)"
-      >
-      </app-rich-dropdown>
     </div>
   </div>
 
@@ -58,13 +44,6 @@
         [class.active]="activeSegment() === 'train-ml'"
       >
         <ion-label>🧠 ML Train</ion-label>
-      </ion-segment-button>
-      <ion-segment-button
-        value="glass-showcase"
-        routerLink="/glass-showcase"
-        [class.active]="activeSegment() === 'glass-showcase'"
-      >
-        <ion-label>✨ Glass UI</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>

@@ -62,8 +62,4 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings').then((m) => m.Settings),
   },
-  {
-    path: 'glass-showcase',
-    loadComponent: () => import('./pages/glass-showcase/glass-showcase').then((m) => m.GlassShowcase),
-  },
 ];

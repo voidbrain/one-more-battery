@@ -25,14 +25,8 @@ export class Theme {
   }
 
   private initializeTheme(): void {
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem(this.THEME_KEY) as ThemeType;
-
-    // Check system preference if no saved theme
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-
-    this.setTheme(initialTheme);
+    // Always set to dark theme
+    this.setTheme('dark');
 
     // Check for saved style theme preference
     const savedStyleTheme = localStorage.getItem(this.STYLE_KEY) as StyleType;
